@@ -18,7 +18,7 @@ export const CPUChart: React.FC<CPUChartProps> = ({
   onServiceSelect 
 }) => {
   return (
-    <BoxedWrapper>
+    <BoxedWrapper className="mt-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100">
           <Activity className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
