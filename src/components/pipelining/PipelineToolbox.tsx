@@ -95,17 +95,7 @@ export const PipelineToolbox: React.FC<PipelineToolboxProps> = ({
   onPositionChange,
   isSimulating
 }) => {
-  console.log("blocks", blocks);
-  console.log('AVAILABLE_BLOCKS_MAP', AVAILABLE_BLOCKS_MAP);
-  console.log('PipelineToolboxProps', {
-    position,
-    onPositionChange,
-    isSimulating
-  });
-
   const handleDragStart = (e: React.DragEvent, block: PipelineBlock) => {
-    console.log("block", block);
-    console.log('json', JSON.stringify(block));
     e.dataTransfer.setData('application/json', JSON.stringify(block));
     e.dataTransfer.effectAllowed = 'copy';
   };
