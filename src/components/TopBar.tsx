@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, Boxes } from 'lucide-react';
 import { ProjectSelector } from './ProjectSelector';
 import { ThemeToggle } from './ThemeToggle';
 import { Project } from '../types/monitoring';
@@ -26,7 +26,15 @@ export const TopBar: React.FC<TopBarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-4">
-            <div className="w-64><">
+            <div className="relative">
+              <div className="flex justify-between mb-1">
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-0 group-hover:opacity-75 transition duration-500"></div>
+                  <Boxes className="relative w-12 h-12 text-blue-400 transform group-hover:scale-110 transition duration-500" />
+                </div>
+              </div>
+            </div>
+            <div className="w-64">
               <ProjectSelector
                 projects={mockProjects}
                 selectedProject={selectedProject}
