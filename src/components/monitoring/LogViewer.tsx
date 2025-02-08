@@ -34,9 +34,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({
         >
           <option value="All">All Services</option>
           {services.map((service, index) => (
-            <option key={index} value={service.name}>
-              {service.name}
-            </option>
+            <option key={index} value={service.name}>{service.name}</option>
           ))}
         </select>
         <select
@@ -79,17 +77,12 @@ export const LogViewer: React.FC<LogViewerProps> = ({
                   {log.service}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      log.severity === 'ERROR'
-                        ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                        : log.severity === 'WARN'
-                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                        : log.severity === 'DEBUG'
-                        ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
-                        : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                    }`}
-                  >
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    log.severity === 'ERROR' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
+                    log.severity === 'WARN' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
+                    log.severity === 'DEBUG' ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' :
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                  }`}>
                     {log.severity}
                   </span>
                 </td>

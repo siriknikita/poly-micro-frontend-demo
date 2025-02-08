@@ -5,6 +5,8 @@ export interface CPUData {
   threads: number;
 }
 
+export type MockedCPUData = Record<string, Record<string, CPUData[]>>;
+
 export interface Service {
   name: string;
   port: number;
@@ -14,6 +16,8 @@ export interface Service {
   version: string;
   lastDeployment: string;
 }
+
+export type MockedServices = Record<string, Service[]>;
 
 export interface Log {
   id: string;

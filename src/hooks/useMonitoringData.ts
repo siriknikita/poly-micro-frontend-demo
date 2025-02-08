@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { CPUData, Service, Log } from '../types/monitoring';
+import { Log, MockedCPUData, MockedServices } from '../types/monitoring';
 import { mockCpuData, mockServices, mockLogs } from '../data/mockData';
 
 export const useMonitoringData = () => {
-  const [cpuData] = useState<Record<string, CPUData[]>>(mockCpuData);
-  const [services] = useState<Service[]>(mockServices);
+  const [cpuData] = useState<MockedCPUData>(mockCpuData);
+  const [services] = useState<MockedServices>(mockServices);
   const [logs] = useState<Log[]>(mockLogs);
   const [selectedLogService, setSelectedLogService] = useState<string>('All');
   const [selectedMetricService, setSelectedMetricService] = useState<string>('');
   const [selectedSeverity, setSelectedSeverity] = useState<string>('All');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('1');
 
   const filteredLogs = logs.filter(log => 
     (selectedLogService === 'All' || log.service === selectedLogService) &&
@@ -24,6 +25,8 @@ export const useMonitoringData = () => {
     selectedMetricService,
     setSelectedMetricService,
     selectedSeverity,
-    setSelectedSeverity
+    setSelectedSeverity,
+    selectedProjectId,
+    setSelectedProjectId
   };
 };

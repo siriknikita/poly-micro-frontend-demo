@@ -48,8 +48,8 @@ export function Dashboard() {
           <div className={mainPageRenderClassName}>
             {selectedProject ? (
               <div>
-                {activeTab === 'dashboard' && <MonitoringDashboard />}
-                {activeTab === 'monitoring' && <MonitoringDashboard />}
+                {activeTab === 'dashboard' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
+                {activeTab === 'monitoring' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
                 {activeTab === 'cicd' && <CICDPipeline />}
                 {activeTab === 'testing' && <AutomatedTesting />}
               </div>

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
 import { CPUChart } from './CPUChart';
 import { ServiceStatus } from './ServiceStatus';
 import { LogViewer } from './LogViewer';
 import { useMonitoringData } from '../../hooks/useMonitoringData';
+import { Project } from '../../types/monitoring';
 
-export const MonitoringDashboard: React.FC = () => {
+interface MonitoringDashboardProps {
+  selectedProjectId: Project['id'];
+}
+
+export const MonitoringDashboard = ({ selectedProjectId }: MonitoringDashboardProps) => {
   const {
     cpuData,
     services,
@@ -18,21 +22,23 @@ export const MonitoringDashboard: React.FC = () => {
   } = useMonitoringData();
 
   return (
-    <div className="mt-4 space-y-6">
+    <div className="space-y-6">
       <CPUChart
-        data={selectedMetricService ? cpuData[selectedMetricService] : null}
+        data={selectedMetricService ? cpuData[selectedProjectId][selectedMetricService] : null}
         selectedService={selectedMetricService}
-        services={services}
+        services={services[selectedProjectId]}
         onServiceSelect={setSelectedMetricService}
       />
-      <ServiceStatus services={services} />
+      <ServiceStatus
+        services={services[selectedProjectId]}
+      />
       <LogViewer
         logs={logs}
         selectedService={selectedLogService}
         selectedSeverity={selectedSeverity}
         onServiceChange={setSelectedLogService}
         onSeverityChange={setSelectedSeverity}
-        services={services}
+        services={services[selectedProjectId]}
       />
     </div>
   );
