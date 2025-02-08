@@ -5,10 +5,10 @@ import { NavigationControls } from './NavigationControls';
 import { VariablesPanel } from './VariablesPanel';
 import { Save, Download, Play, Grid3X3 } from 'lucide-react';
 import { mockServices } from '../../data/mockData';
-import { Service } from '../../types/monitoring';
+import { Service, Project } from '../../types/monitoring';
 
 interface CICDPipelineProps {
-  selectedProjectId: string;
+  selectedProjectId: Project['id'];
 }
 
 export const CICDPipeline: React.FC<CICDPipelineProps> = ({
