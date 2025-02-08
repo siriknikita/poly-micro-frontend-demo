@@ -7,9 +7,15 @@ import { Save, Download, Play, Grid3X3 } from 'lucide-react';
 import { mockServices } from '../../data/mockData';
 import { Service } from '../../types/monitoring';
 
-export const CICDPipeline: React.FC = () => {
+interface CICDPipelineProps {
+  selectedProjectId: string;
+}
+
+export const CICDPipeline: React.FC<CICDPipelineProps> = ({
+  selectedProjectId,
+}) => {
   const [selectedService, setSelectedService] = useState<Service>(
-    mockServices[0]
+    mockServices[selectedProjectId][0]
   );
   const [showGrid, setShowGrid] = useState(true);
   const [toolboxPosition, setToolboxPosition] = useState<
@@ -18,14 +24,15 @@ export const CICDPipeline: React.FC = () => {
   const [isSimulating, setIsSimulating] = useState(false);
 
   const handleServiceChange = (direction: 'up' | 'down') => {
-    const currentIndex = mockServices.findIndex(
+    const currentMockServices = mockServices[selectedProjectId];
+    const currentIndex = currentMockServices.findIndex(
       (s) => s.name === selectedService.name
     );
     const newIndex =
       direction === 'up'
-        ? (currentIndex - 1 + mockServices.length) % mockServices.length
-        : (currentIndex + 1) % mockServices.length;
-    setSelectedService(mockServices[newIndex]);
+        ? (currentIndex - 1 + currentMockServices.length) % currentMockServices.length
+        : (currentIndex + 1) % currentMockServices.length;
+    setSelectedService(currentMockServices[newIndex]);
   };
 
   const handleExport = () => {
@@ -116,7 +123,7 @@ export const CICDPipeline: React.FC = () => {
           <NavigationControls
             onNavigate={handleServiceChange}
             currentService={selectedService}
-            services={mockServices}
+            services={mockServices[selectedProjectId]}
           />
         </div>
 

@@ -50,7 +50,7 @@ export function Dashboard() {
               <div>
                 {activeTab === 'dashboard' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
                 {activeTab === 'monitoring' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
-                {activeTab === 'cicd' && <CICDPipeline />}
+                {activeTab === 'cicd' && <CICDPipeline selectedProjectId={selectedProject.id} />}
                 {activeTab === 'testing' && <AutomatedTesting />}
               </div>
             ) : (
