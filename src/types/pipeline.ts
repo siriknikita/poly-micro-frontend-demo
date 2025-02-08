@@ -1,5 +1,3 @@
-// import { DivideIcon as LucideIcon } from 'lucide-react';
-
 interface ConfigSchemaField {
   type: 'string' | 'number' | 'select' | 'array' | 'cron' | 'expression' | 'command';
   label: string;
@@ -10,7 +8,6 @@ interface ConfigSchemaField {
 export interface PipelineBlock {
   id: string;
   name: string;
-  // icon: LucideIcon;
   icon: string;
   description: string;
   category: 'triggers' | 'execution' | 'flow' | 'automation';
