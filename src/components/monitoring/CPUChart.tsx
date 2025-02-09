@@ -1,8 +1,27 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend, ResponsiveContainer } from 'recharts';
 import { Activity } from 'lucide-react';
 import { CPUData, Service } from '../../types/monitoring';
 import { BoxedWrapper } from '../shared/BoxedWrapper';
+
+const tooltipFormatter = (value: number) => value.toFixed(2);
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-800 p-2 rounded text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600">
+        <p className="label">{`Time: ${label}`}</p>
+        {payload.map((entry, index) => (
+          <p key={`item-${index}`} style={{ color: entry.color }}>
+            {`${entry.name}: ${entry.value.toFixed(2)}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
 
 interface CPUChartProps {
   data: CPUData[] | null;
@@ -53,25 +72,18 @@ export const CPUChart: React.FC<CPUChartProps> = ({
               <CartesianGrid strokeDasharray="3 3" className="dark:stroke-gray-700" />
               <XAxis 
                 dataKey="time" 
-                className="dark:text-gray-400"
+                className="text-gray-900 dark:text-gray-400"
                 style={{ fontSize: '12px' }}
               />
               <YAxis 
-                className="dark:text-gray-400"
+                className="text-gray-900 dark:text-gray-400"
                 style={{ fontSize: '12px' }}
               />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'rgb(var(--color-gray-800))',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  color: 'rgb(var(--color-gray-100))'
-                }}
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Line type="monotone" dataKey="load" stroke="#4f46e5" name="CPU Load %" />
-              <Line type="monotone" dataKey="memory" stroke="#059669" name="Memory Usage %" />
-              <Line type="monotone" dataKey="threads" stroke="#db2777" name="Active Threads" />
+              <Line type="monotone" dataKey="load" stroke="#4f46e5" name="CPU Load %" formatter={tooltipFormatter} />
+              <Line type="monotone" dataKey="memory" stroke="#059669" name="Memory Usage %" formatter={tooltipFormatter} />
+              <Line type="monotone" dataKey="threads" stroke="#db2777" name="Active Threads" formatter={tooltipFormatter} />
             </LineChart>
           </ResponsiveContainer>
         </div>
