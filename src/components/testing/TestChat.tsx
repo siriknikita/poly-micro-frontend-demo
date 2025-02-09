@@ -72,14 +72,14 @@ export const TestChat = forwardRef<
   };
 
   return (
-    <div className="sticky flex flex-col w-full bg-white dark:bg-gray-800">
+    <div className="flex flex-col w-full bg-white dark:bg-gray-800 select-none">
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           Test Assistant
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 select-text">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -102,7 +102,7 @@ export const TestChat = forwardRef<
         ))}
       </div>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700 select-text">
         <div className="flex space-x-2">
           <textarea
             ref={textareaRef}

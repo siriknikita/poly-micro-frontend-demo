@@ -6,11 +6,16 @@ interface TestListProps {
   tests: TestItem[];
   onRunTest: (test: TestItem) => void;
   onGenerateTest: (test: TestItem) => void;
+  functionResults: Record<string, string>;
 }
 
-export const TestList: React.FC<TestListProps> = ({ tests, onRunTest, onGenerateTest }) => {
+export const TestList: React.FC<TestListProps> = ({
+  tests,
+  onRunTest,
+  onGenerateTest,
+  functionResults
+}) => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  const [testResults, setTestResults] = useState<Record<string, string>>({});
 
   const toggleExpand = (id: string) => {
     setExpandedItems(prev => ({
@@ -19,27 +24,12 @@ export const TestList: React.FC<TestListProps> = ({ tests, onRunTest, onGenerate
     }));
   };
 
-  const handleRunTest = (test: TestItem) => {
-    // Mock test results
-    setTestResults(prev => ({
-      ...prev,
-      [test.id]: `Test Results (${new Date().toLocaleTimeString()}):
-Status: Success
-Time: 1.2s
-Coverage: 95%
-
-✓ All assertions passed
-✓ Edge cases handled
-✓ Performance within threshold`
-    }));
-    onRunTest(test);
-  };
-
   const renderTestItem = (item: TestItem, depth = 0) => {
     const isExpanded = expandedItems[item.id];
     const hasChildren = item.children && item.children.length > 0;
     const paddingLeft = `${depth * 1.25 + 0.5}rem`;
-    const result = testResults[item.id];
+    const result = functionResults[item.id];
+    const showResult = item.type === 'function' && result;
 
     return (
       <div key={item.id} className="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
@@ -68,25 +58,27 @@ Coverage: 95%
             
             <span className="flex-1 ml-2 text-gray-900 dark:text-gray-100">{item.name}</span>
             
-            <div className="flex space-x-2">
-              <button
-                onClick={() => onGenerateTest(item)}
-                className="p-2 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded"
-                title="Generate test"
-              >
-                <Zap className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleRunTest(item)}
-                className="p-2 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 rounded"
-                title="Run test"
-              >
-                <Play className="h-4 w-4" />
-              </button>
-            </div>
+            {item.type === 'function' && (
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => onGenerateTest(item)}
+                  className="p-2 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded"
+                  title="Generate test"
+                >
+                  <Zap className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => onRunTest(item)}
+                  className="p-2 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 rounded"
+                  title="Run test"
+                >
+                  <Play className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </div>
 
-          {result && (
+          {showResult && (
             <div 
               className="ml-6 mr-4 mb-3 p-3 bg-gray-100 dark:bg-gray-800 rounded font-mono text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300"
             >
@@ -95,7 +87,7 @@ Coverage: 95%
           )}
         </div>
         
-        {isExpanded && hasChildren && (
+        {hasChildren && (
           <div className="border-l-2 border-gray-200 dark:border-gray-700 ml-4">
             {item.children.map(child => renderTestItem(child, depth + 1))}
           </div>
@@ -104,6 +96,7 @@ Coverage: 95%
     );
   };
 
+  {/* TODO: Remove the microservice title from being displayed as foldable section */}
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
       {tests.map(test => renderTestItem(test))}
