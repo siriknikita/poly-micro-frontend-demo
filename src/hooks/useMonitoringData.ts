@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Log, MockedCPUData, MockedServices } from '../types/monitoring';
 import { mockCpuData, mockServices, mockLogs } from '../data/mockData';
 
@@ -11,15 +11,17 @@ export const useMonitoringData = () => {
   const [selectedSeverity, setSelectedSeverity] = useState<string>('All');
   const [selectedProjectId, setSelectedProjectId] = useState<string>('1');
 
-  const filteredLogs = logs.filter(log => 
-    (selectedLogService === 'All' || log.service === selectedLogService) &&
-    (selectedSeverity === 'All' || log.severity === selectedSeverity)
-  );
+  const filteredLogs = useMemo(() => {
+    return logs.filter(log =>
+      (selectedLogService === 'All' || log.service === selectedLogService) &&
+      (selectedSeverity === 'All' || log.severity === selectedSeverity)
+    );
+  }, [logs, selectedLogService, selectedSeverity]);
 
   return {
     cpuData,
     services,
-    logs: filteredLogs,
+    logs: filteredLogs, // Return the memoized filtered logs
     selectedLogService,
     setSelectedLogService,
     selectedMetricService,

@@ -317,5 +317,21 @@ export const mockLogs: Log[] = [
     message: 'Course enrollment limit reached',
     timestamp: '2024-02-28 12:09:00',
     details: { courseId: 'course_102', limit: 50 }
-  }
+  },
+  {
+    id: '11',
+    service: 'User Service',
+    severity: 'INFO',
+    message: 'User authentication successful',
+    timestamp: '2024-02-28 12:10:00',
+    details: { userId: '126', method: 'OAuth' }
+  },
+  {
+    id: '12',
+    service: 'Payment Service',
+    severity: 'ERROR',
+    message: 'Payment processing failed: Insufficient funds',
+    timestamp: '2024-02-28 12:11:00',
+    details: { transactionId: 'tx_791', errorCode: 'INSUFFICIENT_FUNDS' }
+  },
 ];
