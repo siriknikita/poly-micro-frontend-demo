@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TestList } from './TestList';
-import { TestChat } from './TestChat';
 import { mockTestData } from '@data/mockTestData';
 import { TestItem } from '@types';
-import { GripVertical, MessageSquare, ChevronUp, ChevronDown, Play } from 'lucide-react';
+import { Header } from './Header';
+import { TestListContainer } from './TestListContainer';
+import { ChatContainer } from './ChatContainer';
 
 export const AutomatedTesting: React.FC = () => {
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
@@ -92,90 +92,34 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
   };
 
   return (
-    <div 
+    <div
       className="h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900"
       onMouseMove={handleDrag}
       onMouseUp={() => setIsDragging(false)}
       onMouseLeave={() => setIsDragging(false)}
     >
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Testing: {selectedMicroservice.name}
-            </h2>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={handleRunAllTests}
-              className="px-4 py-2 rounded-lg flex items-center space-x-2 bg-indigo-600 text-white dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600"
-            >
-              <Play className="h-4 w-4" />
-              <span>Run All Tests</span>
-            </button>
-            <button
-              onClick={() => setShowChat(!showChat)}
-              className={`p-2 rounded-lg ${
-                showChat
-                  ? 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  : 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-400'
-              }`}
-              title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-            >
-              <MessageSquare className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </div>
+      <Header
+        selectedMicroservice={selectedMicroservice}
+        showChat={showChat}
+        setShowChat={setShowChat}
+        handleRunAllTests={handleRunAllTests}
+      />
 
       <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 relative">
-          {/* Test list */}
-          <div className="p-4 overflow-auto h-full">
-            <TestList
-              tests={[selectedMicroservice]}
-              onRunTest={handleRunTest}
-              onGenerateTest={handleGenerateTest}
-              functionResults={functionResults}
-            />
-          </div>
-
-          {/* Switching betwen microservices */}
-          <div className="absolute bottom-6 right-6 flex flex-col space-y-2">
-            <button
-              onClick={() => handleMicroserviceChange('up')}
-              className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
-              title={`Previous: ${mockTestData[(mockTestData.findIndex((ms) => ms.id === selectedMicroservice.id) - 1 + mockTestData.length) % mockTestData.length].name}`}
-            >
-              <ChevronUp className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => handleMicroserviceChange('down')}
-              className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
-              title={`Next: ${mockTestData[(mockTestData.findIndex((ms) => ms.id === selectedMicroservice.id) + 1) % mockTestData.length].name}`}
-            >
-              <ChevronDown className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
+        <TestListContainer
+          selectedMicroservice={selectedMicroservice}
+          functionResults={functionResults}
+          handleGenerateTest={handleGenerateTest}
+          handleMicroserviceChange={handleMicroserviceChange}
+        />
 
         {showChat && (
-          <>
-            <div
-              className="flex items-center cursor-col-resize hover:bg-gray-200 dark:hover:bg-gray-700"
-              onMouseDown={() => setIsDragging(true)}
-            >
-              <GripVertical className="h-6 w-6 text-gray-400" />
-            </div>
-
-            <div
-              style={{ width: chatWidth }}
-              className="flex border-l border-gray-200 dark:border-gray-700"
-            >
-              <TestChat ref={chatRef} onGenerateTest={handleGenerateTest} />
-            </div>
-          </>
+          <ChatContainer
+            chatWidth={chatWidth}
+            setIsDragging={setIsDragging}
+            chatRef={chatRef}
+            handleGenerateTest={handleGenerateTest}
+          />
         )}
       </div>
     </div>
