@@ -1,6 +1,6 @@
 import React from 'react';
-import { PipelineBlock } from '../../types/pipeline';
-import { AVAILABLE_BLOCKS_MAP } from '../../helpers/constants';
+import { PipelineBlock } from '@types';
+import { AVAILABLE_BLOCKS_MAP } from '@constants';
 
 interface PipelineToolboxProps {
   position: 'left' | 'right' | 'float';

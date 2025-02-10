@@ -26,7 +26,8 @@
       "@hooks/*": ["./src/hooks/*"],
       "@types/*": ["./src/types/*"],
       "@helpers/*": ["./src/helpers/*"],
-      "@constants/*": ["./src/constants/*"],
+      "@constants/*": ["./src/helpers/constants"],
+      "@data/*": ["./src/data/*"],
     }
   },
   "include": ["src"]

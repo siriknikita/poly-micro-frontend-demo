@@ -1,6 +1,6 @@
 import React from 'react';
 import { FolderOpen } from 'lucide-react';
-import { Project } from '../types/monitoring';
+import { Project } from '@types';
 
 interface ProjectSelectorProps {
   projects: Project[];

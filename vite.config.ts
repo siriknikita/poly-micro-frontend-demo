@@ -20,6 +20,7 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/types'),
       '@helpers': path.resolve(__dirname, './src/helpers'),
       '@constants': path.resolve(__dirname, './src/helpers/constants'),
+      '@data': path.resolve(__dirname, './src/data'),
     },
   }
 });

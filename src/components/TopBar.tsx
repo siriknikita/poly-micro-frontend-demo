@@ -2,8 +2,8 @@ import React from 'react';
 import { LogOut, Boxes } from 'lucide-react';
 import { ProjectSelector } from './ProjectSelector';
 import { ThemeToggle } from './ThemeToggle';
-import { Project } from '../types/monitoring';
-import { mockProjects } from '../data/mockData';
+import { Project } from '@types';
+import { mockProjects } from '@data/mockData';
 
 interface TopBarProps {
   darkMode: boolean;
