@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Log } from '../../types/monitoring';
 import { BoxedWrapper } from '../shared/BoxedWrapper';
@@ -30,29 +30,6 @@ export const LogViewer: React.FC<LogViewerProps> = ({
     return Number(localStorage.getItem('logViewerItemsPerPage')) || DEFAULT_ITEMS_PER_PAGE;
   });
 
-  const tableRef = useRef<HTMLDivElement>(null);
-  const lastLogRef = useRef<HTMLTableRowElement>(null);
-  const scrollPositionRef = useRef(0);
-  const userInteractedRef = useRef(false);
-
-  useLayoutEffect(() => {
-    const tableElement = tableRef.current;
-    if (tableElement) {
-      tableElement.scrollTop = scrollPositionRef.current;
-    }
-  }, []);
-
-  useEffect(() => {
-    const tableElement = tableRef.current;
-    if (tableElement) {
-      const handleScroll = () => {
-        scrollPositionRef.current = tableElement.scrollTop;
-      };
-      tableElement.addEventListener('scroll', handleScroll);
-      return () => tableElement.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
-
   useEffect(() => {
     localStorage.setItem('logViewerCurrentPage', currentPage.toString());
     localStorage.setItem('logViewerItemsPerPage', itemsPerPage.toString());
@@ -64,41 +41,41 @@ export const LogViewer: React.FC<LogViewerProps> = ({
     currentPage * itemsPerPage
   ), [logs, currentPage, itemsPerPage]);
 
+  const lastLogRef = useRef<HTMLTableRowElement>(null);
   const setLastLogRowRef = useCallback((node: HTMLTableRowElement | null) => {
     lastLogRef.current = node;
   }, []);
 
-  useEffect(() => {
-    if (lastLogRef.current) {
-      lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [paginatedLogs]);
-
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    userInteractedRef.current = true;
+    const nextPageLogs = logs.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+    if (nextPageLogs.length > paginatedLogs.length) {
+      setCurrentPage(page);
+      setTimeout(() => {
+        if (lastLogRef.current) {
+          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 0);
+    } else {
+      setCurrentPage(page);
+    }
   };
 
   const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-    userInteractedRef.current = true;
+    const newItemsPerPage = Number(e.target.value);
+    const nextPageLogs = logs.slice(0, newItemsPerPage);
+    if (nextPageLogs.length > paginatedLogs.length) {
+      setItemsPerPage(newItemsPerPage);
+      setCurrentPage(1);
+      setTimeout(() => {
+        if (lastLogRef.current) {
+          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 0);
+    } else {
+      setItemsPerPage(newItemsPerPage);
+      setCurrentPage(1);
+    }
   };
-
-  const scrollToBottom = useCallback(() => {
-    if (tableRef.current && document.contains(tableRef.current)) {
-      tableRef.current.scrollTop = tableRef.current.scrollHeight;
-    }
-  }, []);
-
-  useLayoutEffect(() => {
-    if (userInteractedRef.current) {
-      requestAnimationFrame(scrollToBottom);
-      userInteractedRef.current = false;
-    } else if (tableRef.current) {
-      tableRef.current.scrollTop = scrollPositionRef.current;
-    }
-  }, [logs, currentPage, itemsPerPage, scrollToBottom]);
 
   return (
     <BoxedWrapper>
@@ -139,7 +116,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({
           <option value={50}>50 per page</option>
         </select>
       </div>
-      <div className="overflow-x-auto" ref={tableRef}>
+      <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-900">
             <tr>
