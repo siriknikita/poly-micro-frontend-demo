@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { PipelineBlock as Block } from './blocks/PipelineBlock';
 import { BlockConfigModal } from './BlockConfigModal';
-import { PipelineBlock, BlockInstance } from '../../types/pipeline';
+import { PipelineBlock, BlockInstance } from '@types';
 
 interface PipelineCanvasProps {
   showGrid: boolean;

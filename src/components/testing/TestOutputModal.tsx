@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { TestItem, TestOutput } from '../../types/testing';
-import { BoxedWrapper } from '../shared/BoxedWrapper';
+import { TestItem, TestOutput } from '@types';
+import { BoxedWrapper } from '@shared';
 
 interface TestOutputModalProps {
   isOpen: boolean;

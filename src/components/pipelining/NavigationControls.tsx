@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { Service } from '../../types/monitoring';
+import { Service } from '@types';
 
 interface NavigationControlsProps {
   onNavigate: (direction: 'up' | 'down') => void;

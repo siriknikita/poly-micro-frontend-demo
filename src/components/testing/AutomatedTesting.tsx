@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TestList } from './TestList';
 import { TestChat } from './TestChat';
-import { mockTestData } from '../../data/mockTestData';
-import { TestItem } from '../../types/testing';
-import { BoxedWrapper } from '../shared/BoxedWrapper';
+import { mockTestData } from '@data/mockTestData';
+import { TestItem } from '@types';
 import { GripVertical, MessageSquare, ChevronUp, ChevronDown, Play } from 'lucide-react';
 
 export const AutomatedTesting: React.FC = () => {

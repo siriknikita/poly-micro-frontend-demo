@@ -1,6 +1,5 @@
 import React from 'react';
-import { BlockInstance } from '../../../types/pipeline';
-// import * as LucideIcons from 'lucide-react';
+import { BlockInstance } from '@types';
 
 interface PipelineBlockProps {
   block: BlockInstance;

@@ -4,8 +4,8 @@ import { PipelineCanvas } from './PipelineCanvas';
 import { NavigationControls } from './NavigationControls';
 import { VariablesPanel } from './VariablesPanel';
 import { Save, Download, Play, Grid3X3 } from 'lucide-react';
-import { mockServices } from '../../data/mockData';
-import { Service, Project } from '../../types/monitoring';
+import { mockServices } from '@data/mockData';
+import { Service, Project } from '@types';
 
 interface CICDPipelineProps {
   selectedProjectId: Project['id'];

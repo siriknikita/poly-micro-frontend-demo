@@ -1,8 +1,8 @@
 import { CPUChart } from './CPUChart';
 import { ServiceStatus } from './ServiceStatus';
-import { LogViewer } from './LogViewer';
-import { useMonitoringData } from '../../hooks/useMonitoringData';
-import { Project } from '../../types/monitoring';
+import { LogViewer } from './LogViewer/LogViewer';
+import { useMonitoringData } from '@hooks';
+import { Project } from '@types';
 
 interface MonitoringDashboardProps {
   selectedProjectId: Project['id'];

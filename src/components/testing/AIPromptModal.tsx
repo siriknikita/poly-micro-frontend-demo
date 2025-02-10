@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { TestItem } from '../../types/testing';
+import { TestItem } from '@types';
 
 interface AIPromptModalProps {
   isOpen: boolean;

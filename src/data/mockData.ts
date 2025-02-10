@@ -1,4 +1,4 @@
-import { Service, Log, Project, MockedCPUData, MockedServices } from '../types/monitoring';
+import { Service, Log, Project, MockedCPUData, MockedServices } from '@types';
 import _ from 'lodash';
 
 export const mockProjects: Project[] = [
