@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Log } from '../../types/monitoring';
 import { BoxedWrapper } from '../shared/BoxedWrapper';
@@ -12,6 +12,8 @@ interface LogViewerProps {
   services: { name: string }[];
 }
 
+const DEFAULT_ITEMS_PER_PAGE = 10;
+
 export const LogViewer: React.FC<LogViewerProps> = ({
   logs,
   selectedService,
@@ -20,6 +22,61 @@ export const LogViewer: React.FC<LogViewerProps> = ({
   onSeverityChange,
   services,
 }) => {
+  const [currentPage, setCurrentPage] = useState(() => {
+    return Number(localStorage.getItem('logViewerCurrentPage')) || 1;
+  });
+
+  const [itemsPerPage, setItemsPerPage] = useState(() => {
+    return Number(localStorage.getItem('logViewerItemsPerPage')) || DEFAULT_ITEMS_PER_PAGE;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('logViewerCurrentPage', currentPage.toString());
+    localStorage.setItem('logViewerItemsPerPage', itemsPerPage.toString());
+  }, [currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(logs.length / itemsPerPage);
+  const paginatedLogs = useMemo(() => logs.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  ), [logs, currentPage, itemsPerPage]);
+
+  const lastLogRef = useRef<HTMLTableRowElement>(null);
+  const setLastLogRowRef = useCallback((node: HTMLTableRowElement | null) => {
+    lastLogRef.current = node;
+  }, []);
+
+  const handlePageChange = (page: number) => {
+    const nextPageLogs = logs.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+    if (nextPageLogs.length > paginatedLogs.length) {
+      setCurrentPage(page);
+      setTimeout(() => {
+        if (lastLogRef.current) {
+          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 0);
+    } else {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newItemsPerPage = Number(e.target.value);
+    const nextPageLogs = logs.slice(0, newItemsPerPage);
+    if (nextPageLogs.length > paginatedLogs.length) {
+      setItemsPerPage(newItemsPerPage);
+      setCurrentPage(1);
+      setTimeout(() => {
+        if (lastLogRef.current) {
+          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 0);
+    } else {
+      setItemsPerPage(newItemsPerPage);
+      setCurrentPage(1);
+    }
+  };
+
   return (
     <BoxedWrapper>
       <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-gray-100">
@@ -48,6 +105,16 @@ export const LogViewer: React.FC<LogViewerProps> = ({
           <option value="WARN">WARN</option>
           <option value="ERROR">ERROR</option>
         </select>
+        <select
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+          className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+        >
+          <option value={5}>5 per page</option>
+          <option value={10}>10 per page</option>
+          <option value={20}>20 per page</option>
+          <option value={50}>50 per page</option>
+        </select>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -68,8 +135,8 @@ export const LogViewer: React.FC<LogViewerProps> = ({
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {logs.map((log) => (
-              <tr key={log.id}>
+            {paginatedLogs.map((log, index) => (
+              <tr key={log.id} ref={index === paginatedLogs.length - 1 ? setLastLogRowRef : null}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {log.timestamp}
                 </td>
@@ -93,6 +160,25 @@ export const LogViewer: React.FC<LogViewerProps> = ({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-gray-900 dark:text-gray-100">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </BoxedWrapper>
   );
