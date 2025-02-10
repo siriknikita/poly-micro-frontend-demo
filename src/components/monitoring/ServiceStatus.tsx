@@ -1,7 +1,7 @@
 import React from 'react';
 import { Server } from 'lucide-react';
-import { Service } from '../../types/monitoring';
-import { BoxedWrapper } from '../shared/BoxedWrapper';
+import { Service } from '@types';
+import { BoxedWrapper } from '@shared';
 
 interface ServiceStatusProps {
   services: Service[];

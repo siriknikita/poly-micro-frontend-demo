@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Log, MockedCPUData, MockedServices } from '../types/monitoring';
 import { mockCpuData, mockServices, mockLogs } from '../data/mockData';
 
-export const useMonitoringData = () => {
+export default function useMonitoringData() {
   const [cpuData] = useState<MockedCPUData>(mockCpuData);
   const [services] = useState<MockedServices>(mockServices);
   const [logs] = useState<Log[]>(mockLogs);

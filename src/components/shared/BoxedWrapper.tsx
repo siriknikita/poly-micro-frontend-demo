@@ -6,7 +6,7 @@ interface BoxedWrapperProps {
   className?: string;
 }
 
-export const BoxedWrapper: React.FC<BoxedWrapperProps> = ({
+const BoxedWrapper: React.FC<BoxedWrapperProps> = ({
   children,
   style,
   className = '',
@@ -20,3 +20,5 @@ export const BoxedWrapper: React.FC<BoxedWrapperProps> = ({
     </div>
   );
 };
+
+export default BoxedWrapper;

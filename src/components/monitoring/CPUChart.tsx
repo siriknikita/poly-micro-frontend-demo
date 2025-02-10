@@ -1,8 +1,8 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend, ResponsiveContainer } from 'recharts';
 import { Activity } from 'lucide-react';
-import { CPUData, Service } from '../../types/monitoring';
-import { BoxedWrapper } from '../shared/BoxedWrapper';
+import { CPUData, Service } from '@types';
+import { BoxedWrapper } from '@shared';
 
 const tooltipFormatter = (value: number) => value.toFixed(2);
 
