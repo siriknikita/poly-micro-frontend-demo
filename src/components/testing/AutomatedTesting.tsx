@@ -93,7 +93,7 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
 
   return (
     <div
-      className="h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900"
+      className={`h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900 ${isDragging ? 'select-none' : ''}`}
       onMouseMove={handleDrag}
       onMouseUp={() => setIsDragging(false)}
       onMouseLeave={() => setIsDragging(false)}
