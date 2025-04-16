@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@hooks';
 import { Project } from '@types';
+import { mockProjects } from '@data/mockData';
 
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -28,9 +29,7 @@ export function Dashboard() {
     pathToTab[location.pathname as keyof typeof pathToTab] || 'dashboard'
   );
   
-  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
-    null
-  );
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
   // Update URL when tab changes
   useEffect(() => {
@@ -39,6 +38,17 @@ export function Dashboard() {
       navigate(tabPath);
     }
   }, [activeTab, navigate, location.pathname]);
+
+  // Load saved project on component mount
+  useEffect(() => {
+    const savedProjectId = localStorage.getItem('lastSelectedProject');
+    if (savedProjectId) {
+      const project = mockProjects.find(p => p.id === savedProjectId);
+      if (project) {
+        setSelectedProject(project);
+      }
+    }
+  }, []);
 
   const mainPageRenderClassName =
     selectedProject && (activeTab === 'testing' || activeTab === 'cicd')
@@ -63,7 +73,10 @@ export function Dashboard() {
           darkMode={darkMode}
           setDarkMode={setDarkMode}
           selectedProject={selectedProject}
-          onSelectProject={setSelectedProject}
+          onSelectProject={(project) => {
+            setSelectedProject(project);
+            localStorage.setItem('lastSelectedProject', project.id);
+          }}
           onLogout={() => {
             localStorage.removeItem('currentUser');
             navigate('/login');
