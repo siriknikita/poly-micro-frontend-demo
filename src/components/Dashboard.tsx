@@ -39,8 +39,9 @@ export function Dashboard() {
     }
   }, [activeTab, navigate, location.pathname]);
 
-  // Load saved project on component mount
+  // Load saved project and services on component mount
   useEffect(() => {
+    // Load last selected project
     const savedProjectId = localStorage.getItem('lastSelectedProject');
     if (savedProjectId) {
       const project = mockProjects.find(p => p.id === savedProjectId);
@@ -49,6 +50,12 @@ export function Dashboard() {
       }
     }
   }, []);
+  
+  // Get the last selected service for the current tab and project
+  const getLastSelectedService = (projectId: string, tabName: string) => {
+    const key = `lastSelected_${tabName}_${projectId}`;
+    return localStorage.getItem(key);
+  };
 
   const mainPageRenderClassName =
     selectedProject && (activeTab === 'testing' || activeTab === 'cicd')
@@ -87,10 +94,30 @@ export function Dashboard() {
           <div className={mainPageRenderClassName}>
             {selectedProject ? (
               <div>
-                {activeTab === 'dashboard' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
-                {activeTab === 'monitoring' && <MonitoringDashboard selectedProjectId={selectedProject.id} />}
-                {activeTab === 'cicd' && <CICDPipeline selectedProjectId={selectedProject.id} />}
-                {activeTab === 'testing' && <AutomatedTesting />}
+                {activeTab === 'dashboard' && (
+                  <MonitoringDashboard 
+                    selectedProjectId={selectedProject.id} 
+                    initialServiceName={getLastSelectedService(selectedProject.id, 'dashboard')}
+                  />
+                )}
+                {activeTab === 'monitoring' && (
+                  <MonitoringDashboard 
+                    selectedProjectId={selectedProject.id} 
+                    initialServiceName={getLastSelectedService(selectedProject.id, 'monitoring')}
+                  />
+                )}
+                {activeTab === 'cicd' && (
+                  <CICDPipeline 
+                    selectedProjectId={selectedProject.id} 
+                    initialServiceName={getLastSelectedService(selectedProject.id, 'cicd')}
+                  />
+                )}
+                {activeTab === 'testing' && (
+                  <AutomatedTesting 
+                    initialMicroserviceId={getLastSelectedService(selectedProject.id, 'testing')}
+                    projectId={selectedProject.id}
+                  />
+                )}
               </div>
             ) : (
               <div className="flex items-center justify-center h-[calc(100vh-8rem)]">

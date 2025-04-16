@@ -5,12 +5,26 @@ import { Header } from './Header';
 import { TestListContainer } from './TestListContainer';
 import { ChatContainer } from './ChatContainer';
 
-export const AutomatedTesting: React.FC = () => {
+interface AutomatedTestingProps {
+  initialMicroserviceId?: string | null;
+  projectId: string;
+}
+
+export const AutomatedTesting: React.FC<AutomatedTestingProps> = ({ initialMicroserviceId, projectId }) => {
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [chatWidth, setChatWidth] = useState(400);
   const [isDragging, setIsDragging] = useState(false);
   const [showChat, setShowChat] = useState(true);
-  const [selectedMicroservice, setSelectedMicroservice] = useState(mockTestData[0]);
+  // Find initial microservice if provided, otherwise use first one
+  const findInitialMicroservice = () => {
+    if (initialMicroserviceId) {
+      const microservice = mockTestData.find(ms => ms.id === initialMicroserviceId);
+      if (microservice) return microservice;
+    }
+    return mockTestData[0];
+  };
+
+  const [selectedMicroservice, setSelectedMicroservice] = useState(findInitialMicroservice());
   const [functionResults, setFunctionResults] = useState<Record<string, string>>({});
 
   const handleRunTest = (test: TestItem) => {
@@ -56,6 +70,11 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     setChatWidth(Math.max(300, Math.min(800, newWidth)));
   };
 
+  // Save microservice selection to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(`lastSelected_testing_${projectId}`, selectedMicroservice.id);
+  }, [selectedMicroservice, projectId]);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging) {
@@ -87,8 +106,12 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       direction === 'up'
         ? (currentIndex - 1 + mockTestData.length) % mockTestData.length
         : (currentIndex + 1) % mockTestData.length;
-    setSelectedMicroservice(mockTestData[newIndex]);
+    const newMicroservice = mockTestData[newIndex];
+    setSelectedMicroservice(newMicroservice);
     setFunctionResults({}); // Clear results when changing microservice
+    
+    // Save selected microservice to localStorage
+    localStorage.setItem(`lastSelected_testing_${projectId}`, newMicroservice.id);
   };
 
   return (

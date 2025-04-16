@@ -9,14 +9,32 @@ import { Service, Project } from '@types';
 
 interface CICDPipelineProps {
   selectedProjectId: Project['id'];
+  initialServiceName?: string | null;
 }
 
 export const CICDPipeline: React.FC<CICDPipelineProps> = ({
   selectedProjectId,
+  initialServiceName
 }) => {
-  const [selectedService, setSelectedService] = useState<Service>(
-    mockServices[selectedProjectId][0]
-  );
+  // Find initial service if provided, otherwise use first service
+  const findInitialService = () => {
+    if (initialServiceName) {
+      const service = mockServices[selectedProjectId].find(
+        s => s.name === initialServiceName
+      );
+      if (service) return service;
+    }
+    const storedServiceName = localStorage.getItem(`lastSelected_cicd_${selectedProjectId}`);
+    if (storedServiceName) {
+      const service = mockServices[selectedProjectId].find(
+        s => s.name === storedServiceName
+      );
+      if (service) return service;
+    }
+    return mockServices[selectedProjectId][0];
+  };
+
+  const [selectedService, setSelectedService] = useState<Service>(findInitialService());
   const [showGrid, setShowGrid] = useState(true);
   const [toolboxPosition, setToolboxPosition] = useState<
     'left' | 'right' | 'float'
@@ -33,6 +51,9 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
         ? (currentIndex - 1 + currentMockServices.length) % currentMockServices.length
         : (currentIndex + 1) % currentMockServices.length;
     setSelectedService(currentMockServices[newIndex]);
+    
+    // Save selected service to localStorage
+    localStorage.setItem(`lastSelected_cicd_${selectedProjectId}`, currentMockServices[newIndex].name);
   };
 
   const handleExport = () => {
