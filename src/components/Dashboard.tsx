@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@hooks';
 import { Project } from '@types';
 
@@ -11,13 +11,34 @@ import { CICDPipeline } from './pipelining/CICDPipeline';
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { darkMode, setDarkMode } = useTheme();
   const userString = localStorage.getItem('currentUser');
   const user = userString ? JSON.parse(userString) : null;
-  const [activeTab, setActiveTab] = React.useState('dashboard');
+  
+  // Determine active tab from URL path
+  const pathToTab = {
+    '/dashboard': 'dashboard',
+    '/monitoring': 'monitoring',
+    '/cicd': 'cicd',
+    '/testing': 'testing'
+  };
+  
+  const [activeTab, setActiveTab] = React.useState(
+    pathToTab[location.pathname as keyof typeof pathToTab] || 'dashboard'
+  );
+  
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
     null
   );
+  
+  // Update URL when tab changes
+  useEffect(() => {
+    const tabPath = Object.entries(pathToTab).find(([_, tab]) => tab === activeTab)?.[0] || '/dashboard';
+    if (location.pathname !== tabPath) {
+      navigate(tabPath);
+    }
+  }, [activeTab, navigate, location.pathname]);
 
   const mainPageRenderClassName =
     selectedProject && (activeTab === 'testing' || activeTab === 'cicd')
@@ -31,7 +52,11 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} user={user} />
+      <Sidebar 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+        user={user} 
+      />
 
       <div className="flex-1 flex flex-col">
         <TopBar

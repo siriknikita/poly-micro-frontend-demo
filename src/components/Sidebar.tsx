@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Activity, 
@@ -47,6 +48,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }) => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -90,7 +92,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
             return (
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
+                onClick={() => {
+                  onTabChange(tab.id);
+                  // Navigate to the appropriate route
+                  navigate(`/${tab.id === 'dashboard' ? 'dashboard' : tab.id}`);
+                }}
                 className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${
                   isActive
                     ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300'
