@@ -16,7 +16,12 @@ export const AutomatedTesting = memo(() => {
   
   // Use our custom hooks
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
-  const { functionResults, runTest, runAllTests, setCurrentMicroservice } = useTestItems();
+  const {
+    functionResults,
+    runTest,
+    runAllTests,
+    setCurrentMicroservice,
+  } = useTestItems(mockTestData);
   const {
     selectedMicroservice,
     setSelectedMicroservice,

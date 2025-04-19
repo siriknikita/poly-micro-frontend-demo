@@ -9,18 +9,40 @@ const SHOW_RESULTS_STORAGE_KEY = 'poly-micro-manager-show-results';
 /**
  * Hook for managing test items and their expanded state
  */
-export const useTestItems = () => {
+export const useTestItems = (microservices: TestItem[] = []) => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [functionResults, setFunctionResults] = useState<Record<string, string>>({});
+  // Persistent per-microservice show/hide results state
   const [showResults, setShowResults] = useState<boolean>(true);
-  const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(null);
+  const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(
+    microservices.length > 0 ? microservices[0].id : null
+  );
 
-  // Load expanded items, function results, and show results state from localStorage on initial load
+  // Update currentMicroserviceId if microservices change
+  useEffect(() => {
+    setCurrentMicroserviceId(microservices.length > 0 ? microservices[0].id : null);
+  }, [microservices]);
+
+  // Load expanded items, function results, and show/hide results state from localStorage on microservice switch
   useEffect(() => {
     if (!currentMicroserviceId) return;
-    
+
+    // Load show/hide results state for this microservice
     try {
-      // Load expanded items
+      const stored = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setShowResults(typeof parsed[currentMicroserviceId] === 'boolean' ? parsed[currentMicroserviceId] : true);
+      } else {
+        setShowResults(true);
+      }
+    } catch {
+      console.log('Failed to load show/hide results state from localStorage');
+      setShowResults(true);
+    }
+
+    // Load expanded items
+    try {
       const storedExpandedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
       if (storedExpandedData) {
         const parsedData = JSON.parse(storedExpandedData);
@@ -193,25 +215,31 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     }
   }, []);
 
-  // Toggle visibility of test results
+  // Toggle show/hide results for current microservice and persist
   const toggleResultsVisibility = useCallback(() => {
+    console.group('Toggle show/hide results visibility');
+    console.log('Toggling show/hide results visibility');
+    if (!currentMicroserviceId) {
+      console.log('No current microservice ID found');
+      return;
+    }
+
     setShowResults(prev => {
-      const newState = !prev;
-      
-      // Save to localStorage
-      if (currentMicroserviceId) {
-        try {
-          const storedData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY) || '{}';
-          const parsedData = JSON.parse(storedData);
-          parsedData[currentMicroserviceId] = newState;
-          localStorage.setItem(SHOW_RESULTS_STORAGE_KEY, JSON.stringify(parsedData));
-        } catch (error) {
-          console.error('Failed to save show results state to localStorage:', error);
-        }
+      const next = !prev;
+      console.log('Toggling show/hide results visibility to:', next);
+      try {
+        const stored = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+        console.log('Stored show/hide results state:', stored);
+        const parsed = stored ? JSON.parse(stored) : {};
+        parsed[currentMicroserviceId] = next;
+        console.log('Parsed show/hide results state:', parsed);
+        localStorage.setItem(SHOW_RESULTS_STORAGE_KEY, JSON.stringify(parsed));
+      } catch (error) {
+        console.error('Failed to save show/hide results state to localStorage:', error);
       }
-      
-      return newState;
+      return next;
     });
+    console.groupEnd();
   }, [currentMicroserviceId]);
 
   // Set current microservice and load its expanded state, function results, and show results state from localStorage

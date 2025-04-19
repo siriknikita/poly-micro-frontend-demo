@@ -21,7 +21,7 @@ export const TestList = memo<TestListProps>(({
   const [areAllExpanded, setAreAllExpanded] = useState(false);
   
   // Use our custom hook for managing test items
-  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems();
+  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems(tests);
 
   // Reset areAllExpanded state when microservice changes
   useEffect(() => {
