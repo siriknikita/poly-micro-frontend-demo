@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { TestItem } from '@/types';
 
-// Local storage key for expanded items
+// Local storage keys
 const EXPANDED_ITEMS_STORAGE_KEY = 'poly-micro-manager-expanded-items';
+const FUNCTION_RESULTS_STORAGE_KEY = 'poly-micro-manager-function-results';
+const SHOW_RESULTS_STORAGE_KEY = 'poly-micro-manager-show-results';
 
 /**
  * Hook for managing test items and their expanded state
@@ -13,18 +15,42 @@ export const useTestItems = () => {
   const [showResults, setShowResults] = useState<boolean>(true);
   const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(null);
 
-  // Load expanded items from localStorage on initial load
+  // Load expanded items, function results, and show results state from localStorage on initial load
   useEffect(() => {
+    if (!currentMicroserviceId) return;
+    
     try {
-      const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        if (currentMicroserviceId && parsedData[currentMicroserviceId]) {
+      // Load expanded items
+      const storedExpandedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      if (storedExpandedData) {
+        const parsedData = JSON.parse(storedExpandedData);
+        if (parsedData[currentMicroserviceId]) {
           setExpandedItems(parsedData[currentMicroserviceId]);
         }
       }
+      
+      // Load function results
+      const storedResultsData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY);
+      if (storedResultsData) {
+        const parsedData = JSON.parse(storedResultsData);
+        if (parsedData[currentMicroserviceId]) {
+          setFunctionResults(parsedData[currentMicroserviceId]);
+        } else {
+          // Clear results if none exist for this microservice
+          setFunctionResults({});
+        }
+      }
+      
+      // Load show results state
+      const storedShowResultsData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      if (storedShowResultsData) {
+        const parsedData = JSON.parse(storedShowResultsData);
+        if (parsedData[currentMicroserviceId] !== undefined) {
+          setShowResults(parsedData[currentMicroserviceId]);
+        }
+      }
     } catch (error) {
-      console.error('Failed to load expanded items from localStorage:', error);
+      console.error('Failed to load data from localStorage:', error);
     }
   }, [currentMicroserviceId]);
 
@@ -153,28 +179,57 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     });
 
     setFunctionResults(results);
+    
+    // Save results to localStorage
+    if (microservice.id) {
+      try {
+        const storedData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY) || '{}';
+        const parsedData = JSON.parse(storedData);
+        parsedData[microservice.id] = results;
+        localStorage.setItem(FUNCTION_RESULTS_STORAGE_KEY, JSON.stringify(parsedData));
+      } catch (error) {
+        console.error('Failed to save function results to localStorage:', error);
+      }
+    }
   }, []);
 
   // Toggle visibility of test results
   const toggleResultsVisibility = useCallback(() => {
-    setShowResults(prev => !prev);
-  }, []);
+    setShowResults(prev => {
+      const newState = !prev;
+      
+      // Save to localStorage
+      if (currentMicroserviceId) {
+        try {
+          const storedData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY) || '{}';
+          const parsedData = JSON.parse(storedData);
+          parsedData[currentMicroserviceId] = newState;
+          localStorage.setItem(SHOW_RESULTS_STORAGE_KEY, JSON.stringify(parsedData));
+        } catch (error) {
+          console.error('Failed to save show results state to localStorage:', error);
+        }
+      }
+      
+      return newState;
+    });
+  }, [currentMicroserviceId]);
 
-  // Set current microservice and load its expanded state from localStorage
+  // Set current microservice and load its expanded state, function results, and show results state from localStorage
   const setCurrentMicroservice = useCallback((microservice: TestItem | null) => {
     if (!microservice) {
       setCurrentMicroserviceId(null);
       setExpandedItems({});
+      setFunctionResults({});
       return;
     }
     
     setCurrentMicroserviceId(microservice.id);
     
-    // Load expanded state for this microservice from localStorage
     try {
-      const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
+      // Load expanded state for this microservice
+      const storedExpandedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      if (storedExpandedData) {
+        const parsedData = JSON.parse(storedExpandedData);
         if (parsedData[microservice.id]) {
           setExpandedItems(parsedData[microservice.id]);
         } else {
@@ -184,9 +239,33 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       } else {
         setExpandedItems({});
       }
+      
+      // Load function results for this microservice
+      const storedResultsData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY);
+      if (storedResultsData) {
+        const parsedData = JSON.parse(storedResultsData);
+        if (parsedData[microservice.id]) {
+          setFunctionResults(parsedData[microservice.id]);
+        } else {
+          // Reset function results if no saved results exist for this microservice
+          setFunctionResults({});
+        }
+      } else {
+        setFunctionResults({});
+      }
+      
+      // Load show results state for this microservice
+      const storedShowResultsData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      if (storedShowResultsData) {
+        const parsedData = JSON.parse(storedShowResultsData);
+        if (parsedData[microservice.id] !== undefined) {
+          setShowResults(parsedData[microservice.id]);
+        }
+      }
     } catch (error) {
-      console.error('Failed to load expanded items from localStorage:', error);
+      console.error('Failed to load data from localStorage:', error);
       setExpandedItems({});
+      setFunctionResults({});
     }
   }, []);
 
