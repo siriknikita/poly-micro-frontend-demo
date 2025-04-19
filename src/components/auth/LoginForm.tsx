@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { db } from '@/db/db';
-import { useTheme } from '@hooks';
+import { useTheme } from '@hooks/index';
 
 export default function LoginForm() {
   const navigate = useNavigate();

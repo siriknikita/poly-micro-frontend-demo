@@ -5,7 +5,7 @@ import { NavigationControls } from './NavigationControls';
 import { VariablesPanel } from './VariablesPanel';
 import { Save, Download, Play, Grid3X3 } from 'lucide-react';
 import { mockServices } from '@data/mockData';
-import { Service, Project } from '@types';
+import { Service, Project } from '@/types';
 
 interface CICDPipelineProps {
   selectedProjectId: Project['id'];
@@ -36,7 +36,7 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
 
   const [selectedService, setSelectedService] = useState<Service>(findInitialService());
   const [showGrid, setShowGrid] = useState(true);
-  const [toolboxPosition, setToolboxPosition] = useState<
+  const [toolboxPosition] = useState<
     'left' | 'right' | 'float'
   >('left');
   const [isSimulating, setIsSimulating] = useState(false);
@@ -134,7 +134,7 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
       <div className="flex-1 flex overflow-hidden">
         <PipelineToolbox
           position={toolboxPosition}
-          onPositionChange={setToolboxPosition}
+          // onPositionChange={setToolboxPosition}
           isSimulating={isSimulating}
         />
 

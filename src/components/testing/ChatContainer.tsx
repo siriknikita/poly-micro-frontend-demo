@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { isEqual } from 'lodash';
 import { GripVertical } from 'lucide-react';
 import { TestChat } from './TestChat';
-import { TestItem } from '@types';
+import { TestItem } from '@/types';
 
 interface ChatContainerProps {
   chatWidth: number;

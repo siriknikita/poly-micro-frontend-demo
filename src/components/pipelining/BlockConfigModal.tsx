@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { BlockInstance } from '@types';
-import { BoxedWrapper } from '@shared';
+import { BlockInstance } from '@/types/pipeline';
+import { BoxedWrapper } from '@/components/shared';
 
 interface BlockConfigModalProps {
   block: BlockInstance;

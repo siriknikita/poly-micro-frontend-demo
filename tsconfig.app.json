@@ -26,7 +26,7 @@
       "@hooks/*": ["./src/hooks/*"],
       "@types/*": ["./src/types/*"],
       "@helpers/*": ["./src/helpers/*"],
-      "@constants/*": ["./src/helpers/constants"],
+      "@constants": ["./src/helpers/constants.tsx"],
       "@data/*": ["./src/data/*"],
     }
   },

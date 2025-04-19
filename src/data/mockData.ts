@@ -1,4 +1,4 @@
-import { Service, Log, Project, MockedCPUData, MockedServices } from '@types';
+import { Service, Log, Project, MockedCPUData, MockedServices } from '@/types';
 import _ from 'lodash';
 
 export const mockProjects: Project[] = [
@@ -28,98 +28,98 @@ export const mockCpuData: MockedCPUData = {
   '1': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 25 + Math.random() * 60,
-      memory: 40 + Math.random() * 45,
+      load: +(25 + Math.random() * 60).toFixed(2),
+      memory: +(40 + Math.random() * 45).toFixed(2),
       threads: Math.floor(10 + Math.random() * 20)
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 15 + Math.random() * 40,
-      memory: 30 + Math.random() * 35,
+      load: +(15 + Math.random() * 40).toFixed(2),
+      memory: +(30 + Math.random() * 35).toFixed(2),
       threads: Math.floor(5 + Math.random() * 15)
     })),
     'Inventory Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 20 + Math.random() * 50,
-      memory: 35 + Math.random() * 40,
+      load: +(20 + Math.random() * 50).toFixed(2),
+      memory: +(35 + Math.random() * 40).toFixed(2),
       threads: Math.floor(8 + Math.random() * 18)
     }))
   },
   '2': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 20 + Math.random() * 55,
-      memory: 35 + Math.random() * 50,
+      load: +(20 + Math.random() * 55).toFixed(2),
+      memory: +(35 + Math.random() * 50).toFixed(2),
       threads: Math.floor(12 + Math.random() * 22)
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 15 + Math.random() * 45,
-      memory: 30 + Math.random() * 40,
+      load: +(15 + Math.random() * 45).toFixed(2),
+      memory: +(30 + Math.random() * 40).toFixed(2),
       threads: Math.floor(8 + Math.random() * 18)
     })),
     'Loan Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 10 + Math.random() * 35,
-      memory: 25 + Math.random() * 30,
+      load: +(10 + Math.random() * 35).toFixed(2),
+      memory: +(25 + Math.random() * 30).toFixed(2),
       threads: Math.floor(5 + Math.random() * 15)
     })),
     'Authentication Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 20 + Math.random() * 55,
-      memory: 35 + Math.random() * 45,
+      load: +(20 + Math.random() * 55).toFixed(2),
+      memory: +(35 + Math.random() * 45).toFixed(2),
       threads: Math.floor(10 + Math.random() * 20)
     }))
   },
   '3': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 25 + Math.random() * 60,
-      memory: 40 + Math.random() * 45,
+      load: +(25 + Math.random() * 60).toFixed(2),
+      memory: +(40 + Math.random() * 45).toFixed(2),
       threads: Math.floor(10 + Math.random() * 20)
     })),
     'Notification Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 10 + Math.random() * 30,
-      memory: 20 + Math.random() * 25,
+      load: +(10 + Math.random() * 30).toFixed(2),
+      memory: +(20 + Math.random() * 25).toFixed(2),
       threads: Math.floor(3 + Math.random() * 10)
     })),
     'Authentication Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 20 + Math.random() * 50,
-      memory: 35 + Math.random() * 40,
+      load: +(20 + Math.random() * 50).toFixed(2),
+      memory: +(35 + Math.random() * 40).toFixed(2),
       threads: Math.floor(8 + Math.random() * 18)
     })),
     'Health Monitoring Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 18 + Math.random() * 45,
-      memory: 25 + Math.random() * 30,
+      load: +(18 + Math.random() * 45).toFixed(2),
+      memory: +(25 + Math.random() * 30).toFixed(2),
       threads: Math.floor(6 + Math.random() * 12)
     }))
   },
   '4': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 20 + Math.random() * 55,
-      memory: 35 + Math.random() * 50,
+      load: +(20 + Math.random() * 55).toFixed(2),
+      memory: +(35 + Math.random() * 50).toFixed(2),
       threads: Math.floor(12 + Math.random() * 22)
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 15 + Math.random() * 45,
-      memory: 30 + Math.random() * 40,
+      load: +(15 + Math.random() * 45).toFixed(2),
+      memory: +(30 + Math.random() * 40).toFixed(2),
       threads: Math.floor(8 + Math.random() * 18)
     })),
     'Notification Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 10 + Math.random() * 35,
-      memory: 25 + Math.random() * 30,
+      load: +(10 + Math.random() * 35).toFixed(2),
+      memory: +(25 + Math.random() * 30).toFixed(2),
       threads: Math.floor(5 + Math.random() * 15)
     })),
     'Course Management Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
-      load: 18 + Math.random() * 50,
-      memory: 30 + Math.random() * 35,
+      load: +(18 + Math.random() * 50).toFixed(2),
+      memory: +(30 + Math.random() * 35).toFixed(2),
       threads: Math.floor(8 + Math.random() * 18)
     }))
   }

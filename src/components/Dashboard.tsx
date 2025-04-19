@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '@hooks';
-import { Project } from '@types';
+import { useTheme } from '@/hooks';
+import { Project } from '@/types';
 import { mockProjects } from '@data/mockData';
 
 import { Sidebar } from './Sidebar';

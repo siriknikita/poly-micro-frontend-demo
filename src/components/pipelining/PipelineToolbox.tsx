@@ -1,10 +1,10 @@
 import React from 'react';
-import { PipelineBlock } from '@types';
+import { PipelineBlock } from '@/types/pipeline';
 import { AVAILABLE_BLOCKS_MAP } from '@constants';
 
 interface PipelineToolboxProps {
   position: 'left' | 'right' | 'float';
-  onPositionChange: (position: 'left' | 'right' | 'float') => void;
+  // onPositionChange: (position: 'left' | 'right' | 'float') => void;
   isSimulating: boolean;
 }
 
@@ -92,7 +92,7 @@ const blocks: PipelineBlock[] = [
 
 export const PipelineToolbox: React.FC<PipelineToolboxProps> = ({
   position,
-  onPositionChange,
+  // onPositionChange,
   isSimulating
 }) => {
   const handleDragStart = (e: React.DragEvent, block: PipelineBlock) => {

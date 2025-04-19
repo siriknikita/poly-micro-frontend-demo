@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockInstance } from '@types';
+import { BlockInstance } from '@/types/pipeline';
 
 interface PipelineBlockProps {
   block: BlockInstance;

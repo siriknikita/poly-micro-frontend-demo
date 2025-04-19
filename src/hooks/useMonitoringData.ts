@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Log, MockedCPUData, MockedServices } from '@types';
+import { Log, MockedCPUData, MockedServices } from '@/types';
 import { mockCpuData, mockServices, mockLogs } from '@data/mockData';
 
 export default function useMonitoringData() {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronDown, Zap, Play } from 'lucide-react';
-import { TestItem } from '@types';
+import { TestItem } from '@/types';
 
 interface TestListProps {
   tests: TestItem[];

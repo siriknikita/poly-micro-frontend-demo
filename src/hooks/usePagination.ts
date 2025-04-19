@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useCallback } from 'react';
-import { Log } from '@types';
+import { Log } from '@/types';
 
 const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
   const [currentPage, setCurrentPage] = useState(() => {

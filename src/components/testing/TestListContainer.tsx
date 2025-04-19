@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { isEqual } from 'lodash';
 import { TestList } from './TestList';
 import { ChevronUp, ChevronDown } from 'lucide-react';
-import { TestItem } from '@types';
+import { TestItem } from '@/types';
 import { mockTestData } from '@data/mockTestData';
 
 interface TestListContainerProps {

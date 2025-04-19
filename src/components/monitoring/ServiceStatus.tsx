@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Server } from 'lucide-react';
 import { Service } from '@types';
-import { BoxedWrapper } from '@shared';
+import { BoxedWrapper, SectionHeader } from '@shared/index';
+import { StatusBadge, getStatusVariant } from './shared';
 
 interface ServiceStatusProps {
   services: Service[];
 }
 
-export const ServiceStatus: React.FC<ServiceStatusProps> = ({ services }) => {
+export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services }) => {
   return (
     <BoxedWrapper>
-      <h3 className="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-gray-100">
-        <Server className="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400" />
-        Services Status
-      </h3>
+      <SectionHeader
+        title="Services Status"
+        HeaderIcon={Server}
+        headerClassName="text-lg font-semibold mb-4 flex items-center text-gray-900 dark:text-gray-100"
+        iconClassName="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400"
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {services.map((service, index) => (
           <div key={index} className="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
@@ -23,18 +26,10 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = ({ services }) => {
               <p className="text-sm text-gray-600 dark:text-gray-400">Version: {service.version}</p>
               <p className="text-sm text-gray-600 dark:text-gray-400">Uptime: {service.uptime}</p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Status: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  service.status === 'Running' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  service.status === 'Error' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                }`}>{service.status}</span>
+                Status: <StatusBadge status={service.status} variant={getStatusVariant(service.status)} />
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Health: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  service.health === 'Healthy' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
-                  service.health === 'Critical' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' :
-                  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                }`}>{service.health}</span>
+                Health: <StatusBadge status={service.health} variant={getStatusVariant(service.health)} />
               </p>
             </div>
           </div>
@@ -42,4 +37,4 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = ({ services }) => {
       </div>
     </BoxedWrapper>
   );
-};
+});

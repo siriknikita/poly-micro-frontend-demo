@@ -1,6 +1,6 @@
 interface SectionHeaderProps {
   title: string;
-  headerIcon: React.ReactNode;
+  HeaderIcon: React.ElementType;
   headerClassName?: string;
   iconClassName?: string;
 }

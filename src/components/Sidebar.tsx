@@ -11,7 +11,7 @@ import {
   User,
   HelpCircle
 } from 'lucide-react';
-import { Tab } from '@types';
+import { Tab } from '@/types';
 import { MonitoringDashboard } from './monitoring/MonitoringDashboard';
 
 const tabs: Tab[] = [

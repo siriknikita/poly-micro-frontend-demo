@@ -6,7 +6,7 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import { Send } from 'lucide-react';
-import { TestItem } from '@types';
+import { TestItem } from '@/types';
 
 interface TestChatProps {
   onGenerateTest: (test: TestItem) => void;
