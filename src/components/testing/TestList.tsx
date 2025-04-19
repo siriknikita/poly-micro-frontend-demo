@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { TestItem as TestItemType } from '@/types';
 import { useTestItems } from './hooks';
 import { TestItemComponent, IconButton } from './components';
@@ -21,7 +21,12 @@ export const TestList = memo<TestListProps>(({
   const [areAllExpanded, setAreAllExpanded] = useState(false);
   
   // Use our custom hook for managing test items
-  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility } = useTestItems();
+  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems();
+
+  // Reset areAllExpanded state when microservice changes
+  useEffect(() => {
+    setAreAllExpanded(false);
+  }, [currentMicroserviceId]);
   
   // Check if there are any results to display
   const hasResults = Object.keys(functionResults).length > 0;

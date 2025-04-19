@@ -16,7 +16,7 @@ export const AutomatedTesting = memo(() => {
   
   // Use our custom hooks
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
-  const { functionResults, runTest, runAllTests } = useTestItems();
+  const { functionResults, runTest, runAllTests, setCurrentMicroservice } = useTestItems();
   const {
     selectedMicroservice,
     setSelectedMicroservice,
@@ -51,6 +51,11 @@ export const AutomatedTesting = memo(() => {
       setSelectedMicroservice(filteredMicroservices[0]);
     }
   }, [selectedMicroservice, filteredMicroservices]);
+
+  // Update the current microservice in the test items hook when it changes
+  useEffect(() => {
+    setCurrentMicroservice(selectedMicroservice);
+  }, [selectedMicroservice, setCurrentMicroservice]);
 
   if (!selectedMicroservice) {
     return (

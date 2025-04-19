@@ -1,5 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { TestItem } from '@/types';
+
+// Local storage key for expanded items
+const EXPANDED_ITEMS_STORAGE_KEY = 'poly-micro-manager-expanded-items';
 
 /**
  * Hook for managing test items and their expanded state
@@ -8,14 +11,46 @@ export const useTestItems = () => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [functionResults, setFunctionResults] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState<boolean>(true);
+  const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(null);
+
+  // Load expanded items from localStorage on initial load
+  useEffect(() => {
+    try {
+      const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        if (currentMicroserviceId && parsedData[currentMicroserviceId]) {
+          setExpandedItems(parsedData[currentMicroserviceId]);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load expanded items from localStorage:', error);
+    }
+  }, [currentMicroserviceId]);
 
   // Toggle expanded state of a test item
   const toggleExpand = useCallback((id: string) => {
-    setExpandedItems(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  }, []);
+    setExpandedItems(prev => {
+      const newState = {
+        ...prev,
+        [id]: !prev[id]
+      };
+      
+      // Save to localStorage
+      if (currentMicroserviceId) {
+        try {
+          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const parsedData = JSON.parse(storedData);
+          parsedData[currentMicroserviceId] = newState;
+          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+        } catch (error) {
+          console.error('Failed to save expanded items to localStorage:', error);
+        }
+      }
+      
+      return newState;
+    });
+  }, [currentMicroserviceId]);
 
   // Expand all test items
   const expandAll = useCallback((items: TestItem[]) => {
@@ -32,8 +67,25 @@ export const useTestItems = () => {
     };
     
     processItems(items);
-    setExpandedItems(prev => ({ ...prev, ...newExpandedState }));
-  }, []);
+    
+    setExpandedItems(prev => {
+      const updatedState = { ...prev, ...newExpandedState };
+      
+      // Save to localStorage
+      if (currentMicroserviceId) {
+        try {
+          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const parsedData = JSON.parse(storedData);
+          parsedData[currentMicroserviceId] = updatedState;
+          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+        } catch (error) {
+          console.error('Failed to save expanded items to localStorage:', error);
+        }
+      }
+      
+      return updatedState;
+    });
+  }, [currentMicroserviceId]);
 
   // Collapse all test items
   const collapseAll = useCallback((items: TestItem[]) => {
@@ -50,8 +102,25 @@ export const useTestItems = () => {
     };
     
     processItems(items);
-    setExpandedItems(prev => ({ ...prev, ...newExpandedState }));
-  }, []);
+    
+    setExpandedItems(prev => {
+      const updatedState = { ...prev, ...newExpandedState };
+      
+      // Save to localStorage
+      if (currentMicroserviceId) {
+        try {
+          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const parsedData = JSON.parse(storedData);
+          parsedData[currentMicroserviceId] = updatedState;
+          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+        } catch (error) {
+          console.error('Failed to save expanded items to localStorage:', error);
+        }
+      }
+      
+      return updatedState;
+    });
+  }, [currentMicroserviceId]);
 
   // Run a single test
   const runTest = useCallback((test: TestItem) => {
@@ -91,6 +160,36 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     setShowResults(prev => !prev);
   }, []);
 
+  // Set current microservice and load its expanded state from localStorage
+  const setCurrentMicroservice = useCallback((microservice: TestItem | null) => {
+    if (!microservice) {
+      setCurrentMicroserviceId(null);
+      setExpandedItems({});
+      return;
+    }
+    
+    setCurrentMicroserviceId(microservice.id);
+    
+    // Load expanded state for this microservice from localStorage
+    try {
+      const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        if (parsedData[microservice.id]) {
+          setExpandedItems(parsedData[microservice.id]);
+        } else {
+          // Reset expanded state if no saved state exists for this microservice
+          setExpandedItems({});
+        }
+      } else {
+        setExpandedItems({});
+      }
+    } catch (error) {
+      console.error('Failed to load expanded items from localStorage:', error);
+      setExpandedItems({});
+    }
+  }, []);
+
   return {
     expandedItems,
     functionResults,
@@ -100,6 +199,8 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     collapseAll,
     toggleResultsVisibility,
     runTest,
-    runAllTests
+    runAllTests,
+    setCurrentMicroservice,
+    currentMicroserviceId
   };
 };
