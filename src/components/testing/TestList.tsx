@@ -28,6 +28,31 @@ export const TestList = memo<TestListProps>(({
     setAreAllExpanded(false);
   }, [currentMicroserviceId]);
   
+  // Check if all items are expanded and update the button state accordingly
+  useEffect(() => {
+    if (!tests || tests.length === 0) return;
+    
+    // Helper function to check if all items and their children are expanded
+    const areAllItemsExpanded = (items: TestItemType[]): boolean => {
+      return items.every(item => {
+        const isCurrentItemExpanded = expandedItems[item.id] === true;
+        
+        // If the current item is not expanded, return false
+        if (!isCurrentItemExpanded) return false;
+        
+        // If it has children, check if all children are expanded too
+        if (item.children && item.children.length > 0) {
+          return areAllItemsExpanded(item.children);
+        }
+        
+        return true;
+      });
+    };
+    
+    const allExpanded = areAllItemsExpanded(tests);
+    setAreAllExpanded(allExpanded);
+  }, [expandedItems, tests]);
+  
   // Check if there are any results to display
   const hasResults = Object.keys(functionResults).length > 0;
 
