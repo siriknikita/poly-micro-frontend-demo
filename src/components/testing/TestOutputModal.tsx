@@ -1,7 +1,8 @@
-import React from 'react';
+import { memo } from 'react';
 import { X } from 'lucide-react';
 import { TestItem, TestOutput } from '@/types';
 import { BoxedWrapper } from '@/components/shared';
+import { IconButton } from './components';
 
 interface TestOutputModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface TestOutputModalProps {
   test: TestItem | null;
 }
 
-export const TestOutputModal: React.FC<TestOutputModalProps> = ({
+export const TestOutputModal = memo<TestOutputModalProps>(({
   isOpen,
   onClose,
   output,
@@ -25,12 +26,13 @@ export const TestOutputModal: React.FC<TestOutputModalProps> = ({
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Test Results: {test?.name}
           </h3>
-          <button
+          <IconButton
             onClick={onClose}
+            icon={<X className="h-5 w-5" />}
+            variant="outline"
+            aria-label="Close modal"
             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          />
         </div>
         
         <div className="p-4">
@@ -64,4 +66,4 @@ export const TestOutputModal: React.FC<TestOutputModalProps> = ({
       </BoxedWrapper>
     </div>
   );
-};
+});

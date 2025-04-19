@@ -113,10 +113,7 @@ export function Dashboard() {
                   />
                 )}
                 {activeTab === 'testing' && (
-                  <AutomatedTesting 
-                    initialMicroserviceId={getLastSelectedService(selectedProject.id, 'testing')}
-                    projectId={selectedProject.id}
-                  />
+                  <AutomatedTesting />
                 )}
               </div>
             ) : (

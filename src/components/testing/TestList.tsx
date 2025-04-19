@@ -1,105 +1,105 @@
-import React, { useState } from 'react';
-import { ChevronRight, ChevronDown, Zap, Play } from 'lucide-react';
-import { TestItem } from '@/types';
+import { memo, useState } from 'react';
+import { TestItem as TestItemType } from '@/types';
+import { useTestItems } from './hooks';
+import { TestItemComponent, IconButton } from './components';
+import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
 
 interface TestListProps {
-  tests: TestItem[];
-  onRunTest: (test: TestItem) => void;
-  onGenerateTest: (test: TestItem) => void;
+  tests: TestItemType[];
+  onRunTest: (test: TestItemType) => void;
+  onGenerateTest: (test: TestItemType) => void;
   functionResults: Record<string, string>;
 }
 
-export const TestList: React.FC<TestListProps> = ({
+export const TestList = memo<TestListProps>(({
   tests,
   onRunTest,
   onGenerateTest,
   functionResults
 }) => {
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  // State to track if all items are expanded
+  const [areAllExpanded, setAreAllExpanded] = useState(false);
+  
+  // Use our custom hook for managing test items
+  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility } = useTestItems();
+  
+  // Check if there are any results to display
+  const hasResults = Object.keys(functionResults).length > 0;
 
-  const toggleExpand = (id: string) => {
-    setExpandedItems(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
-
-  const renderTestItem = (item: TestItem, depth = 0) => {
+  /**
+   * Recursively render test items and their children
+   */
+  const renderTestItem = (item: TestItemType, depth = 0) => {
     const isExpanded = expandedItems[item.id];
     const hasChildren = item.children && item.children.length > 0;
-    const paddingLeft = `${depth * 1.25 + 0.5}rem`;
     const result = functionResults[item.id];
-    const showResult = item.type === 'function' && result;
 
     return (
-      <div key={item.id} className="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-        <div 
-          className={`flex flex-col ${
-            depth === 0 ? 'bg-white dark:bg-gray-900' : 
-            depth === 1 ? 'bg-gray-50 dark:bg-gray-800' : 
-            'bg-gray-100 dark:bg-gray-700'
-          }`}
-        >
-          <div className="flex items-center p-3" style={{ paddingLeft }}>
-            {hasChildren ? (
-              <button
-                onClick={() => toggleExpand(item.id)}
-                className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
-              >
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                ) : (
-                  <ChevronRight className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                )}
-              </button>
-            ) : (
-              <div className="w-6" />
-            )}
-            
-            <span className="flex-1 ml-2 text-gray-900 dark:text-gray-100">{item.name}</span>
-            
-            {item.type === 'function' && (
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => onGenerateTest(item)}
-                  className="p-2 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded"
-                  title="Generate test"
-                >
-                  <Zap className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => onRunTest(item)}
-                  className="p-2 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900 rounded"
-                  title="Run test"
-                >
-                  <Play className="h-4 w-4" />
-                </button>
-              </div>
-            )}
-          </div>
-
-          {showResult && (
-            <div 
-              className="ml-6 mr-4 mb-3 p-3 bg-gray-100 dark:bg-gray-800 rounded font-mono text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300"
-            >
-              {result}
-            </div>
-          )}
-        </div>
+      <div key={item.id}>
+        <TestItemComponent
+          item={item}
+          depth={depth}
+          isExpanded={isExpanded}
+          onToggleExpand={toggleExpand}
+          onRunTest={onRunTest}
+          onGenerateTest={onGenerateTest}
+          result={result}
+          showResults={showResults}
+        />
         
-        {hasChildren && (
+        {hasChildren && isExpanded && (
           <div className="border-l-2 border-gray-200 dark:border-gray-700 ml-4">
-            {item.children.map(child => renderTestItem(child, depth + 1))}
+            {item.children?.map(child => renderTestItem(child, depth + 1))}
           </div>
         )}
       </div>
     );
   };
 
-  {/* TODO: Remove the microservice title from being displayed as foldable section */}
+  // Handle toggling all items
+  const handleToggleAll = () => {
+    if (areAllExpanded) {
+      collapseAll(tests);
+    } else {
+      expandAll(tests);
+    }
+    setAreAllExpanded(!areAllExpanded);
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-      {tests.map(test => renderTestItem(test))}
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+      <div className="flex justify-start mb-3 space-x-4">
+        <div className="flex items-center">
+          <IconButton
+            onClick={handleToggleAll}
+            icon={areAllExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            title={areAllExpanded ? 'Collapse all' : 'Expand all functions'}
+            aria-label={areAllExpanded ? 'Collapse all tests' : 'Expand all tests'}
+            variant="outline"
+          />
+          <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+            {areAllExpanded ? 'Collapse all' : 'Expand all functions'}
+          </span>
+        </div>
+        
+        {hasResults && (
+          <div className="flex items-center">
+            <IconButton
+              onClick={toggleResultsVisibility}
+              icon={showResults ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              title={showResults ? 'Hide test results' : 'Show test results'}
+              aria-label={showResults ? 'Hide test results' : 'Show test results'}
+              variant="outline"
+            />
+            <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+              {showResults ? 'Hide results' : 'Show results'}
+            </span>
+          </div>
+        )}
+      </div>
+      <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
+        {tests.map(test => renderTestItem(test))}
+      </div>
     </div>
   );
-};
+});

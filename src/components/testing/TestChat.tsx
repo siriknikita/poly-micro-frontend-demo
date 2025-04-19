@@ -1,12 +1,15 @@
-import React, {
+import {
   useState,
   useRef,
   useEffect,
   forwardRef,
   useImperativeHandle,
+  useCallback,
+  KeyboardEvent
 } from 'react';
 import { Send } from 'lucide-react';
 import { TestItem } from '@/types';
+import { IconButton } from './components';
 
 interface TestChatProps {
   onGenerateTest: (test: TestItem) => void;
@@ -46,7 +49,8 @@ export const TestChat = forwardRef<
     }
   }, [input]);
 
-  const handleSend = () => {
+  // Handle sending a message
+  const handleSend = useCallback(() => {
     if (!input.trim()) return;
 
     setMessages((prev) => [...prev, { text: input, isUser: true }]);
@@ -62,14 +66,15 @@ export const TestChat = forwardRef<
         },
       ]);
     }, 1000);
-  };
+  }, [input]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  // Handle keyboard events
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }, [handleSend]);
 
   return (
     <div className="flex flex-col w-full bg-white dark:bg-gray-800 select-none">
@@ -113,12 +118,13 @@ export const TestChat = forwardRef<
             className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 resize-none min-h-[40px] max-h-[200px] overflow-y-auto"
             style={{ height: '40px' }}
           />
-          <button
+          <IconButton
             onClick={handleSend}
-            className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 self-end"
-          >
-            <Send className="h-5 w-5" />
-          </button>
+            icon={<Send className="h-5 w-5" />}
+            variant="primary"
+            className="self-end"
+            aria-label="Send message"
+          />
         </div>
       </div>
     </div>

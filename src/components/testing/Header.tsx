@@ -1,6 +1,7 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { isEqual } from 'lodash';
 import { Play, MessageSquare } from 'lucide-react';
+import { IconButton } from './components';
 
 interface HeaderProps {
   selectedMicroservice: { name: string };
@@ -9,7 +10,10 @@ interface HeaderProps {
   handleRunAllTests: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = memo(({ 
+/**
+ * Header component for the testing page
+ */
+export const Header = memo<HeaderProps>(({ 
   selectedMicroservice, 
   showChat, 
   setShowChat, 
@@ -21,23 +25,21 @@ export const Header: React.FC<HeaderProps> = memo(({
         Testing: {selectedMicroservice.name}
       </h2>
       <div className="flex items-center space-x-2">
-        <button
+        <IconButton
           onClick={handleRunAllTests}
-          className="px-4 py-2 rounded-lg flex items-center space-x-2 bg-indigo-600 text-white dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600"
-        >
-          <Play className="h-4 w-4" />
-          <span>Run All Tests</span>
-        </button>
-        <button
+          icon={<Play className="h-4 w-4" />}
+          label="Run All Tests"
+          variant="primary"
+          size="md"
+          aria-label="Run all tests"
+        />
+        <IconButton
           onClick={() => setShowChat(!showChat)}
-          className={`p-2 rounded-lg ${showChat
-            ? 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-            : 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-400'
-          }`}
+          icon={<MessageSquare className="h-5 w-5" />}
+          variant={showChat ? "outline" : "active"}
           title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-        >
-          <MessageSquare className="h-5 w-5" />
-        </button>
+          aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
+        />
       </div>
     </div>
   </div>
