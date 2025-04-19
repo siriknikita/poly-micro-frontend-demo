@@ -1,65 +1,48 @@
-import React, { useState } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { PipelineToolbox } from './PipelineToolbox';
 import { PipelineCanvas } from './PipelineCanvas';
 import { NavigationControls } from './NavigationControls';
 import { VariablesPanel } from './VariablesPanel';
 import { Save, Download, Play, Grid3X3 } from 'lucide-react';
 import { mockServices } from '@data/mockData';
-import { Service, Project } from '@/types';
+import { Project } from '@/types';
+import { useServiceNavigation } from './hooks';
+import { IconButton } from './components';
 
 interface CICDPipelineProps {
   selectedProjectId: Project['id'];
   initialServiceName?: string | null;
 }
 
-export const CICDPipeline: React.FC<CICDPipelineProps> = ({
+export const CICDPipeline = memo<CICDPipelineProps>(({
   selectedProjectId,
   initialServiceName
 }) => {
-  // Find initial service if provided, otherwise use first service
-  const findInitialService = () => {
-    if (initialServiceName) {
-      const service = mockServices[selectedProjectId].find(
-        s => s.name === initialServiceName
-      );
-      if (service) return service;
-    }
-    const storedServiceName = localStorage.getItem(`lastSelected_cicd_${selectedProjectId}`);
-    if (storedServiceName) {
-      const service = mockServices[selectedProjectId].find(
-        s => s.name === storedServiceName
-      );
-      if (service) return service;
-    }
-    return mockServices[selectedProjectId][0];
-  };
-
-  const [selectedService, setSelectedService] = useState<Service>(findInitialService());
+  // Use our custom hook for service navigation
+  const { 
+    selectedService, 
+    navigateService 
+  } = useServiceNavigation({
+    projectId: selectedProjectId,
+    services: mockServices[selectedProjectId],
+    initialServiceName
+  });
+  
+  // Local state
   const [showGrid, setShowGrid] = useState(true);
-  const [toolboxPosition] = useState<
-    'left' | 'right' | 'float'
-  >('left');
+  const [toolboxPosition] = useState<'left' | 'right' | 'float'>('left');
   const [isSimulating, setIsSimulating] = useState(false);
 
-  const handleServiceChange = (direction: 'up' | 'down') => {
-    const currentMockServices = mockServices[selectedProjectId];
-    const currentIndex = currentMockServices.findIndex(
-      (s) => s.name === selectedService.name
-    );
-    const newIndex =
-      direction === 'up'
-        ? (currentIndex - 1 + currentMockServices.length) % currentMockServices.length
-        : (currentIndex + 1) % currentMockServices.length;
-    setSelectedService(currentMockServices[newIndex]);
-    
-    // Save selected service to localStorage
-    localStorage.setItem(`lastSelected_cicd_${selectedProjectId}`, currentMockServices[newIndex].name);
-  };
+  // Handle service navigation
+  const handleServiceChange = useCallback((direction: 'up' | 'down') => {
+    navigateService(direction);
+  }, [navigateService]);
 
-  const handleExport = () => {
+  // Handle pipeline export
+  const handleExport = useCallback(() => {
     // Mock export functionality
     const pipeline = {
-      service: selectedService.name,
+      service: selectedService?.name || '',
       blocks: [], // Would contain actual pipeline configuration
       variables: {},
     };
@@ -69,10 +52,10 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `pipeline-${selectedService.name.toLowerCase()}.json`;
+    a.download = `pipeline-${(selectedService?.name || '').toLowerCase()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  };
+  }, [selectedService?.name]);
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900">
@@ -80,53 +63,43 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Pipeline: {selectedService.name}
+              Pipeline: {selectedService?.name || ''}
             </h2>
             <div className="flex items-center space-x-2">
-              <button
+              <IconButton
                 onClick={() => setShowGrid(!showGrid)}
-                className={`p-2 rounded-lg ${
-                  showGrid
-                    ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-400'
-                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                icon={<Grid3X3 className="h-5 w-5" />}
+                variant={showGrid ? "primary" : "outline"}
                 title="Toggle grid"
-              >
-                <Grid3X3 className="h-5 w-5" />
-              </button>
+                aria-label="Toggle grid visibility"
+              />
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <button
+            <IconButton
               onClick={() => setIsSimulating(!isSimulating)}
-              className={`px-4 py-2 rounded-lg flex items-center space-x-2 ${
-                isSimulating
-                  ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400'
-                  : 'bg-indigo-600 text-white dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600'
-              }`}
-            >
-              <Play className="h-4 w-4" />
-              <span>
-                {isSimulating ? 'Stop Simulation' : 'Start Simulation'}
-              </span>
-            </button>
-            <button
+              icon={<Play className="h-4 w-4" />}
+              label={isSimulating ? 'Stop Simulation' : 'Start Simulation'}
+              variant={isSimulating ? "success" : "primary"}
+              size="md"
+            />
+            <IconButton
               onClick={() => {
                 /* Save functionality */
               }}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              icon={<Save className="h-5 w-5" />}
+              variant="outline"
               title="Save pipeline"
-            >
-              <Save className="h-5 w-5" />
-            </button>
-            <button
+              aria-label="Save pipeline"
+            />
+            <IconButton
               onClick={handleExport}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+              icon={<Download className="h-5 w-5" />}
+              variant="outline"
               title="Export pipeline"
-            >
-              <Download className="h-5 w-5" />
-            </button>
+              aria-label="Export pipeline"
+            />
           </div>
         </div>
       </div>
@@ -143,7 +116,7 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
 
           <NavigationControls
             onNavigate={handleServiceChange}
-            currentService={selectedService}
+            currentService={selectedService || mockServices[selectedProjectId][0]}
             services={mockServices[selectedProjectId]}
           />
         </div>
@@ -152,4 +125,4 @@ export const CICDPipeline: React.FC<CICDPipelineProps> = ({
       </div>
     </div>
   );
-};
+});

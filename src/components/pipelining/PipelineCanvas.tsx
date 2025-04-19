@@ -1,28 +1,40 @@
-import React, { useState, useRef } from 'react';
+import { memo, useRef, useCallback, DragEvent } from 'react';
 import { PipelineBlock as Block } from './blocks/PipelineBlock';
 import { BlockConfigModal } from './BlockConfigModal';
-import { PipelineBlock, BlockInstance } from '@/types/pipeline';
+import { PipelineBlock } from '@/types/pipeline';
+import { usePipelineBlocks } from './hooks';
 
 interface PipelineCanvasProps {
   showGrid: boolean;
   isSimulating: boolean;
 }
 
-export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
+export const PipelineCanvas = memo<PipelineCanvasProps>(({
   showGrid,
   isSimulating
 }) => {
-  const [blocks, setBlocks] = useState<BlockInstance[]>([]);
-  const [selectedBlock, setSelectedBlock] = useState<BlockInstance | null>(null);
-  const [showConfigModal, setShowConfigModal] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
+  
+  // Use our custom hook for managing pipeline blocks
+  const {
+    blocks,
+    selectedBlock,
+    showConfigModal,
+    addBlock,
+    moveBlock,
+    updateBlockConfig,
+    selectBlock,
+    closeConfigModal
+  } = usePipelineBlocks();
 
-  const handleDragOver = (e: React.DragEvent) => {
+  // Handle drag over event
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent) => {
+  // Handle drop event
+  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const blockData = JSON.parse(e.dataTransfer.getData('application/json')) as PipelineBlock;
     
@@ -32,43 +44,15 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    // Snap to grid (40px grid size)
-    const snapToGrid = (coord: number) => Math.round(coord / 40) * 40;
-    
-    const newBlock: BlockInstance = {
-      ...blockData,
-      instanceId: `${blockData.id}_${Date.now()}`,
-      position: { x: snapToGrid(x), y: snapToGrid(y) },
-      config: {}
-    };
-    
-    setBlocks(prev => [...prev, newBlock]);
-    setSelectedBlock(newBlock);
-    setShowConfigModal(true);
-  };
+    // Add the block to the canvas
+    addBlock(blockData, { x, y });
+  }, [addBlock]);
 
-  const handleBlockMove = (instanceId: string, newPosition: { x: number; y: number }) => {
-    setBlocks(prev => prev.map(block => 
-      block.instanceId === instanceId
-        ? { ...block, position: newPosition }
-        : block
-    ));
-  };
 
-  const handleConfigSave = (instanceId: string, config: Record<string, any>) => {
-    setBlocks(prev => prev.map(block =>
-      block.instanceId === instanceId
-        ? { ...block, config }
-        : block
-    ));
-    setShowConfigModal(false);
-    setSelectedBlock(null);
-  };
 
-  const handleBlockClick = (block: BlockInstance) => {
-    setSelectedBlock(block);
-    setShowConfigModal(true);
-  };
+
+
+
 
   return (
     <>
@@ -92,8 +76,8 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
               key={block.instanceId}
               block={block}
               isSimulating={isSimulating}
-              onMove={handleBlockMove}
-              onClick={() => handleBlockClick(block)}
+              onMove={moveBlock}
+              onClick={() => selectBlock(block)}
             />
           ))}
           
@@ -108,13 +92,10 @@ export const PipelineCanvas: React.FC<PipelineCanvasProps> = ({
       {showConfigModal && selectedBlock && (
         <BlockConfigModal
           block={selectedBlock}
-          onSave={handleConfigSave}
-          onClose={() => {
-            setShowConfigModal(false);
-            setSelectedBlock(null);
-          }}
+          onSave={updateBlockConfig}
+          onClose={closeConfigModal}
         />
       )}
     </>
   );
-};
+});

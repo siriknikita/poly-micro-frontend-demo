@@ -1,4 +1,5 @@
-import React from 'react';
+import { memo, useState, useRef, useEffect, useCallback } from 'react';
+import { AVAILABLE_BLOCKS_MAP } from '@constants';
 import { BlockInstance } from '@/types/pipeline';
 
 interface PipelineBlockProps {
@@ -8,45 +9,67 @@ interface PipelineBlockProps {
   onClick: () => void;
 }
 
-export const PipelineBlock: React.FC<PipelineBlockProps> = ({
+export const PipelineBlock = memo<PipelineBlockProps>(({
   block,
   isSimulating,
   onMove,
   onClick
 }) => {
-  const [isDragging, setIsDragging] = React.useState(false);
-  const IconComponent = block.icon;
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState(block.position);
+  const blockRef = useRef<HTMLDivElement>(null);
+  const dragOffset = useRef({ x: 0, y: 0 });
 
-  const handleDragStart = (e: React.DragEvent) => {
-    if (isSimulating) {
-      e.preventDefault();
-      return;
-    }
+  // Function to snap position to grid
+  const snapToGrid = useCallback((coord: number) => {
+    const gridSize = 40; // 40px grid size
+    return Math.round(coord / gridSize) * gridSize;
+  }, []);
+
+  // Handle drag start
+  const handleDragStart = useCallback((e: MouseEvent) => {
+    if (isSimulating) return;
+    
     setIsDragging(true);
-  };
+    if (blockRef.current) {
+      const rect = blockRef.current.getBoundingClientRect();
+      dragOffset.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+    }
+    
+    // Prevent default browser drag behavior
+    e.preventDefault();
+  }, [isSimulating]);
 
-  const handleDrag = (e: React.DragEvent) => {
+  // Handle drag
+  const handleDrag = useCallback((e: MouseEvent) => {
     if (!e.clientX || !e.clientY) return;
     
-    const parent = (e.target as HTMLElement).parentElement;
-    if (!parent) return;
-
-    const rect = parent.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = e.clientX - dragOffset.current.x;
+    const y = e.clientY - dragOffset.current.y;
     
-    // Snap to grid (40px grid size)
-    const snapToGrid = (coord: number) => Math.round(coord / 40) * 40;
-    
-    onMove(block.instanceId, {
+    setPosition({
       x: snapToGrid(x),
       y: snapToGrid(y)
     });
-  };
+  }, [snapToGrid, dragOffset]);
 
-  const handleDragEnd = () => {
+  // Handle drag end
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    
     setIsDragging(false);
-  };
+    onMove(block.instanceId, position);
+  }, [block.instanceId, isDragging, onMove, position]);
+
+  // Update position when block position changes
+  useEffect(() => {
+    setPosition(block.position);
+  }, [block.position]);
+
+  const IconComponent = block.icon;
 
   return (
     <div
@@ -60,10 +83,11 @@ export const PipelineBlock: React.FC<PipelineBlockProps> = ({
         ${isSimulating ? 'cursor-not-allowed' : 'cursor-move hover:border-indigo-500 dark:hover:border-indigo-400'}
         border-gray-200 dark:border-gray-700`}
       style={{
-        left: block.position.x,
-        top: block.position.y,
+        left: position.x,
+        top: position.y,
         width: '200px'
       }}
+      ref={blockRef}
     >
       <div className="flex items-center space-x-3">
         <IconComponent className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
@@ -84,4 +108,4 @@ export const PipelineBlock: React.FC<PipelineBlockProps> = ({
       </div>
     </div>
   );
-};
+});

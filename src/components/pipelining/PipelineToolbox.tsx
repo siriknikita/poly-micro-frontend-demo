@@ -1,6 +1,6 @@
-import React from 'react';
+import { memo, DragEvent, useCallback } from 'react';
 import { PipelineBlock } from '@/types/pipeline';
-import { AVAILABLE_BLOCKS_MAP } from '@constants';
+import { ToolboxBlockItem } from './components';
 
 interface PipelineToolboxProps {
   position: 'left' | 'right' | 'float';
@@ -8,7 +8,8 @@ interface PipelineToolboxProps {
   isSimulating: boolean;
 }
 
-const blocks: PipelineBlock[] = [
+// Define available pipeline blocks
+const PIPELINE_BLOCKS: PipelineBlock[] = [
   {
     id: 'timer',
     name: 'Timer',
@@ -90,15 +91,16 @@ const blocks: PipelineBlock[] = [
   }
 ];
 
-export const PipelineToolbox: React.FC<PipelineToolboxProps> = ({
+export const PipelineToolbox = memo<PipelineToolboxProps>(({
   position,
   // onPositionChange,
   isSimulating
 }) => {
-  const handleDragStart = (e: React.DragEvent, block: PipelineBlock) => {
+  // Handle drag start for pipeline blocks
+  const handleDragStart = useCallback((e: DragEvent<HTMLDivElement>, block: PipelineBlock) => {
     e.dataTransfer.setData('application/json', JSON.stringify(block));
     e.dataTransfer.effectAllowed = 'copy';
-  };
+  }, []);
 
   return (
     <div 
@@ -111,36 +113,16 @@ export const PipelineToolbox: React.FC<PipelineToolboxProps> = ({
 
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
-          {blocks.map((block) => {
-            const blockName = block.name;
-            const BlockIcon = AVAILABLE_BLOCKS_MAP[blockName];
-            return (
-              <div
-                key={block.id}
-                draggable={!isSimulating}
-                onDragStart={(e) => handleDragStart(e, block)}
-                className={`p-3 rounded-lg border border-gray-200 dark:border-gray-700 
-                  ${isSimulating 
-                    ? 'opacity-50 cursor-not-allowed' 
-                    : 'cursor-grab hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <BlockIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {blockName}
-                    </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {block.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {PIPELINE_BLOCKS.map((block) => (
+            <ToolboxBlockItem
+              key={block.id}
+              block={block}
+              disabled={isSimulating}
+              onDragStart={handleDragStart}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
-};
+});
