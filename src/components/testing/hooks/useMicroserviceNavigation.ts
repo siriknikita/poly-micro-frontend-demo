@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { TestItem } from '@/types';
 
 interface UseMicroserviceNavigationProps {
@@ -17,6 +17,19 @@ export const useMicroserviceNavigation = ({
     initialMicroservice || (microservices.length > 0 ? microservices[0] : null)
   );
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Force reset the selected microservice when microservices array changes
+  useEffect(() => {
+    // Reset selected microservice to first one in the new list
+    if (microservices.length > 0) {
+      setSelectedMicroservice(microservices[0]);
+    } else {
+      setSelectedMicroservice(null);
+    }
+    
+    // Clear search query when microservices change
+    setSearchQuery('');
+  }, [microservices]);
 
   // Filter microservices based on search query
   const filteredMicroservices = useMemo(() => 

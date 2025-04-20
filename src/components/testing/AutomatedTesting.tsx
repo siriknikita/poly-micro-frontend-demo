@@ -1,7 +1,6 @@
-import { memo, useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { TestList } from './TestList';
 import { TestChat } from './TestChat';
-import { mockTestData } from '../../data/mockTestData';
 import { TestItem } from '../../types/testing';
 import { MessageSquare, Play } from 'lucide-react';
 import { EmptyState } from './EmptyState';
@@ -9,19 +8,28 @@ import { useResizablePanel, useTestItems, useMicroserviceNavigation } from './ho
 import { IconButton, NavigationControls, SearchInput, ResizeHandle } from './components';
 import { DEFAULT_PROMPTS } from './constants';
 
-export const AutomatedTesting = memo(() => {
+import { useProject } from '@/context/ProjectContext';
+
+// Using key instead of memo to force remount when project changes
+export const AutomatedTesting = () => {
   // State for selected test and chat visibility
   const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
   const [showChat, setShowChat] = useState(true);
   
   // Use our custom hooks
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
+  const { project } = useProject();
+
+  // Use the current project's microservices
+  const microservices = project?.microservices || [];
+  
   const {
     functionResults,
     runTest,
     runAllTests,
     setCurrentMicroservice,
-  } = useTestItems(mockTestData);
+  } = useTestItems(microservices, project?.id || '');
+  
   const {
     selectedMicroservice,
     setSelectedMicroservice,
@@ -32,8 +40,8 @@ export const AutomatedTesting = memo(() => {
     getPreviousMicroserviceName,
     getNextMicroserviceName
   } = useMicroserviceNavigation({
-    microservices: mockTestData,
-    initialMicroservice: mockTestData[0] || null
+    microservices,
+    initialMicroservice: microservices[0] || null
   });
 
 
@@ -147,4 +155,4 @@ export const AutomatedTesting = memo(() => {
       </div>
     </div>
   );
-});
+};

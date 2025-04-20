@@ -11,6 +11,8 @@ interface TestListProps {
   functionResults: Record<string, string>;
 }
 
+import { useProject } from '@/context/ProjectContext';
+
 export const TestList = memo<TestListProps>(({
   tests,
   onRunTest,
@@ -21,7 +23,8 @@ export const TestList = memo<TestListProps>(({
   const [areAllExpanded, setAreAllExpanded] = useState(false);
   
   // Use our custom hook for managing test items
-  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems(tests);
+  const { project } = useProject();
+  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems(tests, project?.id || '');
 
   // Reset areAllExpanded state when microservice changes
   useEffect(() => {

@@ -2,26 +2,31 @@ import { useState, useCallback, useEffect } from 'react';
 import { TestItem } from '@/types';
 
 // Local storage keys
-const EXPANDED_ITEMS_STORAGE_KEY = 'poly-micro-manager-expanded-items';
-const FUNCTION_RESULTS_STORAGE_KEY = 'poly-micro-manager-function-results';
-const SHOW_RESULTS_STORAGE_KEY = 'poly-micro-manager-show-results';
+const getExpandedItemsKey = (projectId: string) => `poly-micro-manager-expanded-items:${projectId}`;
+const getFunctionResultsKey = (projectId: string) => `poly-micro-manager-function-results:${projectId}`;
+const getShowResultsKey = (projectId: string) => `poly-micro-manager-show-results:${projectId}`;
 
 /**
  * Hook for managing test items and their expanded state
  */
-export const useTestItems = (microservices: TestItem[] = []) => {
+export const useTestItems = (microservices: TestItem[] = [], projectId: string) => {
+  // Reset all state when projectId changes
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [functionResults, setFunctionResults] = useState<Record<string, string>>({});
   // Persistent per-microservice show/hide results state
   const [showResults, setShowResults] = useState<boolean>(true);
-  const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(
-    microservices.length > 0 ? microservices[0].id : null
-  );
+  const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(null);
 
-  // Update currentMicroserviceId if microservices change
+  // Reset state and update currentMicroserviceId when projectId or microservices change
   useEffect(() => {
+    // Clear state for new project
+    setExpandedItems({});
+    setFunctionResults({});
+    setShowResults(true);
+    
+    // Set first microservice as current if available
     setCurrentMicroserviceId(microservices.length > 0 ? microservices[0].id : null);
-  }, [microservices]);
+  }, [projectId, microservices]);
 
   // Load expanded items, function results, and show/hide results state from localStorage on microservice switch
   useEffect(() => {
@@ -29,7 +34,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
 
     // Load show/hide results state for this microservice
     try {
-      const stored = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      const stored = localStorage.getItem(getShowResultsKey(projectId));
       if (stored) {
         const parsed = JSON.parse(stored);
         setShowResults(typeof parsed[currentMicroserviceId] === 'boolean' ? parsed[currentMicroserviceId] : true);
@@ -43,7 +48,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
 
     // Load expanded items
     try {
-      const storedExpandedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      const storedExpandedData = localStorage.getItem(getExpandedItemsKey(projectId));
       if (storedExpandedData) {
         const parsedData = JSON.parse(storedExpandedData);
         if (parsedData[currentMicroserviceId]) {
@@ -52,7 +57,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       }
       
       // Load function results
-      const storedResultsData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY);
+      const storedResultsData = localStorage.getItem(getFunctionResultsKey(projectId));
       if (storedResultsData) {
         const parsedData = JSON.parse(storedResultsData);
         if (parsedData[currentMicroserviceId]) {
@@ -64,7 +69,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       }
       
       // Load show results state
-      const storedShowResultsData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      const storedShowResultsData = localStorage.getItem(getShowResultsKey(projectId));
       if (storedShowResultsData) {
         const parsedData = JSON.parse(storedShowResultsData);
         if (parsedData[currentMicroserviceId] !== undefined) {
@@ -74,7 +79,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
     } catch (error) {
       console.error('Failed to load data from localStorage:', error);
     }
-  }, [currentMicroserviceId]);
+  }, [currentMicroserviceId, projectId]);
 
   // Toggle expanded state of a test item
   const toggleExpand = useCallback((id: string) => {
@@ -87,10 +92,10 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       // Save to localStorage
       if (currentMicroserviceId) {
         try {
-          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
           const parsedData = JSON.parse(storedData);
           parsedData[currentMicroserviceId] = newState;
-          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
         } catch (error) {
           console.error('Failed to save expanded items to localStorage:', error);
         }
@@ -98,7 +103,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       
       return newState;
     });
-  }, [currentMicroserviceId]);
+  }, [currentMicroserviceId, projectId]);
 
   // Expand all test items
   const expandAll = useCallback((items: TestItem[]) => {
@@ -122,10 +127,10 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       // Save to localStorage
       if (currentMicroserviceId) {
         try {
-          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
           const parsedData = JSON.parse(storedData);
           parsedData[currentMicroserviceId] = updatedState;
-          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
         } catch (error) {
           console.error('Failed to save expanded items to localStorage:', error);
         }
@@ -133,7 +138,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       
       return updatedState;
     });
-  }, [currentMicroserviceId]);
+  }, [currentMicroserviceId, projectId]);
 
   // Collapse all test items
   const collapseAll = useCallback((items: TestItem[]) => {
@@ -157,10 +162,10 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       // Save to localStorage
       if (currentMicroserviceId) {
         try {
-          const storedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY) || '{}';
+          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
           const parsedData = JSON.parse(storedData);
           parsedData[currentMicroserviceId] = updatedState;
-          localStorage.setItem(EXPANDED_ITEMS_STORAGE_KEY, JSON.stringify(parsedData));
+          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
         } catch (error) {
           console.error('Failed to save expanded items to localStorage:', error);
         }
@@ -168,7 +173,7 @@ export const useTestItems = (microservices: TestItem[] = []) => {
       
       return updatedState;
     });
-  }, [currentMicroserviceId]);
+  }, [currentMicroserviceId, projectId]);
 
   // Run a single test
   const runTest = useCallback((test: TestItem) => {
@@ -205,15 +210,15 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     // Save results to localStorage
     if (microservice.id) {
       try {
-        const storedData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY) || '{}';
+        const storedData = localStorage.getItem(getFunctionResultsKey(projectId)) || '{}';
         const parsedData = JSON.parse(storedData);
         parsedData[microservice.id] = results;
-        localStorage.setItem(FUNCTION_RESULTS_STORAGE_KEY, JSON.stringify(parsedData));
+        localStorage.setItem(getFunctionResultsKey(projectId), JSON.stringify(parsedData));
       } catch (error) {
         console.error('Failed to save function results to localStorage:', error);
       }
     }
-  }, []);
+  }, [projectId]);
 
   // Toggle show/hide results for current microservice and persist
   const toggleResultsVisibility = useCallback(() => {
@@ -228,12 +233,12 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       const next = !prev;
       console.log('Toggling show/hide results visibility to:', next);
       try {
-        const stored = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+        const stored = localStorage.getItem(getShowResultsKey(projectId));
         console.log('Stored show/hide results state:', stored);
         const parsed = stored ? JSON.parse(stored) : {};
         parsed[currentMicroserviceId] = next;
         console.log('Parsed show/hide results state:', parsed);
-        localStorage.setItem(SHOW_RESULTS_STORAGE_KEY, JSON.stringify(parsed));
+        localStorage.setItem(getShowResultsKey(projectId), JSON.stringify(parsed));
       } catch (error) {
         console.error('Failed to save show/hide results state to localStorage:', error);
       }
@@ -255,7 +260,7 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     
     try {
       // Load expanded state for this microservice
-      const storedExpandedData = localStorage.getItem(EXPANDED_ITEMS_STORAGE_KEY);
+      const storedExpandedData = localStorage.getItem(getExpandedItemsKey(projectId));
       if (storedExpandedData) {
         const parsedData = JSON.parse(storedExpandedData);
         if (parsedData[microservice.id]) {
@@ -269,7 +274,7 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       }
       
       // Load function results for this microservice
-      const storedResultsData = localStorage.getItem(FUNCTION_RESULTS_STORAGE_KEY);
+      const storedResultsData = localStorage.getItem(getFunctionResultsKey(projectId));
       if (storedResultsData) {
         const parsedData = JSON.parse(storedResultsData);
         if (parsedData[microservice.id]) {
@@ -283,7 +288,7 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       }
       
       // Load show results state for this microservice
-      const storedShowResultsData = localStorage.getItem(SHOW_RESULTS_STORAGE_KEY);
+      const storedShowResultsData = localStorage.getItem(getShowResultsKey(projectId));
       if (storedShowResultsData) {
         const parsedData = JSON.parse(storedShowResultsData);
         if (parsedData[microservice.id] !== undefined) {

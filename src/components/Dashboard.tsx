@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/hooks';
 import { Project } from '@/types';
 import { mockProjects } from '@data/mockData';
+import { mockTestDataByProject } from '@data/mockTestData';
+import { useProject } from '@/context/ProjectContext';
 
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -16,6 +18,7 @@ export function Dashboard() {
   const { darkMode, setDarkMode } = useTheme();
   const userString = localStorage.getItem('currentUser');
   const user = userString ? JSON.parse(userString) : null;
+  const { setProject } = useProject();
   
   // Determine active tab from URL path
   const pathToTab = {
@@ -38,6 +41,30 @@ export function Dashboard() {
       navigate(tabPath);
     }
   }, [activeTab, navigate, location.pathname]);
+  
+  // Update project context when tab or selected project changes
+  useEffect(() => {
+    if (!selectedProject) return;
+    
+    // If we're on the testing tab, make sure the project has microservices data
+    if (activeTab === 'testing') {
+      // Get project-specific test data or fallback to an empty array
+      const projectTestData = mockTestDataByProject[selectedProject.id] || [];
+      
+      const projectWithMicroservices = {
+        ...selectedProject,
+        microservices: projectTestData
+      };
+      
+      setProject(projectWithMicroservices);
+    } else {
+      // For other tabs, we don't need the microservices data
+      setProject({
+        ...selectedProject,
+        microservices: undefined
+      });
+    }
+  }, [activeTab, selectedProject]);
 
   // Load saved project and services on component mount
   useEffect(() => {
@@ -81,8 +108,12 @@ export function Dashboard() {
           setDarkMode={setDarkMode}
           selectedProject={selectedProject}
           onSelectProject={(project) => {
+            // Store the selected project in local state
             setSelectedProject(project);
             localStorage.setItem('lastSelectedProject', project.id);
+            
+            // The project context will be updated by the effect that watches
+            // for changes to selectedProject and activeTab
           }}
           onLogout={() => {
             localStorage.removeItem('currentUser');
@@ -113,7 +144,7 @@ export function Dashboard() {
                   />
                 )}
                 {activeTab === 'testing' && (
-                  <AutomatedTesting />
+                  <AutomatedTesting key={`testing-${selectedProject.id}`} />
                 )}
               </div>
             ) : (
