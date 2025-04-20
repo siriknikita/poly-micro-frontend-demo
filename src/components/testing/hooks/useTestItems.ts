@@ -1,25 +1,82 @@
 import { useState, useCallback, useEffect } from 'react';
 import { TestItem } from '@/types';
 
-// Local storage keys
-const getExpandedItemsKey = (projectId: string) => `poly-micro-manager-expanded-items:${projectId}`;
-const getFunctionResultsKey = (projectId: string) => `poly-micro-manager-function-results:${projectId}`;
-const getShowResultsKey = (projectId: string) => `poly-micro-manager-show-results:${projectId}`;
+// Define interfaces for better type safety
+interface StorageData {
+  [microserviceId: string]: any;
+}
+
+interface TestItemsState {
+  expandedItems: Record<string, boolean>;
+  functionResults: Record<string, string>;
+  showResults: boolean;
+  currentMicroserviceId: string | null;
+}
+
+// Local storage key constants
+const STORAGE_KEYS = {
+  expandedItems: (projectId: string) => `poly-micro-manager-expanded-items:${projectId}`,
+  functionResults: (projectId: string) => `poly-micro-manager-function-results:${projectId}`,
+  showResults: (projectId: string) => `poly-micro-manager-show-results:${projectId}`
+};
+
+/**
+ * Helper functions for localStorage operations
+ */
+const storage = {
+  /**
+   * Save data to localStorage with error handling
+   */
+  save: (key: string, microserviceId: string | null, data: any): void => {
+    if (!microserviceId) return;
+    
+    try {
+      // Get existing data or initialize empty object
+      const existingData = localStorage.getItem(key) || '{}';
+      const parsedData = JSON.parse(existingData) as StorageData;
+      
+      // Update data for specific microservice
+      parsedData[microserviceId] = data;
+      
+      // Save back to localStorage
+      localStorage.setItem(key, JSON.stringify(parsedData));
+    } catch (error) {
+      console.error(`Failed to save data to localStorage (${key}):`, error);
+    }
+  },
+  
+  /**
+   * Load data from localStorage with error handling
+   */
+  load: <T>(key: string, microserviceId: string | null, defaultValue: T): T => {
+    if (!microserviceId) return defaultValue;
+    
+    try {
+      const storedData = localStorage.getItem(key);
+      if (!storedData) return defaultValue;
+      
+      const parsedData = JSON.parse(storedData) as StorageData;
+      return microserviceId in parsedData ? parsedData[microserviceId] : defaultValue;
+    } catch (error) {
+      console.error(`Failed to load data from localStorage (${key}):`, error);
+      return defaultValue;
+    }
+  }
+};
 
 /**
  * Hook for managing test items and their expanded state
  */
 export const useTestItems = (microservices: TestItem[] = [], projectId: string) => {
-  // Reset all state when projectId changes
+  // State for test items management
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [functionResults, setFunctionResults] = useState<Record<string, string>>({});
-  // Persistent per-microservice show/hide results state
   const [showResults, setShowResults] = useState<boolean>(true);
   const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(null);
 
-  // Reset state and update currentMicroserviceId when projectId or microservices change
+  // Initialize state when project or microservices change
   useEffect(() => {
-    // Clear state for new project
+    // Reset state for new project
     setExpandedItems({});
     setFunctionResults({});
     setShowResults(true);
@@ -28,60 +85,38 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string) 
     setCurrentMicroserviceId(microservices.length > 0 ? microservices[0].id : null);
   }, [projectId, microservices]);
 
-  // Load expanded items, function results, and show/hide results state from localStorage on microservice switch
+  // Load saved state when current microservice changes
   useEffect(() => {
     if (!currentMicroserviceId) return;
-
-    // Load show/hide results state for this microservice
-    try {
-      const stored = localStorage.getItem(getShowResultsKey(projectId));
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setShowResults(typeof parsed[currentMicroserviceId] === 'boolean' ? parsed[currentMicroserviceId] : true);
-      } else {
-        setShowResults(true);
-      }
-    } catch {
-      console.log('Failed to load show/hide results state from localStorage');
-      setShowResults(true);
-    }
-
-    // Load expanded items
-    try {
-      const storedExpandedData = localStorage.getItem(getExpandedItemsKey(projectId));
-      if (storedExpandedData) {
-        const parsedData = JSON.parse(storedExpandedData);
-        if (parsedData[currentMicroserviceId]) {
-          setExpandedItems(parsedData[currentMicroserviceId]);
-        }
-      }
-      
-      // Load function results
-      const storedResultsData = localStorage.getItem(getFunctionResultsKey(projectId));
-      if (storedResultsData) {
-        const parsedData = JSON.parse(storedResultsData);
-        if (parsedData[currentMicroserviceId]) {
-          setFunctionResults(parsedData[currentMicroserviceId]);
-        } else {
-          // Clear results if none exist for this microservice
-          setFunctionResults({});
-        }
-      }
-      
-      // Load show results state
-      const storedShowResultsData = localStorage.getItem(getShowResultsKey(projectId));
-      if (storedShowResultsData) {
-        const parsedData = JSON.parse(storedShowResultsData);
-        if (parsedData[currentMicroserviceId] !== undefined) {
-          setShowResults(parsedData[currentMicroserviceId]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load data from localStorage:', error);
-    }
+    
+    // Load all state data for the current microservice
+    const loadedExpandedItems = storage.load<Record<string, boolean>>(
+      STORAGE_KEYS.expandedItems(projectId),
+      currentMicroserviceId,
+      {}
+    );
+    
+    const loadedFunctionResults = storage.load<Record<string, string>>(
+      STORAGE_KEYS.functionResults(projectId),
+      currentMicroserviceId,
+      {}
+    );
+    
+    const loadedShowResults = storage.load<boolean>(
+      STORAGE_KEYS.showResults(projectId),
+      currentMicroserviceId,
+      true
+    );
+    
+    // Update state with loaded data
+    setExpandedItems(loadedExpandedItems);
+    setFunctionResults(loadedFunctionResults);
+    setShowResults(loadedShowResults);
   }, [currentMicroserviceId, projectId]);
 
-  // Toggle expanded state of a test item
+  /**
+   * Toggle expanded state of a test item
+   */
   const toggleExpand = useCallback((id: string) => {
     setExpandedItems(prev => {
       const newState = {
@@ -90,99 +125,87 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string) 
       };
       
       // Save to localStorage
-      if (currentMicroserviceId) {
-        try {
-          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
-          const parsedData = JSON.parse(storedData);
-          parsedData[currentMicroserviceId] = newState;
-          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
-        } catch (error) {
-          console.error('Failed to save expanded items to localStorage:', error);
-        }
-      }
+      storage.save(STORAGE_KEYS.expandedItems(projectId), currentMicroserviceId, newState);
       
       return newState;
     });
   }, [currentMicroserviceId, projectId]);
 
-  // Expand all test items
-  const expandAll = useCallback((items: TestItem[]) => {
-    const newExpandedState: Record<string, boolean> = {};
+  /**
+   * Helper function to recursively process items and set them as expanded
+   */
+  const processItemsForExpansion = useCallback((itemsToProcess: TestItem[]): Record<string, boolean> => {
+    const newState: Record<string, boolean> = {};
     
-    // Helper function to recursively process items and their children
-    const processItems = (itemsToProcess: TestItem[]) => {
-      itemsToProcess.forEach(item => {
-        newExpandedState[item.id] = true;
-        if (item.children && item.children.length > 0) {
-          processItems(item.children);
-        }
-      });
+    const processItem = (item: TestItem) => {
+      newState[item.id] = true;
+      if (item.children) {
+        item.children.forEach(processItem);
+      }
     };
     
-    processItems(items);
-    
-    setExpandedItems(prev => {
-      const updatedState = { ...prev, ...newExpandedState };
-      
-      // Save to localStorage
-      if (currentMicroserviceId) {
-        try {
-          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
-          const parsedData = JSON.parse(storedData);
-          parsedData[currentMicroserviceId] = updatedState;
-          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
-        } catch (error) {
-          console.error('Failed to save expanded items to localStorage:', error);
-        }
-      }
-      
-      return updatedState;
-    });
-  }, [currentMicroserviceId, projectId]);
-
-  // Collapse all test items
-  const collapseAll = useCallback((items: TestItem[]) => {
-    const newExpandedState: Record<string, boolean> = {};
-    
-    // Helper function to recursively process items and their children
-    const processItems = (itemsToProcess: TestItem[]) => {
-      itemsToProcess.forEach(item => {
-        newExpandedState[item.id] = false;
-        if (item.children && item.children.length > 0) {
-          processItems(item.children);
-        }
-      });
-    };
-    
-    processItems(items);
-    
-    setExpandedItems(prev => {
-      const updatedState = { ...prev, ...newExpandedState };
-      
-      // Save to localStorage
-      if (currentMicroserviceId) {
-        try {
-          const storedData = localStorage.getItem(getExpandedItemsKey(projectId)) || '{}';
-          const parsedData = JSON.parse(storedData);
-          parsedData[currentMicroserviceId] = updatedState;
-          localStorage.setItem(getExpandedItemsKey(projectId), JSON.stringify(parsedData));
-        } catch (error) {
-          console.error('Failed to save expanded items to localStorage:', error);
-        }
-      }
-      
-      return updatedState;
-    });
-  }, [currentMicroserviceId, projectId]);
-
-  // Run a single test
-  const runTest = useCallback((test: TestItem) => {
-    // In a real application, this would make an API call to run the test
-    // For now, we're just simulating a test run
-    console.log(`Running test: ${test.name}`);
+    itemsToProcess.forEach(processItem);
+    return newState;
   }, []);
 
-  // Run all tests for a microservice
+  /**
+   * Expand all items in the current microservice
+   */
+  const expandAll = useCallback(() => {
+    // Find the current microservice in the microservices array
+    const microservice = microservices.find(ms => ms.id === currentMicroserviceId);
+    if (!microservice) return;
+    
+    const expandedState = processItemsForExpansion([microservice]);
+    setExpandedItems(expandedState);
+    
+    // Save to localStorage
+    storage.save(STORAGE_KEYS.expandedItems(projectId), currentMicroserviceId, expandedState);
+  }, [currentMicroserviceId, microservices, projectId, processItemsForExpansion]);
+
+  /**
+   * Collapse all items in the current microservice
+   */
+  const collapseAll = useCallback(() => {
+    const emptyState = {};
+    setExpandedItems(emptyState);
+    
+    // Save to localStorage
+    storage.save(STORAGE_KEYS.expandedItems(projectId), currentMicroserviceId, emptyState);
+  }, [currentMicroserviceId, projectId]);
+
+  /**
+   * Run a single test function and generate results
+   */
+  const runTest = useCallback((test: TestItem) => {
+    if (!test || test.type !== 'function') return;
+
+    // Mock test run, would be replaced with actual API call
+    const totalTests = test.children?.length || 0;
+    const passedTests = Math.floor(Math.random() * (totalTests + 1)); // Random number of passing tests
+    
+    const result = `Function Results (${new Date().toLocaleTimeString()}):
+Status: ${passedTests === totalTests ? 'Success' : 'Partial'}
+Tests: ${passedTests}/${totalTests} passed
+Coverage: ${Math.floor(85 + Math.random() * 15)}%
+
+✓ ${passedTests} test(s) passed
+${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed` : ''}
+`;
+    
+    setFunctionResults(prev => {
+      const newResults = { ...prev, [test.id]: result };
+      
+      // Save to localStorage
+      storage.save(STORAGE_KEYS.functionResults(projectId), currentMicroserviceId, newResults);
+      
+      return newResults;
+    });
+  }, [currentMicroserviceId, projectId]);
+
+  /**
+   * Run all tests for a microservice
+   */
   const runAllTests = useCallback((microservice: TestItem) => {
     if (!microservice || !microservice.children) return;
     
@@ -192,62 +215,41 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string) 
     // Create mock results for each function
     const results: Record<string, string> = {};
     functions.forEach(func => {
-      const totalTests = func.children?.length || 0;
-      const passedTests = Math.floor(Math.random() * (totalTests + 1)); // Mock random results
-      
-      results[func.id] = `Function Results (${new Date().toLocaleTimeString()}):
-Status: ${passedTests === totalTests ? 'Success' : 'Partial'}
-Tests: ${passedTests}/${totalTests} passed
-Coverage: ${Math.floor(85 + Math.random() * 15)}%
-
-✓ ${passedTests} test(s) passed
-${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed` : ''}
-`;
+      runTest(func);
     });
 
-    setFunctionResults(results);
-    
     // Save results to localStorage
     if (microservice.id) {
       try {
-        const storedData = localStorage.getItem(getFunctionResultsKey(projectId)) || '{}';
+        const storedData = localStorage.getItem(STORAGE_KEYS.functionResults(projectId)) || '{}';
         const parsedData = JSON.parse(storedData);
         parsedData[microservice.id] = results;
-        localStorage.setItem(getFunctionResultsKey(projectId), JSON.stringify(parsedData));
+        localStorage.setItem(STORAGE_KEYS.functionResults(projectId), JSON.stringify(parsedData));
       } catch (error) {
         console.error('Failed to save function results to localStorage:', error);
       }
     }
-  }, [projectId]);
+  }, [currentMicroserviceId, projectId, runTest]);
 
-  // Toggle show/hide results for current microservice and persist
+  /**
+   * Toggle visibility of test results and persist the setting
+   */
   const toggleResultsVisibility = useCallback(() => {
-    console.group('Toggle show/hide results visibility');
-    console.log('Toggling show/hide results visibility');
-    if (!currentMicroserviceId) {
-      console.log('No current microservice ID found');
-      return;
-    }
+    if (!currentMicroserviceId) return;
 
     setShowResults(prev => {
       const next = !prev;
-      console.log('Toggling show/hide results visibility to:', next);
-      try {
-        const stored = localStorage.getItem(getShowResultsKey(projectId));
-        console.log('Stored show/hide results state:', stored);
-        const parsed = stored ? JSON.parse(stored) : {};
-        parsed[currentMicroserviceId] = next;
-        console.log('Parsed show/hide results state:', parsed);
-        localStorage.setItem(getShowResultsKey(projectId), JSON.stringify(parsed));
-      } catch (error) {
-        console.error('Failed to save show/hide results state to localStorage:', error);
-      }
+      
+      // Save to localStorage
+      storage.save(STORAGE_KEYS.showResults(projectId), currentMicroserviceId, next);
+      
       return next;
     });
-    console.groupEnd();
-  }, [currentMicroserviceId]);
+  }, [currentMicroserviceId, projectId]);
 
-  // Set current microservice and load its expanded state, function results, and show results state from localStorage
+  /**
+   * Set the current microservice and load its state
+   */
   const setCurrentMicroservice = useCallback((microservice: TestItem | null) => {
     if (!microservice) {
       setCurrentMicroserviceId(null);
@@ -256,63 +258,24 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       return;
     }
     
+    // Set the current microservice ID, which will trigger the useEffect to load state
     setCurrentMicroserviceId(microservice.id);
-    
-    try {
-      // Load expanded state for this microservice
-      const storedExpandedData = localStorage.getItem(getExpandedItemsKey(projectId));
-      if (storedExpandedData) {
-        const parsedData = JSON.parse(storedExpandedData);
-        if (parsedData[microservice.id]) {
-          setExpandedItems(parsedData[microservice.id]);
-        } else {
-          // Reset expanded state if no saved state exists for this microservice
-          setExpandedItems({});
-        }
-      } else {
-        setExpandedItems({});
-      }
-      
-      // Load function results for this microservice
-      const storedResultsData = localStorage.getItem(getFunctionResultsKey(projectId));
-      if (storedResultsData) {
-        const parsedData = JSON.parse(storedResultsData);
-        if (parsedData[microservice.id]) {
-          setFunctionResults(parsedData[microservice.id]);
-        } else {
-          // Reset function results if no saved results exist for this microservice
-          setFunctionResults({});
-        }
-      } else {
-        setFunctionResults({});
-      }
-      
-      // Load show results state for this microservice
-      const storedShowResultsData = localStorage.getItem(getShowResultsKey(projectId));
-      if (storedShowResultsData) {
-        const parsedData = JSON.parse(storedShowResultsData);
-        if (parsedData[microservice.id] !== undefined) {
-          setShowResults(parsedData[microservice.id]);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load data from localStorage:', error);
-      setExpandedItems({});
-      setFunctionResults({});
-    }
   }, []);
 
   return {
+    // State
     expandedItems,
     functionResults,
     showResults,
+    currentMicroserviceId,
+    
+    // Actions
     toggleExpand,
     expandAll,
     collapseAll,
     toggleResultsVisibility,
     runTest,
     runAllTests,
-    setCurrentMicroservice,
-    currentMicroserviceId
+    setCurrentMicroservice
   };
 };
