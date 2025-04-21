@@ -86,10 +86,16 @@ This error occurs when GitHub Pages hasn't been properly enabled in your reposit
 1. Go to your GitHub repository: `https://github.com/siriknikita/poly-micro-frontend-demo`
 2. Click on "Settings" (tab at the top)
 3. Scroll down to the "Pages" section in the left sidebar
-4. Under "Source", select "GitHub Actions" from the dropdown menu
-5. Click "Save"
+4. Under "Build and deployment":
+   - For "Source", select "GitHub Actions"
+   - Click "Save"
+5. If you're still encountering issues, try these additional steps:
+   - Go to the "Actions" tab in your repository
+   - Find the failed workflow run
+   - Click "Re-run all jobs"
+   - If needed, create a small change to any file in the `docs/` directory to trigger a new workflow run
 
-After enabling GitHub Pages in the repository settings, re-run the workflow from the Actions tab.
+Note: GitHub Pages might take a few minutes to set up after enabling it for the first time.
 
 #### Permission Issues with npm Install
 
