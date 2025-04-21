@@ -35,6 +35,6 @@ export const TEST_ITEM_TYPES = {
 
 // Default prompts
 export const DEFAULT_PROMPTS = {
-  GENERATE_TEST: (functionName: string) => 
+  GENERATE_TEST: (functionName: string | undefined) => 
     `Generate additional test cases for the ${functionName} function to improve coverage and edge cases.`
 };
