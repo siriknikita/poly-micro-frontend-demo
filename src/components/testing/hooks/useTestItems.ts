@@ -148,7 +148,7 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
     
     const processItem = (item: TestItem) => {
       newState[item.id] = true;
-      if (item.children) {
+      if (item.children && item.children.length > 0) {
         item.children.forEach(processItem);
       }
     };
@@ -161,16 +161,26 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
    * Expand all items in the current microservice
    */
   const expandAll = useCallback(() => {
-    // Find the current microservice in the microservices array
-    const microservice = microservices.find(ms => ms.id === currentMicroserviceId);
-    if (!microservice) return;
+    const expandedState: Record<string, boolean> = {};
     
-    const expandedState = processItemsForExpansion([microservice]);
+    // Helper function to recursively expand all items
+    const expandAllItems = (items: TestItem[]) => {
+      items.forEach(item => {
+        expandedState[item.id] = true;
+        if (item.children && item.children.length > 0) {
+          expandAllItems(item.children);
+        }
+      });
+    };
+    
+    // Expand all items in the microservices array
+    expandAllItems(microservices);
+    
     setExpandedItems(expandedState);
     
     // Save to localStorage
     storage.save(STORAGE_KEYS.expandedItems(projectId), currentMicroserviceId, expandedState);
-  }, [currentMicroserviceId, microservices, projectId, processItemsForExpansion]);
+  }, [currentMicroserviceId, microservices, projectId]);
 
   /**
    * Collapse all items in the current microservice

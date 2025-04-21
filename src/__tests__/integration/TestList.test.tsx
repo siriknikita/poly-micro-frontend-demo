@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '../utils/test-utils';
+import { render, screen } from '../utils/test-utils';
 
 // Mock the hooks module first, before any imports that might use it
 vi.mock('../../components/testing/hooks', () => {
@@ -304,5 +304,197 @@ describe('TestList Integration', () => {
     expect(screen.getByTestId('test-output-modal')).toBeInTheDocument();
     // Log the container HTML to debug
     console.log('Container HTML:', container.innerHTML);
+  });
+  
+  it('shows empty state when there are no test items', () => {
+    // Override the mock to return empty test items
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      isLoading: false,
+      functionResults: {},
+      error: null,
+      expandedItems: { func1: true, func2: false, func3: false },
+      toggleExpand: vi.fn(),
+      expandAll: vi.fn(),
+      collapseAll: vi.fn(),
+      showResults: true,
+      toggleResultsVisibility: vi.fn(),
+      currentMicroserviceId: 'ms1',
+      runTest: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn(),
+    });
+    
+    render(<TestList 
+      microserviceId="ms1" 
+      tests={[]}
+      onRunTest={vi.fn()}
+      onGenerateTest={vi.fn()}
+      functionResults={{}}
+    />);
+    
+    expect(screen.getByText(/no tests available/i)).toBeInTheDocument();
+  });
+  
+  it('calls expandAll when "Expand all functions" button is clicked', async () => {
+    const expandAllMock = vi.fn();
+    
+    // Override the mock to provide our expandAll mock
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      isLoading: false,
+      functionResults: {},
+      error: null,
+      expandedItems: { func1: false, func2: false, func3: false },
+      toggleExpand: vi.fn(),
+      expandAll: expandAllMock,
+      collapseAll: vi.fn(),
+      showResults: true,
+      toggleResultsVisibility: vi.fn(),
+      currentMicroserviceId: 'ms1',
+      runTest: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn(),
+    });
+    
+    const { user } = render(<TestList 
+      microserviceId="ms1" 
+      tests={mockTestItems}
+      onRunTest={vi.fn()}
+      onGenerateTest={vi.fn()}
+      functionResults={{}}
+    />);
+    
+    // Find and click the "Expand all functions" button
+    const expandAllButton = screen.getByText(/expand all functions/i);
+    await user.click(expandAllButton);
+    
+    // Check that expandAll was called
+    expect(expandAllMock).toHaveBeenCalled();
+  });
+  
+  it('calls collapseAll when "Collapse all" button is clicked', async () => {
+    const collapseAllMock = vi.fn();
+    
+    // Override the mock to show all items as expanded and provide our collapseAll mock
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      isLoading: false,
+      functionResults: {},
+      error: null,
+      expandedItems: { func1: true, func2: true, func3: true },
+      toggleExpand: vi.fn(),
+      expandAll: vi.fn(),
+      collapseAll: collapseAllMock,
+      showResults: true,
+      toggleResultsVisibility: vi.fn(),
+      currentMicroserviceId: 'ms1',
+      runTest: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn(),
+    });
+    
+    const { user } = render(<TestList 
+      microserviceId="ms1" 
+      tests={mockTestItems}
+      onRunTest={vi.fn()}
+      onGenerateTest={vi.fn()}
+      functionResults={{}}
+    />);
+    
+    // Find and click the "Collapse all" button
+    const collapseAllButton = screen.getByText(/collapse all/i);
+    await user.click(collapseAllButton);
+    
+    // Check that collapseAll was called
+    expect(collapseAllMock).toHaveBeenCalled();
+  });
+  
+  it('updates button text correctly based on areAllExpanded state', async () => {
+    const expandAllMock = vi.fn();
+    const collapseAllMock = vi.fn();
+    
+    // First render with all items collapsed
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      isLoading: false,
+      functionResults: {},
+      error: null,
+      expandedItems: {},
+      toggleExpand: vi.fn(),
+      expandAll: expandAllMock,
+      collapseAll: collapseAllMock,
+      showResults: true,
+      toggleResultsVisibility: vi.fn(),
+      currentMicroserviceId: 'ms1',
+      runTest: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn(),
+    });
+    
+    const { user, rerender } = render(<TestList 
+      microserviceId="ms1" 
+      tests={mockTestItems}
+      onRunTest={vi.fn()}
+      onGenerateTest={vi.fn()}
+      functionResults={{}}
+    />);
+    
+    // Initially it should show "Expand all functions"
+    expect(screen.getByText(/expand all functions/i)).toBeInTheDocument();
+    
+    // Now rerender with all items expanded
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      isLoading: false,
+      functionResults: {},
+      error: null,
+      expandedItems: { func1: true, func2: true, func3: true, test1: true, test2: true, test3: true, test4: true, test5: true, test6: true },
+      toggleExpand: vi.fn(),
+      expandAll: expandAllMock,
+      collapseAll: collapseAllMock,
+      showResults: true,
+      toggleResultsVisibility: vi.fn(),
+      currentMicroserviceId: 'ms1',
+      runTest: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn(),
+    });
+    
+    rerender(<TestList 
+      microserviceId="ms1" 
+      tests={mockTestItems}
+      onRunTest={vi.fn()}
+      onGenerateTest={vi.fn()}
+      functionResults={{}}
+    />);
+    
+    // Now it should show "Collapse all"
+    expect(screen.getByText(/collapse all/i)).toBeInTheDocument();
   });
 });

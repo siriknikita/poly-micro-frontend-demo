@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import useMicroserviceNavigation from '../../../components/testing/hooks/useMicroserviceNavigation';
-import { mockMicroservices } from '../../../mocks/mockData';
+import { useMicroserviceNavigation } from '@/components/testing/hooks/useMicroserviceNavigation';
+import { mockMicroservices } from '../../mocks/mockData';
 
 describe('useMicroserviceNavigation', () => {
   // Mock localStorage
