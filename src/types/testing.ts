@@ -3,6 +3,11 @@ export interface TestItem {
   name: string;
   type: 'microservice' | 'function' | 'test-case';
   children?: TestItem[];
+  // Additional properties for microservices
+  projectId?: string;
+  status?: 'online' | 'offline';
+  version?: string;
+  lastDeployed?: string;
 }
 
 export interface TestOutput {

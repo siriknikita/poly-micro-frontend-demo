@@ -20,8 +20,12 @@ export const useMicroserviceNavigation = ({
   
   // Force reset the selected microservice when microservices array changes
   useEffect(() => {
-    // Reset selected microservice to first one in the new list
-    if (microservices.length > 0) {
+    // If initialMicroservice is provided, use it
+    if (initialMicroservice) {
+      setSelectedMicroservice(initialMicroservice);
+    }
+    // Otherwise, reset selected microservice to first one in the new list
+    else if (microservices.length > 0) {
       setSelectedMicroservice(microservices[0]);
     } else {
       setSelectedMicroservice(null);
@@ -29,7 +33,7 @@ export const useMicroserviceNavigation = ({
     
     // Clear search query when microservices change
     setSearchQuery('');
-  }, [microservices]);
+  }, [microservices, initialMicroservice]);
 
   // Filter microservices based on search query
   const filteredMicroservices = useMemo(() => 

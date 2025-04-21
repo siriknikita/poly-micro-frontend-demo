@@ -3,14 +3,15 @@
 import { TestItem, TestOutput, TestMessage } from '@/types';
 
 // Mock microservices data
-export const mockMicroservices = [
+export const mockMicroservices: TestItem[] = [
   {
     id: 'ms1',
     name: 'Authentication Service',
     projectId: 'project1',
     status: 'online',
     version: '1.2.0',
-    lastDeployed: '2025-04-01T10:30:00Z'
+    lastDeployed: '2025-04-01T10:30:00Z',
+    type: 'microservice'
   },
   {
     id: 'ms2',
@@ -18,7 +19,8 @@ export const mockMicroservices = [
     projectId: 'project1',
     status: 'online',
     version: '1.1.5',
-    lastDeployed: '2025-04-05T14:20:00Z'
+    lastDeployed: '2025-04-05T14:20:00Z',
+    type: 'microservice'
   },
   {
     id: 'ms3',
@@ -26,7 +28,8 @@ export const mockMicroservices = [
     projectId: 'project1',
     status: 'offline',
     version: '1.0.8',
-    lastDeployed: '2025-03-28T09:15:00Z'
+    lastDeployed: '2025-03-28T09:15:00Z',
+    type: 'microservice'
   },
   {
     id: 'ms4',
@@ -34,7 +37,8 @@ export const mockMicroservices = [
     projectId: 'project2',
     status: 'online',
     version: '2.0.1',
-    lastDeployed: '2025-04-10T11:45:00Z'
+    lastDeployed: '2025-04-10T11:45:00Z',
+    type: 'microservice'
   },
   {
     id: 'ms5',
@@ -42,7 +46,8 @@ export const mockMicroservices = [
     projectId: 'project2',
     status: 'online',
     version: '1.3.2',
-    lastDeployed: '2025-04-08T16:30:00Z'
+    lastDeployed: '2025-04-08T16:30:00Z',
+    type: 'microservice'
   }
 ];
 

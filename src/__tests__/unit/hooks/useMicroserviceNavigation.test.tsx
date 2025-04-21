@@ -1,215 +1,182 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useMicroserviceNavigation } from '@/components/testing/hooks/useMicroserviceNavigation';
 import { mockMicroservices } from '../../mocks/mockData';
 
 describe('useMicroserviceNavigation', () => {
-  // Mock localStorage
-  let localStorageMock: Record<string, string> = {};
-  
-  beforeEach(() => {
-    // Clear mock localStorage before each test
-    localStorageMock = {};
-    
-    // Mock localStorage methods
-    global.Storage.prototype.getItem = vi.fn((key) => localStorageMock[key] || null);
-    global.Storage.prototype.setItem = vi.fn((key, value) => {
-      localStorageMock[key] = value.toString();
-    });
-    
-    // Mock fetch function
-    global.fetch = vi.fn();
-  });
-  
   it('initializes with empty microservices list', () => {
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: []
+    }));
     
-    expect(result.current.microservices).toEqual([]);
-    expect(result.current.isLoading).toBe(true);
-    expect(result.current.error).toBe(null);
-    expect(result.current.selectedMicroserviceId).toBe(null);
+    expect(result.current.selectedMicroservice).toBe(null);
+    expect(result.current.filteredMicroservices).toEqual([]);
+    expect(result.current.searchQuery).toBe('');
   });
   
-  it('fetches microservices when projectId is provided', async () => {
-    // Mock successful API response
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project1') 
-      }),
-    });
-    
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
-    
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    expect(result.current.microservices).toEqual(
-      mockMicroservices.filter(ms => ms.projectId === 'project1')
-    );
-    expect(result.current.error).toBe(null);
-    expect(global.fetch).toHaveBeenCalledWith('/api/microservices?projectId=project1');
-  });
-  
-  it('selects the first microservice when none is stored in localStorage', async () => {
+  it('selects the first microservice by default', () => {
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
-    // Mock successful API response
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true, data: projectMicroservices }),
-    });
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
     
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
-    
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    // Should select the first microservice by default
-    expect(result.current.selectedMicroserviceId).toBe(projectMicroservices[0].id);
-    expect(localStorageMock['selected-microservice-project1']).toBe(projectMicroservices[0].id);
+    expect(result.current.selectedMicroservice).toEqual(projectMicroservices[0]);
   });
   
-  it('selects the stored microservice from localStorage', async () => {
-    // Set a stored microservice in localStorage
-    localStorageMock['selected-microservice-project1'] = 'ms2';
+  it('uses initialMicroservice when provided', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
+    const initialMicroservice = projectMicroservices[1]; // User Service
     
-    // Mock successful API response
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project1') 
-      }),
-    });
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices,
+      initialMicroservice
+    }));
     
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
-    
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    // Should select the stored microservice
-    expect(result.current.selectedMicroserviceId).toBe('ms2');
+    expect(result.current.selectedMicroservice).toEqual(initialMicroservice);
   });
   
-  it('changes the selected microservice when navigating', async () => {
-    // Mock successful API response
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project1') 
-      }),
-    });
+  it('changes the selected microservice', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
     
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    // Navigate to a specific microservice
+    // Select a different microservice
     act(() => {
-      result.current.navigateToMicroservice('ms2');
+      result.current.setSelectedMicroservice(projectMicroservices[1]);
     });
     
-    expect(result.current.selectedMicroserviceId).toBe('ms2');
-    expect(localStorageMock['selected-microservice-project1']).toBe('ms2');
+    expect(result.current.selectedMicroservice).toEqual(projectMicroservices[1]);
   });
   
-  it('handles API error correctly', async () => {
-    // Mock API error
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-      statusText: 'Internal Server Error',
-    });
-    
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
-    
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    expect(result.current.microservices).toEqual([]);
-    expect(result.current.error).toMatch(/failed to fetch microservices/i);
-  });
-  
-  it('refetches when projectId changes', async () => {
-    // First fetch for project1
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project1') 
-      }),
-    });
+  it('resets selected microservice when microservices array changes', () => {
+    const project1Microservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result, rerender } = renderHook(
-      ({ projectId }) => useMicroserviceNavigation(projectId),
-      { initialProps: { projectId: 'project1' } }
+      (props) => useMicroserviceNavigation(props),
+      { initialProps: { microservices: project1Microservices } }
     );
     
-    // Wait for the first fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
+    // Initially selects first microservice from project1
+    expect(result.current.selectedMicroservice).toEqual(project1Microservices[0]);
     
-    // Reset and mock second fetch for project2
-    (global.fetch as any).mockReset();
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project2') 
-      }),
-    });
+    // Change to project2 microservices
+    const project2Microservices = mockMicroservices.filter(ms => ms.projectId === 'project2');
+    rerender({ microservices: project2Microservices });
     
-    // Change projectId to trigger refetch
-    rerender({ projectId: 'project2' });
-    
-    // Should be loading again
-    expect(result.current.isLoading).toBe(true);
-    
-    // Wait for the second fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    // Should have fetched with the new projectId
-    expect(global.fetch).toHaveBeenCalledWith('/api/microservices?projectId=project2');
-    expect(result.current.microservices).toEqual(
-      mockMicroservices.filter(ms => ms.projectId === 'project2')
-    );
+    // Should reset to first microservice in project2
+    expect(result.current.selectedMicroservice).toEqual(project2Microservices[0]);
   });
   
-  it('handles filtering microservices by search query', async () => {
-    // Mock successful API response
-    (global.fetch as any).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ 
-        success: true, 
-        data: mockMicroservices.filter(ms => ms.projectId === 'project1') 
-      }),
-    });
+  it('handles filtering microservices by search query', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
-    const { result } = renderHook(() => useMicroserviceNavigation('project1'));
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
     
-    // Wait for the fetch to complete
-    await vi.waitFor(() => expect(result.current.isLoading).toBe(false));
-    
-    // Set search query
+    // Set search query to filter for "user"
     act(() => {
-      result.current.setSearchQuery('service 1');
+      result.current.setSearchQuery('user');
     });
     
-    // Should filter microservices based on the search query
+    // Should filter microservices to only show User Service
     expect(result.current.filteredMicroservices.length).toBe(1);
-    expect(result.current.filteredMicroservices[0].name).toContain('service 1');
+    expect(result.current.filteredMicroservices[0].name).toBe('User Service');
+  });
+  
+  it('navigates to previous microservice', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
-    // Clear search query
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
+    
+    // Initially selects first microservice (Authentication Service)
+    expect(result.current.selectedMicroservice?.name).toBe('Authentication Service');
+    
+    // Navigate up (should wrap around to the last item)
     act(() => {
-      result.current.setSearchQuery('');
+      result.current.navigateMicroservice('up');
     });
     
-    // Should show all microservices again
-    expect(result.current.filteredMicroservices.length).toBe(
-      mockMicroservices.filter(ms => ms.projectId === 'project1').length
+    // Should select the last microservice (Payment Service)
+    expect(result.current.selectedMicroservice?.name).toBe('Payment Service');
+  });
+  
+  it('navigates to next microservice', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
+    
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
+    
+    // Initially selects first microservice (Authentication Service)
+    expect(result.current.selectedMicroservice?.name).toBe('Authentication Service');
+    
+    // Navigate down
+    act(() => {
+      result.current.navigateMicroservice('down');
+    });
+    
+    // Should select the next microservice (User Service)
+    expect(result.current.selectedMicroservice?.name).toBe('User Service');
+  });
+  
+  it('gets previous microservice name', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
+    
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
+    
+    // Select the middle microservice (User Service)
+    act(() => {
+      result.current.setSelectedMicroservice(projectMicroservices[1]);
+    });
+    
+    // Previous should be Authentication Service
+    expect(result.current.getPreviousMicroserviceName()).toBe('Authentication Service');
+  });
+  
+  it('gets next microservice name', () => {
+    const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
+    
+    const { result } = renderHook(() => useMicroserviceNavigation({
+      microservices: projectMicroservices
+    }));
+    
+    // Select the middle microservice (User Service)
+    act(() => {
+      result.current.setSelectedMicroservice(projectMicroservices[1]);
+    });
+    
+    // Next should be Payment Service
+    expect(result.current.getNextMicroserviceName()).toBe('Payment Service');
+  });
+  
+  it('clears search query when microservices change', () => {
+    const project1Microservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
+    
+    const { result, rerender } = renderHook(
+      (props) => useMicroserviceNavigation(props),
+      { initialProps: { microservices: project1Microservices } }
     );
+    
+    // Set a search query
+    act(() => {
+      result.current.setSearchQuery('user');
+    });
+    
+    expect(result.current.searchQuery).toBe('user');
+    
+    // Change microservices
+    const project2Microservices = mockMicroservices.filter(ms => ms.projectId === 'project2');
+    rerender({ microservices: project2Microservices });
+    
+    // Search query should be cleared
+    expect(result.current.searchQuery).toBe('');
   });
 });
