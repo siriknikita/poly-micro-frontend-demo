@@ -1,0 +1,46 @@
+import React, { ReactElement } from 'react';
+import { render, RenderOptions } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
+import { ProjectProvider } from '@/context/ProjectContext';
+
+// Interface for providers props
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+// Add any providers that components need to the wrapper
+function AllProviders({ children }: ProvidersProps): JSX.Element {
+  return (
+    <BrowserRouter>
+      <ProjectProvider>
+        {children}
+      </ProjectProvider>
+    </BrowserRouter>
+  );
+}
+
+// Interface for the extended render result
+interface CustomRenderResult extends ReturnType<typeof render> {
+  user: ReturnType<typeof userEvent.setup>;
+}
+
+// Custom render function that includes the AllProviders wrapper
+const customRender = (
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'>,
+): CustomRenderResult => {
+  return {
+    user: userEvent.setup(),
+    ...render(ui, {
+      wrapper: AllProviders,
+      ...options,
+    }),
+  };
+};
+
+// Re-export everything from @testing-library/react
+export * from '@testing-library/react';
+
+// Override the render method with our customized version
+export { customRender as render };

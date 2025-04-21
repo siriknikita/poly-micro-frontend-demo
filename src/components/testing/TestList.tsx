@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from 'react';
 import { TestItem as TestItemType } from '@/types';
 import { useTestItems } from './hooks';
-import { TestItemComponent, IconButton } from './components';
+import { TestItemComponent, IconButton, TestOutputModal } from './components';
 import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
 
 interface TestListProps {
@@ -9,6 +9,7 @@ interface TestListProps {
   onRunTest: (test: TestItemType) => void;
   onGenerateTest: (test: TestItemType) => void;
   functionResults: Record<string, string>;
+  microserviceId: string;
 }
 
 import { useProject } from '@/context/ProjectContext';
@@ -17,14 +18,29 @@ export const TestList = memo<TestListProps>(({
   tests,
   onRunTest,
   onGenerateTest,
-  functionResults
+  functionResults,
+  microserviceId
 }) => {
   // State to track if all items are expanded
   const [areAllExpanded, setAreAllExpanded] = useState(false);
   
   // Use our custom hook for managing test items
   const { project } = useProject();
-  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems(tests, project?.id || '');
+  const { 
+    expandedItems, 
+    toggleExpand, 
+    expandAll, 
+    collapseAll, 
+    showResults, 
+    toggleResultsVisibility, 
+    currentMicroserviceId,
+    isLoading,
+    error,
+    isOutputModalOpen: hookIsOutputModalOpen,
+    selectedTestId: hookSelectedTestId,
+    closeOutputModal: hookCloseOutputModal,
+    viewTestOutput
+  } = useTestItems(tests, project?.id || '', microserviceId);
 
   // Reset areAllExpanded state when microservice changes
   useEffect(() => {
@@ -78,6 +94,7 @@ export const TestList = memo<TestListProps>(({
           onGenerateTest={onGenerateTest}
           result={result}
           showResults={showResults}
+          onShowOutput={viewTestOutput}
         />
         
         {hasChildren && isExpanded && (
@@ -92,9 +109,9 @@ export const TestList = memo<TestListProps>(({
   // Handle toggling all items
   const handleToggleAll = () => {
     if (areAllExpanded) {
-      collapseAll(tests);
+      collapseAll();
     } else {
-      expandAll(tests);
+      expandAll();
     }
     setAreAllExpanded(!areAllExpanded);
   };
@@ -130,9 +147,42 @@ export const TestList = memo<TestListProps>(({
           </div>
         )}
       </div>
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-        {tests.map(test => renderTestItem(test))}
-      </div>
+      
+      {/* Loading state */}
+      {isLoading && (
+        <div className="py-8 flex justify-center items-center">
+          <div data-testid="loading-indicator" className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        </div>
+      )}
+      
+      {/* Error state */}
+      {error && (
+        <div className="py-8 text-center text-red-600 dark:text-red-400">
+          {error}
+        </div>
+      )}
+      
+      {/* Empty state */}
+      {!isLoading && !error && (!tests || tests.length === 0) && (
+        <div className="py-8 text-center text-gray-500 dark:text-gray-400">
+          No tests available
+        </div>
+      )}
+      
+      {/* Test items */}
+      {!isLoading && !error && tests && tests.length > 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
+          {tests.map(test => renderTestItem(test))}
+        </div>
+      )}
+      
+      {/* Test output modal */}
+      <TestOutputModal 
+        isOpen={hookIsOutputModalOpen || false} 
+        testId={hookSelectedTestId}
+        output={hookSelectedTestId ? functionResults[hookSelectedTestId] : ''}
+        onClose={hookCloseOutputModal || (() => {})}
+      />
     </div>
   );
 });

@@ -1,13 +1,13 @@
 // Main components
-export * from './AutomatedTesting';
-export * from './TestList';
-export * from './TestChat';
-export * from './EmptyState';
-export * from './AIPromptModal';
-export * from './TestOutputModal';
-export * from './Header';
-export * from './ChatContainer';
-export * from './TestListContainer';
+export { AutomatedTesting } from './AutomatedTesting';
+export { TestList } from './TestList';
+export { TestChat } from './TestChat';
+export { EmptyState } from './EmptyState';
+export { AIPromptModal } from './AIPromptModal';
+export { TestOutputModal } from './TestOutputModal';
+export { Header } from './Header';
+export { ChatContainer } from './ChatContainer';
+export { TestListContainer } from './TestListContainer';
 
 // Reusable components
 export * from './components';

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ChevronRight, ChevronDown, Zap, Play } from 'lucide-react';
+import { ChevronRight, ChevronDown, Zap, Play, Eye } from 'lucide-react';
 import { TestItem as TestItemType } from '@/types';
 import { CSS_CLASSES, TEST_ITEM_TYPES } from '../constants';
 import { IconButton } from './IconButton';
@@ -13,6 +13,7 @@ interface TestItemProps {
   onGenerateTest: (test: TestItemType) => void;
   result?: string;
   showResults?: boolean;
+  onShowOutput?: (id: string) => void;
 }
 
 /**
@@ -26,7 +27,8 @@ export const TestItemComponent = memo<TestItemProps>(({
   onRunTest,
   onGenerateTest,
   result,
-  showResults = true
+  showResults = true,
+  onShowOutput
 }) => {
   const hasChildren = item.children && item.children.length > 0;
   const paddingLeft = `${depth * 1.25 + 0.5}rem`;
@@ -36,7 +38,7 @@ export const TestItemComponent = memo<TestItemProps>(({
   const depthStyle = CSS_CLASSES.DEPTH_STYLES[depth as keyof typeof CSS_CLASSES.DEPTH_STYLES] || '';
 
   return (
-    <div className="border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+    <div className="border-b border-gray-200 dark:border-gray-700 last:border-b-0" data-testid={`test-item-${item.id}`}>
       <div className={`flex flex-col ${depthStyle}`}>
         <div className="flex items-center p-3" style={{ paddingLeft }}>
           {hasChildren ? (
@@ -73,6 +75,15 @@ export const TestItemComponent = memo<TestItemProps>(({
                 aria-label={`Run test for ${item.name}`}
                 className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900"
               />
+              {result && onShowOutput && (
+                <IconButton
+                  onClick={() => onShowOutput(item.id)}
+                  icon={<Eye className="h-4 w-4" />}
+                  title="View output"
+                  aria-label={`View output for ${item.name}`}
+                  className="text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900"
+                />
+              )}
             </div>
           )}
         </div>

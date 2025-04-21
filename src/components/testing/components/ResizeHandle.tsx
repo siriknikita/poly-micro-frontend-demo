@@ -21,7 +21,9 @@ export const ResizeHandle = memo<ResizeHandleProps>(({
         // Prevent default to avoid text selection on initial click
         e.preventDefault();
       }}
-      aria-hidden="true"
+      role="separator"
+      aria-label="Resize panel"
+      aria-orientation="vertical"
       title="Resize panel"
     >
       <GripVertical className="h-6 w-6 text-gray-400" />
