@@ -3,7 +3,7 @@ import { CPUChart } from './CPUChart';
 import { ServiceStatus } from './ServiceStatus';
 import { LogViewer } from './LogViewer/LogViewer';
 import { useMonitoringData } from '@hooks/index';
-import { Project } from '@types';
+import { Project } from '@/types';
 import { useServiceSelection } from './hooks';
 
 interface MonitoringDashboardProps {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LogOut, Boxes } from 'lucide-react';
-import { ProjectSelector } from './ProjectSelector';
+import { ProjectSelector } from '../shared/selectors/ProjectSelector';
 import { ThemeToggle } from './ThemeToggle';
 import { Project } from '@/types';
 import { mockProjects } from '@/data/mockData';

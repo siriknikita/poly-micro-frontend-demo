@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { RegisterForm, LoginForm } from './components/auth';
-import { Dashboard } from './components/Dashboard';
+import { Dashboard } from './components/monitoring/Dashboard';
 import { ProjectProvider } from './context/ProjectContext';
 
 function App() {

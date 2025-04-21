@@ -39,6 +39,6 @@ export interface Project {
 export type Tab = {
   id: string;
   name: string;
-  icon: React.ComponentType;
-  component: React.ComponentType;
+  icon: React.ComponentType<React.ComponentProps<'svg'>>; // Allow SVG props including className
+  component: React.ComponentType<any>; // Allow components with any props
 };
