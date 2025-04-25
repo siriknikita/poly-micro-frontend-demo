@@ -13,11 +13,13 @@ vi.mock('../../context/ToastContext', () => ({
     showError: mockShowError,
     showInfo: mockShowInfo,
   }),
+  ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
 // Mock the hooks module first, before any imports that might use it
 vi.mock('../../components/testing/hooks', () => {
   return {
+  // @ts-ignore
     useTestItems: vi.fn().mockImplementation((tests, projectId, microserviceId) => ({
       expandedItems: { test1: true, test2: false },
       functionResults: {},
@@ -54,6 +56,7 @@ vi.mock('../../context/ProjectContext', () => ({
 
 // Mock the TestItemComponent
 vi.mock('../../components/testing/components', () => ({
+  // @ts-ignore
   TestItemComponent: ({ item, isExpanded, onToggleExpand, onRunTest, onGenerateTest, onShowOutput }: any) => {
     return (
       <div data-testid={`test-item-${item.id}`}>
@@ -123,6 +126,7 @@ describe('TestList Integration', () => {
     vi.clearAllMocks();
     
     // Reset the mock implementation for each test
+    // @ts-ignore
     vi.mocked(useTestItems).mockImplementation((tests, projectId, microserviceId) => ({
       expandedItems: { func1: true, func2: false, func3: false },
       functionResults: {},
@@ -304,19 +308,32 @@ describe('TestList Integration', () => {
   });
   
   it('toggles all items when expand/collapse button is clicked', () => {
-    // Set up the initial state
-    let areAllExpanded = false;
-    
     // Clear previous mock calls
     mockShowInfo.mockClear();
+    mockExpandAll.mockClear();
     
-    // Mock useState for the component
-    const originalUseState = React.useState;
-    vi.spyOn(React, 'useState').mockImplementation((initialValue) => {
-      if (initialValue === false) {
-        return [areAllExpanded, (val: boolean) => { areAllExpanded = val; }] as const;
-      }
-      return originalUseState(initialValue);
+    // Mock the useTestItems hook with a custom implementation for this test
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      expandedItems: {},
+      functionResults: {},
+      toggleExpand: mockToggleExpand,
+      expandAll: mockExpandAll,
+      collapseAll: mockCollapseAll,
+      showResults: true,
+      toggleResultsVisibility: mockToggleResultsVisibility,
+      currentMicroserviceId: 'ms1',
+      isLoading: false,
+      error: null,
+      isOutputModalOpen: false,
+      selectedTestId: null,
+      closeOutputModal: mockCloseOutputModal,
+      viewTestOutput: mockViewTestOutput,
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn()
     });
     
     render(
