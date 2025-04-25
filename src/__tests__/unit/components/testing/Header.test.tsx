@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '../../../utils/test-utils';
-import Header from '../../../../components/testing/Header';
-import { mockProjects } from '../../../mocks/mockData';
+import { Header } from '@/components/testing/Header';
+import { mockProjects } from '@/__tests__/mocks/mockData';
 
 // Mock window.open
 global.open = vi.fn();
