@@ -1,14 +1,16 @@
 import { memo, useState, useEffect } from 'react';
 import { TestItem as TestItemType } from '@/types';
 import { useTestItems } from './hooks';
-import { TestItemComponent, IconButton } from './components';
+import { TestItemComponent, IconButton, TestOutputModal } from './components';
 import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 
 interface TestListProps {
   tests: TestItemType[];
   onRunTest: (test: TestItemType) => void;
   onGenerateTest: (test: TestItemType) => void;
   functionResults: Record<string, string>;
+  microserviceId: string;
 }
 
 import { useProject } from '@/context/ProjectContext';
@@ -17,14 +19,30 @@ export const TestList = memo<TestListProps>(({
   tests,
   onRunTest,
   onGenerateTest,
-  functionResults
+  functionResults,
+  microserviceId
 }) => {
   // State to track if all items are expanded
   const [areAllExpanded, setAreAllExpanded] = useState(false);
   
   // Use our custom hook for managing test items
   const { project } = useProject();
-  const { expandedItems, toggleExpand, expandAll, collapseAll, showResults, toggleResultsVisibility, currentMicroserviceId } = useTestItems(tests, project?.id || '');
+  const { showSuccess, showError, showInfo } = useToast();
+  const { 
+    expandedItems, 
+    toggleExpand, 
+    expandAll, 
+    collapseAll, 
+    showResults, 
+    toggleResultsVisibility, 
+    currentMicroserviceId,
+    isLoading,
+    error,
+    isOutputModalOpen: hookIsOutputModalOpen,
+    selectedTestId: hookSelectedTestId,
+    closeOutputModal: hookCloseOutputModal,
+    viewTestOutput
+  } = useTestItems(tests, project?.id || '', microserviceId);
 
   // Reset areAllExpanded state when microservice changes
   useEffect(() => {
@@ -74,10 +92,16 @@ export const TestList = memo<TestListProps>(({
           depth={depth}
           isExpanded={isExpanded}
           onToggleExpand={toggleExpand}
-          onRunTest={onRunTest}
-          onGenerateTest={onGenerateTest}
+          onRunTest={handleRunTest}
+          onGenerateTest={(test) => {
+            onGenerateTest(test);
+            showInfo(`Generating test for ${test.name}...`);
+          }}
           result={result}
           showResults={showResults}
+          onShowOutput={(testId) => {
+            viewTestOutput(testId);
+          }}
         />
         
         {hasChildren && isExpanded && (
@@ -92,11 +116,34 @@ export const TestList = memo<TestListProps>(({
   // Handle toggling all items
   const handleToggleAll = () => {
     if (areAllExpanded) {
-      collapseAll(tests);
+      collapseAll();
+      showInfo('All tests collapsed');
     } else {
-      expandAll(tests);
+      expandAll();
+      showInfo('All tests expanded');
     }
     setAreAllExpanded(!areAllExpanded);
+  };
+
+  // Wrap onRunTest to add toast notifications
+  const handleRunTest = (test: TestItemType) => {
+    showInfo(`Running test: ${test.name}...`);
+    const result = onRunTest(test);
+    
+    // The actual toast notification will be shown when the test completes
+    // This is handled in the timer callback in useTestItems
+    setTimeout(() => {
+      if (test.id in functionResults) {
+        const resultText = functionResults[test.id];
+        if (resultText.includes('Success')) {
+          showSuccess(`Test ${test.name} completed successfully`);
+        } else if (resultText.includes('Partial')) {
+          showInfo(`Test ${test.name} completed with some failures`);
+        } else {
+          showError(`Test ${test.name} failed`);
+        }
+      }
+    }, 1500); // Slightly longer than the mock test execution time
   };
 
   return (
@@ -130,9 +177,42 @@ export const TestList = memo<TestListProps>(({
           </div>
         )}
       </div>
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
-        {tests.map(test => renderTestItem(test))}
-      </div>
+      
+      {/* Loading state */}
+      {isLoading && (
+        <div className="py-8 flex justify-center items-center">
+          <div data-testid="loading-indicator" className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        </div>
+      )}
+      
+      {/* Error state */}
+      {error && (
+        <div className="py-8 text-center text-red-600 dark:text-red-400">
+          {error}
+        </div>
+      )}
+      
+      {/* Empty state */}
+      {!isLoading && !error && (!tests || tests.length === 0) && (
+        <div className="py-8 text-center text-gray-500 dark:text-gray-400">
+          No tests available
+        </div>
+      )}
+      
+      {/* Test items */}
+      {!isLoading && !error && tests && tests.length > 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700">
+          {tests.map(test => renderTestItem(test))}
+        </div>
+      )}
+      
+      {/* Test output modal */}
+      <TestOutputModal 
+        isOpen={hookIsOutputModalOpen || false} 
+        testId={hookSelectedTestId}
+        output={hookSelectedTestId ? functionResults[hookSelectedTestId] : ''}
+        onClose={hookCloseOutputModal || (() => {})}
+      />
     </div>
   );
 });

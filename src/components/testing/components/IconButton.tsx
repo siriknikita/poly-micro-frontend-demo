@@ -6,6 +6,7 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
   variant?: 'primary' | 'outline' | 'active';
   size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
 }
 
 /**
@@ -17,6 +18,7 @@ export const IconButton = memo<IconButtonProps>(({
   variant = 'outline',
   size = 'sm',
   className = '',
+  disabled = false,
   ...props
 }) => {
   // Get the variant class
@@ -32,9 +34,13 @@ export const IconButton = memo<IconButtonProps>(({
   // Determine if it's an icon-only button or icon with label
   const isIconOnly = !label;
   
+  // Add disabled styling
+  const disabledClass = disabled ? 'opacity-50 cursor-not-allowed' : '';
+  
   return (
     <button
-      className={`rounded-lg ${sizeClass} ${variantClass} ${isIconOnly ? '' : 'flex items-center space-x-2'} ${className}`}
+      className={`rounded-lg ${sizeClass} ${variantClass} ${isIconOnly ? '' : 'flex items-center space-x-2'} ${disabledClass} ${className}`}
+      disabled={disabled}
       {...props}
     >
       {icon}

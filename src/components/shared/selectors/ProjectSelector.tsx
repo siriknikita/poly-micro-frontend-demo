@@ -22,6 +22,7 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
           if (project) onSelectProject(project);
         }}
         className="appearance-none w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+        data-testid="selected-project"
       >
         <option value="">Select a project</option>
         {projects.map((project) => (

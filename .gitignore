@@ -130,3 +130,7 @@ dist
 .pnp.*
 
 package-lock.json
+
+# Test results
+test-results
+playwright-report

@@ -10,6 +10,7 @@ import {
 import { Send } from 'lucide-react';
 import { TestItem } from '@/types';
 import { IconButton } from './components';
+import { useToast } from '@/context/ToastContext';
 
 interface TestChatProps {
   onGenerateTest: (test: TestItem) => void;
@@ -29,6 +30,7 @@ export const TestChat = forwardRef<
   ]);
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { showSuccess, showInfo } = useToast();
 
   useImperativeHandle(ref, () => ({
     setInput: (text: string) => {
@@ -36,6 +38,7 @@ export const TestChat = forwardRef<
       if (textareaRef.current) {
         textareaRef.current.focus();
       }
+      showInfo('Test template added to chat');
     },
   }));
 
@@ -55,16 +58,47 @@ export const TestChat = forwardRef<
 
     setMessages((prev) => [...prev, { text: input, isUser: true }]);
     setInput('');
+    showInfo('Message sent to test assistant');
+
+    // Check if this is a test generation request
+    const isTestRequest = input.toLowerCase().includes('generate test') || 
+                         input.toLowerCase().includes('create test');
 
     // Mock response
     setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          text: "I'll help you improve your test coverage. What specific function would you like to focus on?",
-          isUser: false,
-        },
-      ]);
+      if (isTestRequest) {
+        showSuccess('Test generation request processed');
+        // Mock a test generation response
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: "I've generated a test based on your requirements. Would you like to run it now?",
+            isUser: false,
+          },
+        ]);
+        
+        // Mock a test item for demonstration purposes
+        const mockTest: TestItem = {
+          id: `test-${Date.now()}`,
+          name: 'Generated Test',
+          type: 'function',
+          children: [
+            { id: `test-case-${Date.now()}`, name: 'Test Case 1', type: 'test-case' }
+          ]
+        };
+        
+        setTimeout(() => {
+          onGenerateTest(mockTest);
+        }, 500);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            text: "I'll help you improve your test coverage. What specific function would you like to focus on?",
+            isUser: false,
+          },
+        ]);
+      }
     }, 1000);
   }, [input]);
 
