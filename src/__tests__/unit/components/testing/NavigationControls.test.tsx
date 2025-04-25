@@ -3,130 +3,94 @@ import { render, screen } from '../../../utils/test-utils';
 import { NavigationControls } from '@/components/testing/components';
 
 describe('NavigationControls Component', () => {
-  const mockMicroservices = [
-    { id: 'ms1', name: 'Microservice 1' },
-    { id: 'ms2', name: 'Microservice 2' },
-    { id: 'ms3', name: 'Microservice 3' },
-  ];
-
-  it('renders correctly with microservices', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms1"
-        onNavigate={() => {}}
-      />
-    );
-    
-    expect(screen.getByText('Microservice 1')).toBeInTheDocument();
-    expect(screen.getByTestId('navigation-controls')).toBeInTheDocument();
-  });
-  
-  it('disables previous button when first microservice is selected', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms1"
-        onNavigate={() => {}}
-      />
-    );
-    
-    expect(screen.getByTestId('prev-button')).toBeDisabled();
-    expect(screen.getByTestId('next-button')).not.toBeDisabled();
-  });
-  
-  it('disables next button when last microservice is selected', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms3"
-        onNavigate={() => {}}
-      />
-    );
-    
-    expect(screen.getByTestId('prev-button')).not.toBeDisabled();
-    expect(screen.getByTestId('next-button')).toBeDisabled();
-  });
-  
-  it('enables both buttons when middle microservice is selected', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms2"
-        onNavigate={() => {}}
-      />
-    );
-    
-    expect(screen.getByTestId('prev-button')).not.toBeDisabled();
-    expect(screen.getByTestId('next-button')).not.toBeDisabled();
-  });
-  
-  it('calls onNavigate with previous microservice ID when prev button is clicked', async () => {
+  it('renders navigation buttons when showControls is true', async () => {
     const handleNavigate = vi.fn();
     const { user } = render(
       <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms2"
         onNavigate={handleNavigate}
+        previousItemName="Test Item 1"
+        nextItemName="Test Item 3"
+        showControls={true}
       />
     );
     
-    await user.click(screen.getByTestId('prev-button'));
+    // Check if buttons are rendered
+    const upButton = screen.getByLabelText(/Navigate to previous item: Test Item 1/i);
+    const downButton = screen.getByLabelText(/Navigate to next item: Test Item 3/i);
     
-    expect(handleNavigate).toHaveBeenCalledWith('ms1');
+    expect(upButton).toBeInTheDocument();
+    expect(downButton).toBeInTheDocument();
+    
+    // Check if tooltips are correct
+    expect(upButton).toHaveAttribute('title', 'Previous: Test Item 1');
+    expect(downButton).toHaveAttribute('title', 'Next: Test Item 3');
+    
+    // Test navigation
+    await user.click(upButton);
+    expect(handleNavigate).toHaveBeenCalledWith('up');
+    
+    await user.click(downButton);
+    expect(handleNavigate).toHaveBeenCalledWith('down');
   });
   
-  it('calls onNavigate with next microservice ID when next button is clicked', async () => {
+  it('does not render when showControls is false', () => {
+    render(
+      <NavigationControls
+        onNavigate={() => {}}
+        previousItemName="Test Item 1"
+        nextItemName="Test Item 3"
+        showControls={false}
+      />
+    );
+    
+    // Check that no buttons are rendered
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+  
+  it('calls onNavigate with correct direction when buttons are clicked', async () => {
     const handleNavigate = vi.fn();
     const { user } = render(
       <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms2"
         onNavigate={handleNavigate}
+        previousItemName="Previous Test"
+        nextItemName="Next Test"
+        showControls={true}
       />
     );
     
-    await user.click(screen.getByTestId('next-button'));
+    // Find buttons by their accessible names
+    const upButton = screen.getByLabelText(/Navigate to previous item/i);
+    const downButton = screen.getByLabelText(/Navigate to next item/i);
     
-    expect(handleNavigate).toHaveBeenCalledWith('ms3');
+    // Test up navigation
+    await user.click(upButton);
+    expect(handleNavigate).toHaveBeenCalledWith('up');
+    
+    // Test down navigation
+    await user.click(downButton);
+    expect(handleNavigate).toHaveBeenCalledWith('down');
+    
+    // Verify call count
+    expect(handleNavigate).toHaveBeenCalledTimes(2);
   });
   
-  it('renders correctly when there are no microservices', () => {
+  it('renders with correct button icons', () => {
     render(
       <NavigationControls
-        microservices={[]}
-        selectedMicroserviceId={null}
         onNavigate={() => {}}
+        previousItemName="Previous Test"
+        nextItemName="Next Test"
+        showControls={true}
       />
     );
     
-    expect(screen.getByText('No Microservices')).toBeInTheDocument();
-    expect(screen.getByTestId('prev-button')).toBeDisabled();
-    expect(screen.getByTestId('next-button')).toBeDisabled();
-  });
-  
-  it('renders correctly when selectedMicroserviceId is null', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId={null}
-        onNavigate={() => {}}
-      />
-    );
+    // Verify the buttons have the correct icons by checking the container structure
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(2);
     
-    expect(screen.getByText('Select a Microservice')).toBeInTheDocument();
-  });
-  
-  it('displays microservice name with counter', () => {
-    render(
-      <NavigationControls
-        microservices={mockMicroservices}
-        selectedMicroserviceId="ms2"
-        onNavigate={() => {}}
-      />
-    );
-    
-    expect(screen.getByText('Microservice 2')).toBeInTheDocument();
-    expect(screen.getByText('2/3')).toBeInTheDocument();
+    // The buttons should contain SVG icons
+    buttons.forEach(button => {
+      expect(button.querySelector('svg')).toBeInTheDocument();
+    });
   });
 });

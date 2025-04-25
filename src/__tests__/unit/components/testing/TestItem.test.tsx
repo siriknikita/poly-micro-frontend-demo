@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '../../../utils/test-utils';
-import { TestItemComponent } from '../../../../components/testing/components/TestItem';
+import { TestItemComponent } from '@/components/testing/components/TestItem';
 import { TestItem } from '@/types';
 
 describe('TestItemComponent', () => {
@@ -49,11 +49,11 @@ describe('TestItemComponent', () => {
     expect(screen.getByText('authenticateUser')).toBeInTheDocument();
     
     // Check expand button is rendered (since it has children)
-    expect(screen.getByRole('button', { name: 'Expand' })).toBeInTheDocument();
+    expect(screen.getByRole('expandButton', { name: 'Expand' })).toBeInTheDocument();
     
     // Check action buttons are rendered for function type
-    expect(screen.getByRole('button', { name: 'Generate test for authenticateUser' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Run test for authenticateUser' })).toBeInTheDocument();
+    expect(screen.getByRole('generateButton', { name: 'Generate test for authenticateUser' })).toBeInTheDocument();
+    expect(screen.getByRole('runButton', { name: 'Run test for authenticateUser' })).toBeInTheDocument();
   });
   
   it('renders test case item correctly', () => {
@@ -71,11 +71,11 @@ describe('TestItemComponent', () => {
     expect(screen.getByText('Test Valid Login')).toBeInTheDocument();
     
     // Test case doesn't have children, so no expand button
-    expect(screen.queryByRole('button', { name: 'Expand' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('expandButton', { name: 'Expand' })).not.toBeInTheDocument();
     
     // Test case doesn't have action buttons
-    expect(screen.queryByRole('button', { name: /Generate test/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Run test/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('generateButton', { name: /Generate test/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('runButton', { name: /Run test/i })).not.toBeInTheDocument();
   });
   
   it('calls onToggleExpand when expand button is clicked', async () => {
@@ -90,7 +90,7 @@ describe('TestItemComponent', () => {
     );
     
     // Click expand button
-    await user.click(screen.getByRole('button', { name: 'Expand' }));
+    await user.click(screen.getByRole('expandButton', { name: 'Expand' }));
     
     // Check onToggleExpand was called with correct id
     expect(mockToggleExpand).toHaveBeenCalledWith('function1');
@@ -108,7 +108,7 @@ describe('TestItemComponent', () => {
     );
     
     // Click run button
-    await user.click(screen.getByRole('button', { name: 'Run test for authenticateUser' }));
+    await user.click(screen.getByRole('runButton', { name: 'Run test for authenticateUser' }));
     
     // Check onRunTest was called with correct item
     expect(mockRunTest).toHaveBeenCalledWith(functionItem);
@@ -126,7 +126,7 @@ describe('TestItemComponent', () => {
     );
     
     // Click generate button
-    await user.click(screen.getByRole('button', { name: 'Generate test for authenticateUser' }));
+    await user.click(screen.getByRole('generateButton', { name: 'Generate test for authenticateUser' }));
     
     // Check onGenerateTest was called with correct item
     expect(mockGenerateTest).toHaveBeenCalledWith(functionItem);
@@ -182,7 +182,7 @@ describe('TestItemComponent', () => {
     );
     
     // When not expanded, should show "Expand" button
-    expect(screen.getByRole('button', { name: 'Expand' })).toBeInTheDocument();
+    expect(screen.getByRole('expandButton', { name: 'Expand' })).toBeInTheDocument();
     
     // Rerender with isExpanded=true
     rerender(
@@ -196,6 +196,6 @@ describe('TestItemComponent', () => {
     );
     
     // When expanded, should show "Collapse" button
-    expect(screen.getByRole('button', { name: 'Collapse' })).toBeInTheDocument();
+    expect(screen.getByRole('collapseButton', { name: 'Collapse' })).toBeInTheDocument();
   });
 });

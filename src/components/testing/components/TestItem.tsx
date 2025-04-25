@@ -46,6 +46,7 @@ export const TestItemComponent = memo<TestItemProps>(({
               onClick={() => onToggleExpand(item.id)}
               className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
               aria-label={isExpanded ? "Collapse" : "Expand"}
+              role={isExpanded ? "collapseButton" : "expandButton"}
             >
               {isExpanded ? (
                 <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -67,6 +68,7 @@ export const TestItemComponent = memo<TestItemProps>(({
                 title="Generate test"
                 aria-label={`Generate test for ${item.name}`}
                 className="text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900"
+                role="generateButton"
               />
               <IconButton
                 onClick={() => onRunTest(item)}
@@ -74,6 +76,7 @@ export const TestItemComponent = memo<TestItemProps>(({
                 title="Run test"
                 aria-label={`Run test for ${item.name}`}
                 className="text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900"
+                role="runButton"
               />
               {result && onShowOutput && (
                 <IconButton
@@ -82,6 +85,7 @@ export const TestItemComponent = memo<TestItemProps>(({
                   title="View output"
                   aria-label={`View output for ${item.name}`}
                   className="text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900"
+                  role="outputButton"
                 />
               )}
             </div>

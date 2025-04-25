@@ -1,94 +1,83 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '../../../utils/test-utils';
 import { Header } from '@/components/testing/Header';
-import { mockProjects } from '@/__tests__/mocks/mockData';
-
-// Mock window.open
-global.open = vi.fn();
 
 describe('Header Component', () => {
-  it('renders correctly with project name', () => {
-    render(<Header projectName="Project 1" />);
+  const mockProps = {
+    selectedMicroservice: { name: 'Test Microservice' },
+    showChat: false,
+    setShowChat: vi.fn(),
+    handleRunAllTests: vi.fn()
+  };
+
+  it('renders correctly with microservice name', () => {
+    render(<Header {...mockProps} />);
     
-    expect(screen.getByText('Project 1')).toBeInTheDocument();
-    expect(screen.getByTestId('app-logo')).toBeInTheDocument();
+    expect(screen.getByText('Testing: Test Microservice')).toBeInTheDocument();
   });
   
-  it('navigates to landing page when logo is clicked', async () => {
-    const { user } = render(<Header projectName="Project 1" />);
+  it('has a button to run all tests', () => {
+    render(<Header {...mockProps} />);
     
-    await user.click(screen.getByTestId('app-logo'));
-    
-    expect(global.open).toHaveBeenCalledWith(expect.any(String), '_blank');
+    const runButton = screen.getByRole('button', { name: /run all tests/i });
+    expect(runButton).toBeInTheDocument();
   });
   
-  it('renders without project name when not provided', () => {
-    render(<Header />);
+  it('calls handleRunAllTests when run button is clicked', async () => {
+    const { user } = render(<Header {...mockProps} />);
     
-    expect(screen.queryByTestId('project-name')).not.toBeInTheDocument();
+    const runButton = screen.getByRole('button', { name: /run all tests/i });
+    await user.click(runButton);
+    
+    expect(mockProps.handleRunAllTests).toHaveBeenCalledTimes(1);
   });
   
-  it('renders project selector when projects are provided', () => {
-    render(<Header projectName="Project 1" projects={mockProjects} onSelectProject={() => {}} />);
+  it('has a button to toggle chat visibility', () => {
+    render(<Header {...mockProps} />);
     
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    const chatButton = screen.getByRole('button', { name: /show test assistant/i });
+    expect(chatButton).toBeInTheDocument();
   });
   
-  it('calls onSelectProject when a project is selected', async () => {
-    const handleSelectProject = vi.fn();
-    const { user } = render(
-      <Header 
-        projectName="Project 1" 
-        projects={mockProjects} 
-        onSelectProject={handleSelectProject} 
-      />
-    );
+  it('calls setShowChat when chat button is clicked', async () => {
+    const { user } = render(<Header {...mockProps} />);
     
-    // Open dropdown
-    await user.click(screen.getByRole('combobox'));
+    const chatButton = screen.getByRole('button', { name: /show test assistant/i });
+    await user.click(chatButton);
     
-    // Select a different project
-    await user.click(screen.getByText('Project 2'));
-    
-    expect(handleSelectProject).toHaveBeenCalledWith('project2');
+    expect(mockProps.setShowChat).toHaveBeenCalledWith(true);
   });
   
-  it('renders settings button when onOpenSettings is provided', () => {
-    render(<Header projectName="Project 1" onOpenSettings={() => {}} />);
+  it('updates chat button appearance when chat is visible', () => {
+    const visibleChatProps = {
+      ...mockProps,
+      showChat: true
+    };
     
-    expect(screen.getByTestId('settings-button')).toBeInTheDocument();
+    render(<Header {...visibleChatProps} />);
+    
+    const chatButton = screen.getByRole('button', { name: /hide test assistant/i });
+    expect(chatButton).toBeInTheDocument();
   });
   
-  it('calls onOpenSettings when settings button is clicked', async () => {
-    const handleOpenSettings = vi.fn();
-    const { user } = render(<Header projectName="Project 1" onOpenSettings={handleOpenSettings} />);
+  it('toggles chat visibility correctly', async () => {
+    const { user, rerender } = render(<Header {...mockProps} />);
     
-    await user.click(screen.getByTestId('settings-button'));
+    // Initially hidden
+    let chatButton = screen.getByRole('button', { name: /show test assistant/i });
+    await user.click(chatButton);
+    expect(mockProps.setShowChat).toHaveBeenCalledWith(true);
     
-    expect(handleOpenSettings).toHaveBeenCalledTimes(1);
-  });
-  
-  it('does not render settings button when onOpenSettings is not provided', () => {
-    render(<Header projectName="Project 1" />);
+    // Simulate chat becoming visible
+    const visibleChatProps = {
+      ...mockProps,
+      showChat: true
+    };
+    rerender(<Header {...visibleChatProps} />);
     
-    expect(screen.queryByTestId('settings-button')).not.toBeInTheDocument();
-  });
-  
-  it('renders with custom className when provided', () => {
-    render(<Header projectName="Project 1" className="custom-header" />);
-    
-    expect(screen.getByTestId('header-container')).toHaveClass('custom-header');
-  });
-  
-  it('renders notification count when provided', () => {
-    render(<Header projectName="Project 1" notificationCount={5} />);
-    
-    expect(screen.getByTestId('notification-count')).toHaveTextContent('5');
-  });
-  
-  it('does not render notification indicator when count is 0', () => {
-    render(<Header projectName="Project 1" notificationCount={0} />);
-    
-    expect(screen.queryByTestId('notification-count')).not.toBeInTheDocument();
+    // Now visible, should hide on click
+    chatButton = screen.getByRole('button', { name: /hide test assistant/i });
+    await user.click(chatButton);
+    expect(mockProps.setShowChat).toHaveBeenCalledWith(false);
   });
 });

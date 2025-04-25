@@ -8,9 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
+    "test": "vitest --ui",
+    "test:watch": "vitest --ui",
+    "test:unit": "vitest --ui --dir src/__tests__/unit",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test"
   },

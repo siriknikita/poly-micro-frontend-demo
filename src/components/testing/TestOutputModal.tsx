@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { TestItem, TestOutput } from '@/types';
 import { BoxedWrapper } from '@/components/shared';
@@ -17,10 +17,28 @@ export const TestOutputModal = memo<TestOutputModalProps>(({
   output,
   test
 }) => {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // Only add the event listener if the modal is open
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    // Clean up the event listener when the component unmounts or when isOpen changes
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]); // Dependencies array
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" data-testId='test-output-modal'>
       <BoxedWrapper className="shadow-xl w-full max-w-2xl">
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -32,6 +50,7 @@ export const TestOutputModal = memo<TestOutputModalProps>(({
             variant="outline"
             aria-label="Close modal"
             className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            data-testId='close-modal-button'
           />
         </div>
         
@@ -58,7 +77,7 @@ export const TestOutputModal = memo<TestOutputModalProps>(({
           </div>
 
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4">
-            <pre className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap font-mono">
+            <pre className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap font-mono" data-testId='output-content'>
               {output.output}
             </pre>
           </div>
