@@ -8,6 +8,7 @@ import { useResizablePanel, useTestItems, useMicroserviceNavigation } from './ho
 import { IconButton, NavigationControls, SearchInput, ResizeHandle } from './components';
 import { DEFAULT_PROMPTS } from './constants';
 
+import { useToast } from '@/context/ToastContext';
 import { useProject } from '@/context/ProjectContext';
 
 // Using key instead of memo to force remount when project changes
@@ -19,6 +20,7 @@ export const AutomatedTesting = () => {
   // Use our custom hooks
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
   const { project } = useProject();
+  const { showInfo, showSuccess } = useToast();
 
   // Use the current project's microservices
   const microservices = project?.microservices || [];
@@ -28,6 +30,7 @@ export const AutomatedTesting = () => {
     runTest,
     runAllTests,
     setCurrentMicroservice,
+    allTestsComplete,
   } = useTestItems(microservices, project?.id || '');
   
   const {
@@ -56,6 +59,7 @@ export const AutomatedTesting = () => {
     if (chatRef.current) {
       chatRef.current.setInput(defaultPrompt);
     }
+    showInfo(`Preparing to generate test for ${test.name}`);
   };
 
   // If there's no selected microservice and we have filtered results, select the first one
@@ -64,6 +68,16 @@ export const AutomatedTesting = () => {
       setSelectedMicroservice(filteredMicroservices[0]);
     }
   }, [selectedMicroservice, filteredMicroservices]);
+  
+  // Show a toast notification when all tests complete, but only when tests were actually run
+  useEffect(() => {
+    // Only show the notification if tests were actually run (totalTestsRunningRef.current > 0)
+    // This prevents the notification from appearing when just switching between microservices
+    if (allTestsComplete && selectedMicroservice) {
+      // We can access this information because 'showSuccess' is from our component scope
+      showSuccess(`All tests for ${selectedMicroservice.name} have completed`);
+    }
+  }, [allTestsComplete, selectedMicroservice, showSuccess]);
 
   // Update the current microservice in the test items hook when it changes
   useEffect(() => {
@@ -100,7 +114,14 @@ export const AutomatedTesting = () => {
 
           <div className="flex items-center space-x-2">
             <IconButton
-              onClick={() => selectedMicroservice && runAllTests(selectedMicroservice)}
+              onClick={() => {
+                if (selectedMicroservice) {
+                  const result = runAllTests();
+                  if (result) {
+                    showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+                  }
+                }
+              }}
               icon={<Play className="h-4 w-4" />}
               label="Run All Tests"
               variant="primary"
@@ -126,6 +147,7 @@ export const AutomatedTesting = () => {
                 onRunTest={runTest}
                 onGenerateTest={handleGenerateTest}
                 functionResults={functionResults}
+                microserviceId={selectedMicroservice.id}
               />
             ) : (
               <EmptyState />
@@ -156,3 +178,5 @@ export const AutomatedTesting = () => {
     </div>
   );
 };
+
+

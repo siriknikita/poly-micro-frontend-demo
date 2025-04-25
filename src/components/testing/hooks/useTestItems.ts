@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { TestItem } from '@/types';
 
 // Define interfaces for better type safety
@@ -78,6 +78,9 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
   const [isOutputModalOpen, setIsOutputModalOpen] = useState<boolean>(false);
   const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
   const [runningTests, setRunningTests] = useState<Record<string, boolean>>({});
+  const [allTestsComplete, setAllTestsComplete] = useState<boolean>(false);
+  const totalTestsRunningRef = useRef<number>(0);
+  const completedTestsRef = useRef<number>(0);
 
   // Initialize state when project or microservices change
   useEffect(() => {
@@ -85,6 +88,9 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
     setExpandedItems({});
     setFunctionResults({});
     setShowResults(true);
+    setAllTestsComplete(false);
+    totalTestsRunningRef.current = 0;
+    completedTestsRef.current = 0;
     
     // Set first microservice as current if available, or use initialMicroserviceId if provided
     if (initialMicroserviceId) {
@@ -198,12 +204,29 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
    */
   const runTest = useCallback((test: TestItem) => {
     if (!test || test.type !== 'function') return;
-
-    // Mock test run, would be replaced with actual API call
-    const totalTests = test.children?.length || 0;
-    const passedTests = Math.floor(Math.random() * (totalTests + 1)); // Random number of passing tests
     
-    const result = `Function Results (${new Date().toLocaleTimeString()}):
+    // Set this test as running
+    setRunningTests(prev => ({ ...prev, [test.id]: true }));
+    setIsLoading(true);
+    
+    // Increment test count if this is part of a batch run
+    if (totalTestsRunningRef.current > 0) {
+      completedTestsRef.current += 1;
+      
+      // Check if all tests are complete
+      if (completedTestsRef.current >= totalTestsRunningRef.current) {
+        setAllTestsComplete(true);
+      }
+    }
+    
+    // Mock test run, would be replaced with actual API call
+    // Simulate an async operation
+    setTimeout(() => {
+      try {
+        const totalTests = test.children?.length || 0;
+        const passedTests = Math.floor(Math.random() * (totalTests + 1)); // Random number of passing tests
+        
+        const result = `Function Results (${new Date().toLocaleTimeString()}):
 Status: ${passedTests === totalTests ? 'Success' : 'Partial'}
 Tests: ${passedTests}/${totalTests} passed
 Coverage: ${Math.floor(85 + Math.random() * 15)}%
@@ -211,15 +234,53 @@ Coverage: ${Math.floor(85 + Math.random() * 15)}%
 ✓ ${passedTests} test(s) passed
 ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed` : ''}
 `;
-    
-    setFunctionResults(prev => {
-      const newResults = { ...prev, [test.id]: result };
-      
-      // Save to localStorage
-      storage.save(STORAGE_KEYS.functionResults(projectId), currentMicroserviceId, newResults);
-      
-      return newResults;
-    });
+        
+        setFunctionResults(prev => {
+          const newResults = { ...prev, [test.id]: result };
+          
+          // Save to localStorage
+          storage.save(STORAGE_KEYS.functionResults(projectId), currentMicroserviceId, newResults);
+          
+          return newResults;
+        });
+        
+        // Test is complete - no longer running
+        setRunningTests(prev => {
+          const updated = { ...prev };
+          delete updated[test.id];
+          return updated;
+        });
+        
+        setIsLoading(false);
+        
+        // Return success status and info for toast notifications
+        return {
+          success: true,
+          test,
+          status: passedTests === totalTests ? 'Success' : 'Partial',
+          passedTests,
+          totalTests
+        };
+      } catch (err) {
+        console.error('Test execution error:', err);
+        
+        // Test failed - no longer running
+        setRunningTests(prev => {
+          const updated = { ...prev };
+          delete updated[test.id];
+          return updated;
+        });
+        
+        setIsLoading(false);
+        
+        // Return error info for toast notifications
+        return {
+          success: false,
+          test,
+          error: err instanceof Error ? err.message : 'Unknown error'
+        };
+      }
+    }, 1000); // Simulate a delay
   }, [currentMicroserviceId, projectId]);
 
   /**
@@ -251,10 +312,35 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     
     const functions = getAllFunctions([microservice]);
     
-    // Run each function test
+    // Reset completion trackers
+    setAllTestsComplete(false);
+    totalTestsRunningRef.current = functions.length;
+    completedTestsRef.current = 0;
+    
+    // Set all tests as running
+    const runningTestsObj: Record<string, boolean> = {};
     functions.forEach(func => {
-      runTest(func);
+      runningTestsObj[func.id] = true;
     });
+    setRunningTests(runningTestsObj);
+    
+    if (functions.length > 0) {
+      setIsLoading(true);
+      
+      // Return information for toast notifications
+      const result = {
+        success: true,
+        totalTests: functions.length,
+        microserviceName: microservice.name
+      };
+      
+      // Run each function test
+      functions.forEach(func => {
+        runTest(func);
+      });
+      
+      return result;
+    }
   }, [currentMicroserviceId, microservices, runTest]);
 
   /**
@@ -284,6 +370,12 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
       return;
     }
     
+    // Make sure we reset test completion tracking when switching microservices
+    // This prevents showing completion toasts when just navigating
+    setAllTestsComplete(false);
+    totalTestsRunningRef.current = 0;
+    completedTestsRef.current = 0;
+    
     // Set the current microservice ID, which will trigger the useEffect to load state
     setCurrentMicroserviceId(microservice.id);
   }, []);
@@ -310,6 +402,7 @@ ${totalTests - passedTests > 0 ? `✕ ${totalTests - passedTests} test(s) failed
     isOutputModalOpen,
     selectedTestId,
     runningTests,
+    allTestsComplete,
     
     // Actions
     toggleExpand,

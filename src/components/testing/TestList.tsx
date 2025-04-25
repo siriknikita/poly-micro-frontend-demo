@@ -3,6 +3,7 @@ import { TestItem as TestItemType } from '@/types';
 import { useTestItems } from './hooks';
 import { TestItemComponent, IconButton, TestOutputModal } from './components';
 import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 
 interface TestListProps {
   tests: TestItemType[];
@@ -26,6 +27,7 @@ export const TestList = memo<TestListProps>(({
   
   // Use our custom hook for managing test items
   const { project } = useProject();
+  const { showSuccess, showError, showInfo } = useToast();
   const { 
     expandedItems, 
     toggleExpand, 
@@ -90,11 +92,16 @@ export const TestList = memo<TestListProps>(({
           depth={depth}
           isExpanded={isExpanded}
           onToggleExpand={toggleExpand}
-          onRunTest={onRunTest}
-          onGenerateTest={onGenerateTest}
+          onRunTest={handleRunTest}
+          onGenerateTest={(test) => {
+            onGenerateTest(test);
+            showInfo(`Generating test for ${test.name}...`);
+          }}
           result={result}
           showResults={showResults}
-          onShowOutput={viewTestOutput}
+          onShowOutput={(testId) => {
+            viewTestOutput(testId);
+          }}
         />
         
         {hasChildren && isExpanded && (
@@ -110,10 +117,33 @@ export const TestList = memo<TestListProps>(({
   const handleToggleAll = () => {
     if (areAllExpanded) {
       collapseAll();
+      showInfo('All tests collapsed');
     } else {
       expandAll();
+      showInfo('All tests expanded');
     }
     setAreAllExpanded(!areAllExpanded);
+  };
+
+  // Wrap onRunTest to add toast notifications
+  const handleRunTest = (test: TestItemType) => {
+    showInfo(`Running test: ${test.name}...`);
+    const result = onRunTest(test);
+    
+    // The actual toast notification will be shown when the test completes
+    // This is handled in the timer callback in useTestItems
+    setTimeout(() => {
+      if (test.id in functionResults) {
+        const resultText = functionResults[test.id];
+        if (resultText.includes('Success')) {
+          showSuccess(`Test ${test.name} completed successfully`);
+        } else if (resultText.includes('Partial')) {
+          showInfo(`Test ${test.name} completed with some failures`);
+        } else {
+          showError(`Test ${test.name} failed`);
+        }
+      }
+    }, 1500); // Slightly longer than the mock test execution time
   };
 
   return (

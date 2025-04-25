@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Testing feature provides a comprehensive suite of tools for automated testing of microservices. It allows users to create, manage, and execute tests against their microservices, view test results, and use AI assistance for test creation.
+The Testing feature provides a comprehensive suite of tools for automated testing of microservices. It allows users to create, manage, and execute tests against their microservices, view test results, and use AI assistance for test creation. The system includes toast notifications for real-time feedback on test execution and other key actions.
 
 ## Components Structure
 
@@ -20,6 +20,8 @@ src/components/testing/
 │   ├── useResizablePanel.tsx  # Hook for managing resizable panels
 │   ├── useTestItems.tsx       # Hook for managing test items and their expanded state
 │   └── index.ts               # Export file for easier imports
+├── context/                   # Context providers
+│   └── ToastContext.tsx       # Context provider for toast notifications
 ├── AIPromptModal.tsx          # Modal for AI-assisted test creation
 ├── AutomatedTesting.tsx       # Main container for the testing feature
 ├── ChatContainer.tsx          # Container for test chat interactions
@@ -106,6 +108,7 @@ Handles navigation between different microservices for testing.
 - **Authentication**: Tests are associated with user accounts, requiring authentication
 - **Monitoring**: Test results can be viewed in the monitoring dashboard
 - **Pipelining**: Tests can be integrated into CI/CD pipelines
+- **Notifications**: Toast notifications provide real-time feedback during test execution
 
 ## Usage Examples
 
@@ -115,11 +118,42 @@ Handles navigation between different microservices for testing.
 2. Select a microservice from the navigation controls
 3. Choose a test from the test list
 4. Click the "Run" button to execute the test
-5. View test results in the TestOutputModal
+5. Toast notifications will appear showing test progress and result
+6. View detailed test results in the TestOutputModal
 
 ### Creating an AI-Assisted Test
 
 1. Click the "Create with AI" button in the TestList component
 2. Enter a prompt describing the test requirements in the AIPromptModal
-3. Review and modify the generated test
-4. Save the test to add it to the test list
+3. Toast notifications will provide status updates on test generation
+4. Review and modify the generated test
+5. Save the test to add it to the test list
+
+## Toast Notification System
+
+The Testing feature includes a comprehensive toast notification system that provides real-time feedback to users on various actions and events.
+
+### Types of Notifications
+
+- **Info notifications**: Provide general information about operations (blue)
+- **Success notifications**: Indicate successful completion of actions (green)
+- **Error notifications**: Alert users to failures or errors (red)
+- **Warning notifications**: Signal potential issues that require attention (yellow)
+
+### Key Toast Notification Events
+
+- **Test Execution**: Notifications on test start, completion, and status (success/partial/failure)
+- **Test Generation**: Updates on AI-assisted test generation process
+- **Navigation**: Confirmations when navigating between microservices
+- **UI Interactions**: Feedback on expanding/collapsing test lists, viewing outputs
+- **Error Handling**: Detailed error messages when tests fail or operations encounter issues
+
+### Implementation
+
+The toast system is implemented using React Toastify and integrated throughout the testing components via a custom context provider. This allows for consistent toast styling and behavior across the entire testing feature.
+
+```tsx
+const { showSuccess, showError, showInfo, showWarning } = useToast();
+```
+
+Toast notifications are triggered by key user actions and system events, providing immediate feedback and improving the overall user experience.
