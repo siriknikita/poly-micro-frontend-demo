@@ -3,6 +3,8 @@ import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { ProjectProvider } from '@/context/ProjectContext';
+import { ToastProvider } from '@/context/ToastContext';
+import { ToastContainer } from 'react-toastify';
 
 // Interface for providers props
 interface ProvidersProps {
@@ -14,7 +16,10 @@ function AllProviders({ children }: ProvidersProps): JSX.Element {
   return (
     <BrowserRouter>
       <ProjectProvider>
-        {children}
+        <ToastProvider>
+          {children}
+          <ToastContainer />
+        </ToastProvider>
       </ProjectProvider>
     </BrowserRouter>
   );

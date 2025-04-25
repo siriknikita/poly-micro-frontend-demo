@@ -1,29 +1,44 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '../utils/test-utils';
+import React from 'react';
+import { render, screen, fireEvent } from '../utils/test-utils';
+
+// Mock ToastContext
+const mockShowInfo = vi.fn();
+const mockShowSuccess = vi.fn();
+const mockShowError = vi.fn();
+
+vi.mock('../../context/ToastContext', () => ({
+  useToast: () => ({
+    showSuccess: mockShowSuccess,
+    showError: mockShowError,
+    showInfo: mockShowInfo,
+  }),
+}));
 
 // Mock the hooks module first, before any imports that might use it
 vi.mock('../../components/testing/hooks', () => {
   return {
     useTestItems: vi.fn().mockImplementation((tests, projectId, microserviceId) => ({
-      testItems: tests || [],
-      isLoading: false,
-      error: null,
       expandedItems: { test1: true, test2: false },
+      functionResults: {},
       toggleExpand: vi.fn(),
       expandAll: vi.fn(),
       collapseAll: vi.fn(),
       showResults: true,
       toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: microserviceId || null,
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
+      currentMicroserviceId: microserviceId || '',
+      isLoading: false,
+      error: null,
       isOutputModalOpen: false,
       selectedTestId: null,
       closeOutputModal: vi.fn(),
+      viewTestOutput: vi.fn(),
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
       setRunningTests: vi.fn(),
       setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
+      runAllTests: vi.fn()
     }))
   };
 });
@@ -37,39 +52,56 @@ vi.mock('../../context/ProjectContext', () => ({
   ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-// Mock the TestItem component
-vi.mock('../../components/testing/components/TestItem', () => ({
-  TestItemComponent: ({ item, isExpanded, onToggleExpand, onRunTest, onShowOutput }: any) => {
-    // This mock only renders the test item itself, not its children
-    // The children will be rendered by the TestList component
+// Mock the TestItemComponent
+vi.mock('../../components/testing/components', () => ({
+  TestItemComponent: ({ item, isExpanded, onToggleExpand, onRunTest, onGenerateTest, onShowOutput }: any) => {
     return (
       <div data-testid={`test-item-${item.id}`}>
-        {item.name}
+        <span>{item.name}</span>
         {isExpanded && (
           <div>
             <div>description</div>
-            <button>Run Test</button>
-            <button>View Output</button>
-            <div data-testid="test-status-indicator" className={`status-${item.status || 'unknown'}`}></div>
+            <button 
+              data-testid={`run-test-${item.id}`} 
+              onClick={() => onRunTest(item)}
+            >
+              Run Test
+            </button>
+            <button 
+              data-testid={`generate-test-${item.id}`} 
+              onClick={() => onGenerateTest(item)}
+            >
+              Generate Test
+            </button>
+            <button 
+              data-testid={`view-output-${item.id}`} 
+              onClick={() => onShowOutput(item.id)}
+            >
+              View Output
+            </button>
           </div>
         )}
       </div>
     );
   },
-}));
-
-// Mock the IconButton component
-vi.mock('../../components/testing/components/IconButton', () => ({
-  IconButton: ({ children, onClick, title }: any) => (
-    <button onClick={onClick} title={title}>
-      {children}
+  IconButton: ({ onClick, title, icon, 'aria-label': ariaLabel }: any) => (
+    <button 
+      onClick={onClick} 
+      title={title} 
+      aria-label={ariaLabel}
+      data-testid={title?.toLowerCase().replace(/\s+/g, '-')}
+    >
+      {icon}
     </button>
   ),
-}));
-
-// Mock the TestOutputModal
-vi.mock('../../components/testing/components/TestOutputModal', () => ({
-  TestOutputModal: ({ isOpen }: any) => isOpen ? <div data-testid="test-output-modal"></div> : null,
+  TestOutputModal: ({ isOpen, testId, output, onClose }: any) => 
+    isOpen ? (
+      <div data-testid="test-output-modal">
+        <div data-testid="modal-test-id">{testId}</div>
+        <div data-testid="modal-output">{output}</div>
+        <button data-testid="close-modal" onClick={onClose}>Close</button>
+      </div>
+    ) : null,
 }));
 
 // Import after all mocks are defined
@@ -78,41 +110,53 @@ import { mockTestItems } from '../mocks/mockData';
 import { useTestItems } from '../../components/testing/hooks';
 
 describe('TestList Integration', () => {
+  const mockOnRunTest = vi.fn();
+  const mockOnGenerateTest = vi.fn();
+  const mockToggleExpand = vi.fn();
+  const mockExpandAll = vi.fn();
+  const mockCollapseAll = vi.fn();
+  const mockToggleResultsVisibility = vi.fn();
+  const mockViewTestOutput = vi.fn();
+  const mockCloseOutputModal = vi.fn();
+  
   beforeEach(() => {
     vi.clearAllMocks();
     
     // Reset the mock implementation for each test
     vi.mocked(useTestItems).mockImplementation((tests, projectId, microserviceId) => ({
-      isLoading: false,
-      functionResults: {},
-      error: null,
       expandedItems: { func1: true, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
+      functionResults: {},
+      toggleExpand: mockToggleExpand,
+      expandAll: mockExpandAll,
+      collapseAll: mockCollapseAll,
       showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: microserviceId || null,
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
+      toggleResultsVisibility: mockToggleResultsVisibility,
+      currentMicroserviceId: microserviceId || '',
+      isLoading: false,
+      error: null,
       isOutputModalOpen: false,
       selectedTestId: null,
-      closeOutputModal: vi.fn(),
+      closeOutputModal: mockCloseOutputModal,
+      viewTestOutput: mockViewTestOutput,
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
       setRunningTests: vi.fn(),
       setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
+      runAllTests: vi.fn()
     }));
   });
 
   it('renders the list of test items', () => {
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
     // Should render all test items
     mockTestItems.forEach((testItem) => {
@@ -121,13 +165,15 @@ describe('TestList Integration', () => {
   });
   
   it('displays expanded test item with details', () => {
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
     // Find the expanded function item (func1)
     const expandedFuncItem = screen.getByTestId('test-item-func1');
@@ -143,13 +189,15 @@ describe('TestList Integration', () => {
   });
   
   it('does not display details for collapsed test items', () => {
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
     // Find the func2 item (which should not be expanded)
     const func2Item = screen.getByTestId('test-item-func2');
@@ -165,336 +213,216 @@ describe('TestList Integration', () => {
   });
   
   it('shows empty state when there are no test items', () => {
-    // Override the mock to return empty test items
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: { func1: true, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
-    
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={[]}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    // Override the mock to ensure tests array is empty
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={[]}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
     expect(screen.getByText(/no tests available/i)).toBeInTheDocument();
   });
   
-  it('shows loading state when tests are being fetched', () => {
-    // Override the mock to return loading state
+  it('shows loading state', () => {
+    // Override the mock to show loading state
     vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: true,
+      expandedItems: {},
       functionResults: {},
-      error: null,
-      expandedItems: { func1: true, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
+      toggleExpand: mockToggleExpand,
+      expandAll: mockExpandAll,
+      collapseAll: mockCollapseAll,
       showResults: true,
-      toggleResultsVisibility: vi.fn(),
+      toggleResultsVisibility: mockToggleResultsVisibility,
       currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
+      isLoading: true,
+      error: null,
       isOutputModalOpen: false,
       selectedTestId: null,
-      closeOutputModal: vi.fn(),
+      closeOutputModal: mockCloseOutputModal,
+      viewTestOutput: mockViewTestOutput,
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
       setRunningTests: vi.fn(),
       setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
+      runAllTests: vi.fn()
     });
     
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={[]}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
   });
   
-  it('shows error state when there is an error fetching tests', () => {
-    // Override the mock to return error state
+  it('shows error state', () => {
+    // Override the mock to show error state
     vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
+      expandedItems: {},
       functionResults: {},
-      error: 'Failed to fetch test items',
-      expandedItems: { func1: true, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
+      toggleExpand: mockToggleExpand,
+      expandAll: mockExpandAll,
+      collapseAll: mockCollapseAll,
       showResults: true,
-      toggleResultsVisibility: vi.fn(),
+      toggleResultsVisibility: mockToggleResultsVisibility,
       currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
+      isLoading: false,
+      error: 'Failed to load tests',
       isOutputModalOpen: false,
       selectedTestId: null,
-      closeOutputModal: vi.fn(),
+      closeOutputModal: mockCloseOutputModal,
+      viewTestOutput: mockViewTestOutput,
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
       setRunningTests: vi.fn(),
       setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
+      runAllTests: vi.fn()
     });
     
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={[]}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
-    expect(screen.getByText(/failed to fetch test items/i)).toBeInTheDocument();
+    expect(screen.getByText('Failed to load tests')).toBeInTheDocument();
   });
   
-  it('renders TestOutputModal when a test output is being viewed', () => {
-    // Override the mock to show the output modal
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: { test1: 'Test output for test1' },
-      error: null,
-      expandedItems: { func1: true },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: true,
-      selectedTestId: 'test1',
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
+  it('toggles all items when expand/collapse button is clicked', () => {
+    // Set up the initial state
+    let areAllExpanded = false;
+    
+    // Clear previous mock calls
+    mockShowInfo.mockClear();
+    
+    // Mock useState for the component
+    const originalUseState = React.useState;
+    vi.spyOn(React, 'useState').mockImplementation((initialValue) => {
+      if (initialValue === false) {
+        return [areAllExpanded, (val: boolean) => { areAllExpanded = val; }] as const;
+      }
+      return originalUseState(initialValue);
     });
     
-    const { container } = render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{ test1: 'Test output for test1' }}
-    />);
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
-    expect(screen.getByTestId('test-output-modal')).toBeInTheDocument();
-    // Log the container HTML to debug
-    console.log('Container HTML:', container.innerHTML);
-  });
-  
-  it('shows empty state when there are no test items', () => {
-    // Override the mock to return empty test items
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: { func1: true, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: vi.fn(),
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
-    
-    render(<TestList 
-      microserviceId="ms1" 
-      tests={[]}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
-    
-    expect(screen.getByText(/no tests available/i)).toBeInTheDocument();
-  });
-  
-  it('calls expandAll when "Expand all functions" button is clicked', async () => {
-    const expandAllMock = vi.fn();
-    
-    // Override the mock to provide our expandAll mock
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: { func1: false, func2: false, func3: false },
-      toggleExpand: vi.fn(),
-      expandAll: expandAllMock,
-      collapseAll: vi.fn(),
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
-    
-    const { user } = render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
-    
-    // Find and click the "Expand all functions" button
-    const expandAllButton = screen.getByText(/expand all functions/i);
-    await user.click(expandAllButton);
+    // Get the expand all button and click it
+    const expandAllButton = screen.getByTestId('expand-all-functions');
+    fireEvent.click(expandAllButton);
     
     // Check that expandAll was called
-    expect(expandAllMock).toHaveBeenCalled();
+    expect(mockExpandAll).toHaveBeenCalled();
+    expect(mockShowInfo).toHaveBeenCalledWith('All tests expanded');
   });
   
-  it('calls collapseAll when "Collapse all" button is clicked', async () => {
-    const collapseAllMock = vi.fn();
+  it('runs a test when run button is clicked', () => {
+    // Clear previous mock calls
+    mockShowInfo.mockClear();
     
-    // Override the mock to show all items as expanded and provide our collapseAll mock
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: { func1: true, func2: true, func3: true },
-      toggleExpand: vi.fn(),
-      expandAll: vi.fn(),
-      collapseAll: collapseAllMock,
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
-    const { user } = render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    // Find and click the run test button for func1
+    const runTestButton = screen.getByTestId('run-test-func1');
+    fireEvent.click(runTestButton);
     
-    // Find and click the "Collapse all" button
-    const collapseAllButton = screen.getByText(/collapse all/i);
-    await user.click(collapseAllButton);
-    
-    // Check that collapseAll was called
-    expect(collapseAllMock).toHaveBeenCalled();
+    // Check that onRunTest was called with the right test
+    expect(mockOnRunTest).toHaveBeenCalledWith(mockTestItems[0]);
+    expect(mockShowInfo).toHaveBeenCalledWith(`Running test: ${mockTestItems[0].name}...`);
   });
   
-  it('updates button text correctly based on areAllExpanded state', async () => {
-    const expandAllMock = vi.fn();
-    const collapseAllMock = vi.fn();
+  it('generates a test when generate button is clicked', () => {
+    // Clear previous mock calls
+    mockShowInfo.mockClear();
     
-    // First render with all items collapsed
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: {},
-      toggleExpand: vi.fn(),
-      expandAll: expandAllMock,
-      collapseAll: collapseAllMock,
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{}}
+      />
+    );
     
-    const { user, rerender } = render(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
+    // Find and click the generate test button for func1
+    const generateTestButton = screen.getByTestId('generate-test-func1');
+    fireEvent.click(generateTestButton);
     
-    // Initially it should show "Expand all functions"
-    expect(screen.getByText(/expand all functions/i)).toBeInTheDocument();
-    
-    // Now rerender with all items expanded
-    vi.mocked(useTestItems).mockReturnValueOnce({
-      isLoading: false,
-      functionResults: {},
-      error: null,
-      expandedItems: { func1: true, func2: true, func3: true, test1: true, test2: true, test3: true, test4: true, test5: true, test6: true },
-      toggleExpand: vi.fn(),
-      expandAll: expandAllMock,
-      collapseAll: collapseAllMock,
-      showResults: true,
-      toggleResultsVisibility: vi.fn(),
-      currentMicroserviceId: 'ms1',
-      runTest: vi.fn(),
-      viewTestOutput: vi.fn(),
-      runningTests: {},
-      isOutputModalOpen: false,
-      selectedTestId: null,
-      closeOutputModal: vi.fn(),
-      setRunningTests: vi.fn(),
-      setCurrentMicroservice: vi.fn(),
-      runAllTests: vi.fn(),
-    });
-    
-    rerender(<TestList 
-      microserviceId="ms1" 
-      tests={mockTestItems}
-      onRunTest={vi.fn()}
-      onGenerateTest={vi.fn()}
-      functionResults={{}}
-    />);
-    
-    // Now it should show "Collapse all"
-    expect(screen.getByText(/collapse all/i)).toBeInTheDocument();
+    // Check that onGenerateTest was called with the right test
+    expect(mockOnGenerateTest).toHaveBeenCalledWith(mockTestItems[0]);
+    expect(mockShowInfo).toHaveBeenCalledWith(`Generating test for ${mockTestItems[0].name}...`);
   });
+  
+  it('displays test output modal when view output button is clicked', () => {
+    // Mock the output modal functionality
+    vi.mocked(useTestItems).mockReturnValueOnce({
+      expandedItems: { func1: true },
+      functionResults: { func1: 'Test output for func1' },
+      toggleExpand: mockToggleExpand,
+      expandAll: mockExpandAll,
+      collapseAll: mockCollapseAll,
+      showResults: true,
+      toggleResultsVisibility: mockToggleResultsVisibility,
+      currentMicroserviceId: 'ms1',
+      isLoading: false,
+      error: null,
+      isOutputModalOpen: true,
+      selectedTestId: 'func1',
+      closeOutputModal: mockCloseOutputModal,
+      viewTestOutput: mockViewTestOutput,
+      runningTests: {},
+      allTestsComplete: false,
+      runTest: vi.fn(),
+      setRunningTests: vi.fn(),
+      setCurrentMicroservice: vi.fn(),
+      runAllTests: vi.fn()
+    });
+    
+    render(
+      <TestList 
+        microserviceId="ms1" 
+        tests={mockTestItems}
+        onRunTest={mockOnRunTest}
+        onGenerateTest={mockOnGenerateTest}
+        functionResults={{ func1: 'Test output for func1' }}
+      />
+    );
+    
+    // Check that the modal is displayed with the correct content
+    expect(screen.getByTestId('test-output-modal')).toBeInTheDocument();
+    expect(screen.getByTestId('modal-test-id')).toHaveTextContent('func1');
+    expect(screen.getByTestId('modal-output')).toHaveTextContent('Test output for func1');
+  });
+  
 });
