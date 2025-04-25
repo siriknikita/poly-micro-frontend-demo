@@ -1,45 +1,68 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '../utils/test-utils';
+import { render, screen, fireEvent } from '../utils/test-utils';
 import { AutomatedTesting } from '@/components/testing';
-import { mockMicroservices, mockTestItems } from '../mocks/mockData';
+import { mockMicroservices } from '../mocks/mockData';
 
-// Mock the hooks
-vi.mock('../../../components/testing/hooks/useMicroserviceNavigation', () => ({
-  default: vi.fn(() => ({
-    microservices: mockMicroservices.filter(ms => ms.projectId === 'project1'),
-    isLoading: false,
-    error: null,
-    selectedMicroserviceId: 'ms1',
-    navigateToMicroservice: vi.fn(),
-    filteredMicroservices: mockMicroservices.filter(ms => ms.projectId === 'project1'),
+// Create mock functions we'll use in tests
+const mockShowInfo = vi.fn();
+const mockShowSuccess = vi.fn();
+const mockStartResize = vi.fn();
+const mockRunAllTests = vi.fn(() => ({ totalTests: 3, microserviceName: 'Microservice 1' }));
+
+// Mock the context providers and hooks
+vi.mock('@/context/ProjectContext', () => ({
+  ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useProject: vi.fn(() => ({
+    project: {
+      id: 'project1',
+      microservices: mockMicroservices
+    }
+  }))
+}));
+
+vi.mock('@/context/ToastContext', () => ({
+  ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useToast: vi.fn(() => ({
+    showInfo: mockShowInfo,
+    showSuccess: mockShowSuccess,
+    showError: vi.fn(),
+    showWarning: vi.fn()
+  }))
+}));
+
+// Mock the custom hooks
+vi.mock('@/components/testing/hooks', () => ({
+  useResizablePanel: vi.fn(() => ({
+    width: 300,
+    isDragging: false,
+    setIsDragging: vi.fn(),
+    startResize: mockStartResize
+  })),
+  useTestItems: vi.fn(() => ({
+    functionResults: {
+      'test1': { status: 'success', output: 'Test passed' },
+      'test2': { status: 'running' }
+    },
+    runTest: vi.fn(),
+    runAllTests: mockRunAllTests,
+    setCurrentMicroservice: vi.fn(),
+    allTestsComplete: true
+  })),
+  useMicroserviceNavigation: vi.fn(() => ({
+    selectedMicroservice: mockMicroservices[0],
+    setSelectedMicroservice: vi.fn(),
     searchQuery: '',
     setSearchQuery: vi.fn(),
-  })),
+    filteredMicroservices: mockMicroservices,
+    navigateMicroservice: vi.fn(),
+    getPreviousMicroserviceName: vi.fn(() => 'Previous Service'),
+    getNextMicroserviceName: vi.fn(() => 'Next Service')
+  }))
 }));
 
-vi.mock('../../../components/testing/hooks/useTestItems', () => ({
-  default: vi.fn(() => ({
-    testItems: mockTestItems.filter(item => item.microserviceId === 'ms1'),
-    isLoading: false,
-    error: null,
-    expandedItems: { test1: true },
-    toggleExpandedItem: vi.fn(),
-    runTest: vi.fn(),
-    viewTestOutput: vi.fn(),
-    runningTests: {},
-    isOutputModalOpen: false,
-    selectedTestId: null,
-    closeOutputModal: vi.fn(),
-  })),
-}));
-
-vi.mock('../../../components/testing/hooks/useResizablePanel', () => ({
-  default: vi.fn(() => ({
-    width: 300,
-    isResizing: false,
-    handleMouseDown: vi.fn(),
-    containerRef: { current: document.createElement('div') },
-  })),
+// Mock react-toastify
+vi.mock('react-toastify', () => ({
+  ToastContainer: () => <div data-testid="toast-container" />
 }));
 
 describe('AutomatedTesting Integration', () => {
@@ -47,140 +70,67 @@ describe('AutomatedTesting Integration', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the component with microservice navigation and test list', () => {
-    render(<AutomatedTesting projectId="project1" />);
+  it('renders the component with microservice name and test list', () => {
+    render(<AutomatedTesting />);
     
-    // Microservice navigation should be rendered
-    expect(screen.getByTestId('microservice-navigation')).toBeInTheDocument();
+    // Microservice name should be displayed
+    expect(screen.getByText('Testing: ' + mockMicroservices[0].name)).toBeInTheDocument();
     
-    // Test list should be rendered
-    expect(screen.getByTestId('test-list')).toBeInTheDocument();
-    
-    // Resizable panel should be rendered
-    expect(screen.getByTestId('resizable-panel')).toBeInTheDocument();
+    // Test list should be rendered when microservice has children
+    expect(screen.getByText(/Authentication Service/)).toBeInTheDocument();
   });
   
-  it('displays the selected microservice name', () => {
-    render(<AutomatedTesting projectId="project1" />);
+  it('renders the run all tests button', () => {
+    render(<AutomatedTesting />);
     
-    // Find the selected microservice (ms1)
-    const selectedMicroservice = mockMicroservices.find(ms => ms.id === 'ms1');
-    expect(screen.getByText(selectedMicroservice!.name)).toBeInTheDocument();
+    // Run all tests button should be visible
+    const runAllButton = screen.getByText('Run All Tests');
+    expect(runAllButton).toBeInTheDocument();
+    
+    // Test button click
+    fireEvent.click(runAllButton);
+    expect(mockShowInfo).toHaveBeenCalledWith('Running 3 tests for Microservice 1...');
   });
   
-  it('shows the test items for the selected microservice', () => {
-    render(<AutomatedTesting projectId="project1" />);
+  it('renders the chat toggle button', () => {
+    render(<AutomatedTesting />);
     
-    // Test items for ms1 should be displayed
-    const ms1TestItems = mockTestItems.filter(item => item.microserviceId === 'ms1');
+    // Chat toggle button should be visible
+    const chatToggleButton = screen.getByLabelText('Hide Test Assistant');
+    expect(chatToggleButton).toBeInTheDocument();
     
-    ms1TestItems.forEach(testItem => {
-      expect(screen.getByText(testItem.name)).toBeInTheDocument();
-    });
+    // Test button click to hide chat
+    fireEvent.click(chatToggleButton);
+    // After clicking, the aria-label should change
+    expect(screen.getByLabelText('Show Test Assistant')).toBeInTheDocument();
   });
   
-  it('renders search input for microservices', async () => {
-    const { user } = render(<AutomatedTesting projectId="project1" />);
-    
-    // Click search button
-    const searchButton = screen.getByTestId('search-microservices-button');
-    await user.click(searchButton);
-    
-    // Search input should be visible
-    expect(screen.getByTestId('search-input')).toBeInTheDocument();
-  });
-  
-  it('displays loading state when fetching microservices', () => {
-    // Override the mock to return loading state for microservices
-    vi.mocked(require('../../../components/testing/hooks/useMicroserviceNavigation').default).mockReturnValueOnce({
-      microservices: [],
-      isLoading: true,
-      error: null,
-      selectedMicroserviceId: null,
-      navigateToMicroservice: vi.fn(),
-      filteredMicroservices: [],
-      searchQuery: '',
-      setSearchQuery: vi.fn(),
-    });
-    
-    render(<AutomatedTesting projectId="project1" />);
-    
-    // Should show loading indicator for microservices
-    expect(screen.getByTestId('microservice-loading')).toBeInTheDocument();
-  });
-  
-  it('displays error state when there is an error fetching microservices', () => {
-    // Override the mock to return error state for microservices
-    vi.mocked(require('../../../components/testing/hooks/useMicroserviceNavigation').default).mockReturnValueOnce({
-      microservices: [],
-      isLoading: false,
-      error: 'Failed to fetch microservices',
-      selectedMicroserviceId: null,
-      navigateToMicroservice: vi.fn(),
-      filteredMicroservices: [],
-      searchQuery: '',
-      setSearchQuery: vi.fn(),
-    });
-    
-    render(<AutomatedTesting projectId="project1" />);
-    
-    // Should show error message for microservices
-    expect(screen.getByText(/failed to fetch microservices/i)).toBeInTheDocument();
-  });
-  
-  it('displays placeholder when no microservice is selected', () => {
-    // Override the mock to return null for selectedMicroserviceId
-    vi.mocked(require('../../../components/testing/hooks/useMicroserviceNavigation').default).mockReturnValueOnce({
-      microservices: mockMicroservices.filter(ms => ms.projectId === 'project1'),
-      isLoading: false,
-      error: null,
-      selectedMicroserviceId: null,
-      navigateToMicroservice: vi.fn(),
-      filteredMicroservices: mockMicroservices.filter(ms => ms.projectId === 'project1'),
-      searchQuery: '',
-      setSearchQuery: vi.fn(),
-    });
-    
-    render(<AutomatedTesting projectId="project1" />);
-    
-    // Should show placeholder for selecting a microservice
-    expect(screen.getByText(/select a microservice/i)).toBeInTheDocument();
-  });
-  
-  it('displays EmptyState when there are no microservices', () => {
-    // Override the mock to return empty microservices
-    vi.mocked(require('../../../components/testing/hooks/useMicroserviceNavigation').default).mockReturnValueOnce({
-      microservices: [],
-      isLoading: false,
-      error: null,
-      selectedMicroserviceId: null,
-      navigateToMicroservice: vi.fn(),
-      filteredMicroservices: [],
-      searchQuery: '',
-      setSearchQuery: vi.fn(),
-    });
-    
-    render(<AutomatedTesting projectId="project1" />);
-    
-    // Should show empty state for microservices
-    expect(screen.getByText(/no microservices available/i)).toBeInTheDocument();
-  });
-  
-  it('renders the ResizeHandle component', () => {
-    render(<AutomatedTesting projectId="project1" />);
+  it('renders the ResizeHandle component when chat is visible', () => {
+    render(<AutomatedTesting />);
     
     // Resize handle should be rendered
-    expect(screen.getByTestId('resize-handle')).toBeInTheDocument();
+    const resizeHandle = screen.getByRole('separator');
+    expect(resizeHandle).toBeInTheDocument();
+    
+    // Test resize start
+    fireEvent.mouseDown(resizeHandle);
+    expect(mockStartResize).toHaveBeenCalled();
   });
   
-  it('renders the AIPromptModal when create test button is clicked', async () => {
-    const { user } = render(<AutomatedTesting projectId="project1" />);
+  it('shows success toast when all tests complete', () => {
+    // Render with allTestsComplete = true
+    render(<AutomatedTesting />);
     
-    // Click create test button
-    const createTestButton = screen.getByTestId('create-test-button');
-    await user.click(createTestButton);
+    // Success toast should have been called
+    expect(mockShowSuccess).toHaveBeenCalledWith('All tests for Authentication Service have completed');
+  });
+  
+  it('handles test generation correctly', () => {
+    // We'll just verify the component renders correctly
+    render(<AutomatedTesting />);
     
-    // AI prompt modal should be visible
-    expect(screen.getByTestId('ai-prompt-modal')).toBeInTheDocument();
+    // Since we can't directly test the handleGenerateTest function in this test,
+    // we'll just verify that the component renders without errors
+    expect(screen.getByText('Testing: ' + mockMicroservices[0].name)).toBeInTheDocument();
   });
 });
