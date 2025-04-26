@@ -12,27 +12,43 @@ The Poly Micro Manager is a comprehensive tool designed to manage microservices 
 - **Pipelining**: CI/CD pipeline management for microservices
 - **Shared Components**: Reusable UI components used across the application
 
-## Component Structure
+## Project Structure
 
 The application follows a modular architecture with components organized by feature and functionality:
 
 ```
-src/components/
-├── auth/            # Authentication components
-├── layout/          # Layout components
-│   ├── Sidebar.tsx  # Application sidebar navigation
-│   ├── TopBar.tsx   # Application top navigation bar
-│   └── ThemeToggle.tsx # Dark/light theme toggle
-├── monitoring/      # Monitoring and observability components
-│   ├── Dashboard.tsx # Main dashboard component
-│   └── ... other monitoring components
-├── pipelining/      # CI/CD pipeline management components
-├── shared/          # Shared UI components
-│   ├── selectors/   # Selection components
-│   │   └── ProjectSelector.tsx # Project selection component
-│   └── ... other shared components
-├── testing/         # Automated testing components
-└── index.ts         # Main export file for components
+src/
+├── App.tsx                # Main application component
+├── __tests__/             # Test files for components and hooks
+├── components/            # UI components organized by feature
+│   ├── auth/              # Authentication components
+│   ├── index.ts           # Main export file for components
+│   ├── layout/            # Layout components
+│   ├── monitoring/        # Monitoring and observability components
+│   │   ├── LogViewer/     # Log viewing components
+│   │   ├── hooks/         # Monitoring-specific hooks
+│   │   └── shared/        # Shared monitoring components
+│   ├── pipelining/        # CI/CD pipeline management components
+│   │   ├── blocks/        # Pipeline block components
+│   │   ├── components/    # Pipelining-specific components
+│   │   └── hooks/         # Pipelining-specific hooks
+│   ├── shared/            # Shared UI components
+│   └── testing/           # Automated testing components
+│       ├── components/    # Testing-specific UI components
+│       ├── constants.ts   # Testing constants
+│       └── hooks/         # Testing-specific hooks
+├── config/                # Application configuration
+├── context/               # React context providers
+│   ├── ProjectContext.tsx # Project context provider
+│   └── ToastContext.tsx   # Toast notification context
+├── data/                  # Data models and mock data
+├── db/                    # Database interactions
+├── helpers/               # Helper functions
+├── hooks/                 # Application-wide custom hooks
+├── index.css              # Global CSS
+├── main.tsx               # Application entry point
+├── types/                 # TypeScript type definitions
+└── vite-env.d.ts          # Vite environment types
 ```
 
 ## Feature Documentation
