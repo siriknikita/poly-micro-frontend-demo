@@ -15,7 +15,7 @@ function StatusBadge({
   const variantClass = variantClasses[variant];
   
   return (
-    <span className={`${baseClasses} ${variantClass} ${className}`}>
+    <span className={`${baseClasses} ${variantClass} ${className}`} data-testid={`status-badge-${status}`}>
       {status}
     </span>
   );

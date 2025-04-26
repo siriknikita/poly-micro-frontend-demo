@@ -80,7 +80,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
         >
           <option value="All">All Severities</option>
           {SEVERITY_LEVELS.map((severity, index) => (
-            <option key={index} value={severity}>{severity}</option>
+            <option key={index} value={severity} data-testid={`severity-option-${severity}`}>{severity}</option>
           ))}
         </select>
         
@@ -89,9 +89,10 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           onChange={handleItemsPerPageChange}
           className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           aria-label="Select items per page"
+          data-testid="items-per-page-select"
         >
           {ROWS_PER_PAGE_OPTIONS.map((option, index) => (
-            <option key={index} value={option}>{option} per page</option>
+            <option key={index} value={option} data-testid={`rows-per-page-option-${option}`}>{option} per page</option>
           ))}
         </select>
       </div>

@@ -9,6 +9,13 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/__tests__/setup.ts'],
     css: true,
+    deps: {
+      inline: ['lucide-react'], // Add packages that should be inlined in tests
+    },
+    typecheck: {
+      enabled: true,
+      tsconfig: './tsconfig.app.json',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

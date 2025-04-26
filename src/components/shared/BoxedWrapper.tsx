@@ -15,6 +15,7 @@ const BoxedWrapper: React.FC<BoxedWrapperProps> = ({
     <div
       style={style}
       className={`bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6 ${className}`}
+      data-testId="boxed-wrapper"
     >
       {children}
     </div>
