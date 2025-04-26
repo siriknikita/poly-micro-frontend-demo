@@ -1,0 +1,119 @@
+name: Update Release Notes
+
+on:
+  push:
+    tags:
+      - 'v*'  # Run workflow when a tag starting with 'v' is pushed (e.g., v1.3.0)
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for commit messages
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      
+      - name: Generate changes from commit messages
+        run: |
+          # Get all commits since the last tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # If no previous tag, get all commits
+            COMMITS=$(git log --pretty=format:"%s" | grep -v "Merge")
+          else
+            # Get commits between the previous tag and the current tag
+            COMMITS=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"%s" | grep -v "Merge")
+          fi
+          
+          # Extract changes based on commit types
+          echo "[" > changes.json
+          
+          # Process feature commits
+          FEATURES=$(echo "$COMMITS" | grep -i "^feat" || echo "")
+          if [ ! -z "$FEATURES" ]; then
+            while IFS= read -r line; do
+              DESCRIPTION=$(echo "$line" | sed -E 's/^feat(\([^)]+\))?:\s*//')
+              echo "  {" >> changes.json
+              echo "    \"type\": \"feature\"," >> changes.json
+              echo "    \"description\": \"$DESCRIPTION\"" >> changes.json
+              echo "  }," >> changes.json
+            done <<< "$FEATURES"
+          fi
+          
+          # Process improvement commits
+          IMPROVEMENTS=$(echo "$COMMITS" | grep -i "^improve\|^refactor\|^perf" || echo "")
+          if [ ! -z "$IMPROVEMENTS" ]; then
+            while IFS= read -r line; do
+              DESCRIPTION=$(echo "$line" | sed -E 's/^(improve|refactor|perf)(\([^)]+\))?:\s*//')
+              echo "  {" >> changes.json
+              echo "    \"type\": \"improvement\"," >> changes.json
+              echo "    \"description\": \"$DESCRIPTION\"" >> changes.json
+              echo "  }," >> changes.json
+            done <<< "$IMPROVEMENTS"
+          fi
+          
+          # Process fix commits
+          FIXES=$(echo "$COMMITS" | grep -i "^fix" || echo "")
+          if [ ! -z "$FIXES" ]; then
+            while IFS= read -r line; do
+              DESCRIPTION=$(echo "$line" | sed -E 's/^fix(\([^)]+\))?:\s*//')
+              echo "  {" >> changes.json
+              echo "    \"type\": \"fix\"," >> changes.json
+              echo "    \"description\": \"$DESCRIPTION\"" >> changes.json
+              echo "  }," >> changes.json
+            done <<< "$FIXES"
+          fi
+          
+          # Process breaking change commits
+          BREAKING=$(echo "$COMMITS" | grep -i "BREAKING CHANGE" || echo "")
+          if [ ! -z "$BREAKING" ]; then
+            while IFS= read -r line; do
+              DESCRIPTION=$(echo "$line" | sed -E 's/^.*BREAKING CHANGE:\s*//')
+              echo "  {" >> changes.json
+              echo "    \"type\": \"breaking\"," >> changes.json
+              echo "    \"description\": \"$DESCRIPTION\"" >> changes.json
+              echo "  }," >> changes.json
+            done <<< "$BREAKING"
+          fi
+          
+          # Remove trailing comma if exists
+          sed -i '$ s/,$//' changes.json
+          
+          echo "]" >> changes.json
+          
+          # Show generated changes
+          cat changes.json
+      
+      - name: Update release file
+        run: |
+          # Create title based on version
+          TITLE="Version $VERSION Release"
+          
+          # Create description
+          DESCRIPTION="This release includes new features, improvements, and bug fixes."
+          
+          # Update the release file
+          node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
+      
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add releases/releases.json
+          
+          # Create commit message
+          COMMIT_MSG="Feat: Update release notes for v$VERSION"
+          
+          git commit -m "$COMMIT_MSG"
+          git push
