@@ -1,0 +1,18 @@
+[
+  {
+    "type": "feature",
+    "description": "Added automatic release management system"
+  },
+  {
+    "type": "feature",
+    "description": "Implemented Discord-style release notifications"
+  },
+  {
+    "type": "improvement",
+    "description": "Enhanced user experience with interactive release notes"
+  },
+  {
+    "type": "fix",
+    "description": "Fixed database synchronization issues"
+  }
+]

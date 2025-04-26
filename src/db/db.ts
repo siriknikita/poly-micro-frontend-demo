@@ -1,20 +1,46 @@
-import Dexie, { Table } from 'dexie';
+import Dexie, { Table, IndexableType } from 'dexie';
 
 export interface User {
-  id?: number;
+  id?: IndexableType;
   businessName: string;
   email: string;
   username: string;
   password: string;
 }
 
+export interface Release {
+  id?: IndexableType;
+  version: string;
+  releaseDate: Date;
+  title: string;
+  description: string;
+  changes: ReleaseChange[];
+  isLatest: number; // Using 1 for true, 0 for false to work better with Dexie indexing
+}
+
+export interface ReleaseChange {
+  type: 'feature' | 'fix' | 'improvement' | 'breaking';
+  description: string;
+}
+
+export interface UserAcknowledgment {
+  id?: IndexableType;
+  userId: IndexableType;
+  releaseId: IndexableType;
+  acknowledgedAt: Date;
+}
+
 export class AppDatabase extends Dexie {
   users!: Table<User>;
+  releases!: Table<Release>;
+  userAcknowledgments!: Table<UserAcknowledgment>;
 
   constructor() {
     super('AppDatabase');
-    this.version(1).stores({
-      users: '++id, username, email'
+    this.version(2).stores({
+      users: '++id, username, email',
+      releases: '++id, version, releaseDate, isLatest',
+      userAcknowledgments: '++id, userId, releaseId'
     });
   }
 }
