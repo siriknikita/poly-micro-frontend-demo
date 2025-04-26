@@ -15,7 +15,7 @@ vi.mock('react', () => {
   const originalReact = vi.importActual('react');
   return {
     ...originalReact,
-    useCallback: (callback: any) => callback,
+    useCallback: <T extends (...args: unknown[]) => unknown>(callback: T) => callback,
   };
 });
 

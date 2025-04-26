@@ -2,12 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ServiceStatus } from '@/components/monitoring/ServiceStatus';
 import { Service } from '@/types';
-import { getStatusVariant } from '@/components/monitoring/shared/statusUtils';
 
 // Mock dependencies
 jest.mock('@shared/index', () => ({
   BoxedWrapper: ({ children }: { children: React.ReactNode }) => <div data-testid="boxed-wrapper">{children}</div>,
-  SectionHeader: ({ title, HeaderIcon, headerClassName, iconClassName }: any) => (
+  SectionHeader: ({ title, HeaderIcon, headerClassName }: { title: string; HeaderIcon?: React.ComponentType; headerClassName?: string; iconClassName?: string }) => (
     <div data-testid="section-header">
       {HeaderIcon && <HeaderIcon data-testid="header-icon" />}
       <span className={headerClassName}>{title}</span>
@@ -21,7 +20,7 @@ jest.mock('lucide-react', () => ({
 
 jest.mock('@/components/monitoring/shared/StatusBadge', () => ({
   __esModule: true,
-  default: ({ status, variant }: any) => (
+  default: ({ status, variant }: { status: string; variant: string }) => (
     <span data-testid={`status-badge-${status}`} className={variant}>
       {status}
     </span>

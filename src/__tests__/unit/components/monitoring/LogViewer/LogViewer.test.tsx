@@ -11,7 +11,7 @@ jest.mock('@hooks/index', () => ({
 
 jest.mock('@shared/index', () => ({
   BoxedWrapper: ({ children }: { children: React.ReactNode }) => <div data-testid="boxed-wrapper">{children}</div>,
-  SectionHeader: ({ title, HeaderIcon, headerClassName, iconClassName }: any) => (
+  SectionHeader: ({ title, HeaderIcon, headerClassName }: { title: string; HeaderIcon?: React.ComponentType; headerClassName?: string; iconClassName?: string }) => (
     <div data-testid="section-header">
       {HeaderIcon && <HeaderIcon data-testid="header-icon" />}
       <span className={headerClassName}>{title}</span>
@@ -25,7 +25,7 @@ jest.mock('lucide-react', () => ({
 
 jest.mock('../../../../../../../src/components/monitoring/LogViewer/TablePagination', () => ({
   __esModule: true,
-  TablePagination: ({ currentPage, totalPages, handlePageChange, showPageNumbers }: any) => (
+  TablePagination: ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => (
     <div data-testid="table-pagination">
       Table Pagination: Page {currentPage} of {totalPages}
     </div>
@@ -33,7 +33,7 @@ jest.mock('../../../../../../../src/components/monitoring/LogViewer/TablePaginat
 }));
 
 jest.mock('../../../../../../../src/components/monitoring/shared/ServiceSelector', () => ({
-  ServiceSelector: ({ selectedService, services, onServiceSelect, showAllOption }: any) => (
+  ServiceSelector: ({ selectedService, services, onServiceSelect }: { selectedService: string; services: Service[]; onServiceSelect: (service: string) => void }) => (
     <select 
       data-testid="service-selector"
       value={selectedService}
@@ -49,7 +49,7 @@ jest.mock('../../../../../../../src/components/monitoring/shared/ServiceSelector
 
 jest.mock('../../../../../../../src/components/monitoring/shared/StatusBadge', () => ({
   __esModule: true,
-  default: ({ status, variant }: any) => (
+  default: ({ status, variant }: { status: string; variant: string }) => (
     <span data-testid={`status-badge-${status}`} className={variant}>
       {status}
     </span>

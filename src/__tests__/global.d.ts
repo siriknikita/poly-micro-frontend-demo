@@ -1,4 +1,5 @@
 // Type definitions for test files
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { vi, expect, describe, it, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 
 // Extend the global namespace to make Jest types available
@@ -33,6 +34,7 @@ declare global {
 
   // Add Jest's Mock type for use in tests
   namespace jest {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     type Mock<T = any, Y extends any[] = any[]> = vi.Mock<T, Y>;
   }
 }
