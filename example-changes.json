@@ -1,0 +1,18 @@
+[
+  {
+    "type": "feature",
+    "description": "Added dark theme support to the release management system"
+  },
+  {
+    "type": "feature",
+    "description": "Implemented GitHub Actions workflow for automatic release notes generation"
+  },
+  {
+    "type": "improvement",
+    "description": "Enhanced release modal with better UI/UX for both light and dark themes"
+  },
+  {
+    "type": "fix",
+    "description": "Fixed issue with release notification not appearing in certain scenarios"
+  }
+]
