@@ -1,6 +1,30 @@
 {
   "releases": [
     {
+      "version": "1.5.0",
+      "releaseDate": "2025-04-26",
+      "title": "Version 1.5.0 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add service filters and monitoring dashboard components with tests"
+        },
+        {
+          "type": "feature",
+          "description": "Add metrics selector with persistent preferences and filtering capabilities"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.4.3"
+        },
+        {
+          "type": "fix",
+          "description": "Reset filters when switching projects or on localStorage parse error"
+        }
+      ]
+    },
+    {
       "version": "1.4.3",
       "releaseDate": "2025-04-26",
       "title": "Version 1.4.3 Release",
