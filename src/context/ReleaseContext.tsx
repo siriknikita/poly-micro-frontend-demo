@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { db, Release } from '../db/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { IndexableType } from 'dexie';
@@ -27,7 +27,7 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
     return await db.releases.orderBy('releaseDate').reverse().toArray();
   }) || [];
 
-  const userAcknowledgments = useLiveQuery(async () => {
+  const userAcknowledgmentsQuery = useLiveQuery(async () => {
     // In a real app, you'd get the current user ID from auth context
     const currentUserId = await getCurrentUserId();
     if (!currentUserId) return [];
@@ -36,7 +36,10 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
       .where('userId')
       .equals(currentUserId)
       .toArray();
-  }) || [];
+  });
+  
+  // Wrap in useMemo to avoid recreating on every render
+  const userAcknowledgments = useMemo(() => userAcknowledgmentsQuery || [], [userAcknowledgmentsQuery]);
 
   // Helper function to get current user ID
   const getCurrentUserId = async (): Promise<IndexableType | null> => {
@@ -101,10 +104,5 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
   );
 };
 
-export const useRelease = (): ReleaseContextType => {
-  const context = useContext(ReleaseContext);
-  if (context === undefined) {
-    throw new Error('useRelease must be used within a ReleaseProvider');
-  }
-  return context;
-};
+// Export the context for use in the hook file
+export { ReleaseContext };

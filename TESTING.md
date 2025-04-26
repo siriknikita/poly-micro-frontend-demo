@@ -11,8 +11,8 @@ We use a comprehensive testing approach with three main levels:
 Unit tests verify individual components, hooks, and utility functions in isolation. They're located in `src/__tests__/unit/`.
 
 Key unit test suites:
-- Component tests (IconButton, TestItem, ResizeHandle, etc.)
-- Custom hooks tests (useResizablePanel, useTestItems, useMicroserviceNavigation)
+- Component tests (IconButton, TestItem, ResizeHandle, CPUChart, MetricsSelector, etc.)
+- Custom hooks tests (useResizablePanel, useTestItems, useMicroserviceNavigation, useMetricsSelection, useMetricsDropdown)
 - Utility function tests
 - Constants validation
 
@@ -121,6 +121,29 @@ describe('IconButton Component', () => {
 });
 ```
 
+### Hook Test Example
+
+```tsx
+import { renderHook, act } from '@testing-library/react';
+import { useMetricsSelection } from '../components/monitoring/hooks';
+
+describe('useMetricsSelection Hook', () => {
+  it('should update metrics selection', () => {
+    const { result } = renderHook(() => useMetricsSelection({
+      projectId: 'project1',
+      serviceName: 'service1',
+      defaultMetrics: [/* initial metrics */]
+    }));
+
+    act(() => {
+      result.current.updateMetricSelection(['metric1', 'metric2']);
+    });
+
+    expect(result.current.selectedMetricIds).toEqual(['metric1', 'metric2']);
+  });
+});
+```
+
 ### E2E Test Example
 
 ```ts
@@ -132,9 +155,87 @@ test('app loads with correct title', async ({ page }) => {
 });
 ```
 
+## Monitoring Components Testing
+
+The monitoring section includes specialized components for displaying system metrics. The architecture has been refactored to follow a more modular approach with shared components, custom hooks, and clear separation of concerns.
+
+### Component Structure
+
+The monitoring feature is organized as follows:
+
+1. **Main Components**:
+   - `CPUChart`: The main chart component that displays CPU metrics
+
+2. **Shared Components**:
+   - `ServiceSelector`: Allows users to select a microservice to view its metrics
+   - `MetricsSelector`: A dropdown component for selecting which metrics to display
+   - `MetricsToggleButton`: Button to open/close the metrics selection dropdown
+   - `MetricsSearch`: Search input for filtering available metrics
+   - `MetricsList`: Displays the list of available metrics with toggle functionality
+
+3. **Custom Hooks**:
+   - `useMetricsSelection`: Manages the state of selected metrics and persists user preferences
+   - `useMetricsDropdown`: Manages the dropdown UI state, search functionality, and keyboard navigation
+
+### CPUChart Component Tests
+
+The `CPUChart` component tests (`src/__tests__/unit/monitoring/CPUChart.test.tsx`) verify:
+- Correct rendering of the chart when data is available
+- Proper display of placeholder messages when no service is selected or no data is available
+- Proper interaction with the service selector
+- Correct rendering of metric lines based on selected metrics
+- Integration with the metrics selector component
+
+The tests use mocks for the Recharts library components and related hooks to isolate the component's behavior. This approach allows us to test the component's logic without being dependent on the actual chart rendering.
+
+### Metrics Selection Hook Tests
+
+The `useMetricsSelection` hook tests (`src/__tests__/unit/monitoring/hooks/useMetricsSelection.test.ts`) verify:
+- Loading and saving of user preferences to localStorage
+- Proper state management of selected metrics
+- Handling of project and service changes
+- Error handling for localStorage operations
+- Persistence of user preferences across sessions
+- Default behavior when no stored preferences exist
+
+The tests include a mock implementation of localStorage to simulate browser storage without actually affecting the test environment.
+
+### Metrics Dropdown Hook Tests
+
+The `useMetricsDropdown` hook tests (`src/__tests__/unit/monitoring/hooks/useMetricsDropdown.test.ts`) verify:
+- Dropdown open/close functionality
+- Search filtering of metrics based on user input
+- Keyboard navigation support for accessibility
+- Toggling of metric selection
+- Event listener management (adding and removing)
+- Proper focus management when the dropdown opens
+- Handling of outside clicks to close the dropdown
+- Updating metrics when props change
+
+### MetricsSelector Component Tests
+
+The `MetricsSelector` component tests (`src/__tests__/unit/monitoring/shared/MetricsSelector.test.tsx`) verify:
+- Proper rendering of the metrics dropdown UI
+- Correct display of selected metrics count
+- Proper toggling of metric selection through the UI
+- Proper application of custom styling
+- Interaction between the component and its child components (MetricsToggleButton, MetricsSearch, MetricsList)
+- Proper propagation of state changes to parent components
+
+### Type Definitions
+
+The monitoring feature uses the following key type definitions (from `src/types/monitoring.ts`):
+- `CPUData`: Interface for CPU metrics data points (time, load, memory, threads)
+- `Service`: Interface for microservice information
+- `Metric`: Interface for metric configuration (id, name, dataKey, color, selected)
+
+These tests ensure that the monitoring components work correctly individually and together, providing a reliable system metrics visualization experience for users with proper state management, accessibility, and user preference persistence.
+
 ## Mocking Strategy
 
 We use MSW (Mock Service Worker) to intercept and mock API requests. The mock handlers are defined in `src/__tests__/mocks/handlers.ts`. This allows us to test components that make API requests without actually hitting any backend services.
+
+For component tests that depend on complex hooks or child components, we use Vitest's mocking capabilities to isolate the component being tested.
 
 ## Best Practices
 

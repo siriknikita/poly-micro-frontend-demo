@@ -156,3 +156,125 @@ const { showSuccess, showError, showInfo, showWarning } = useToast();
 ```
 
 Toast notifications are triggered by key user actions and system events, providing immediate feedback and improving the overall user experience.
+
+## Service Filters Testing
+
+### Overview
+
+The Service Filters feature allows users to filter microservices based on their status and health. The testing approach for this feature follows best practices for React component testing, focusing on component behavior, user interactions, and proper state management.
+
+### Test Structure
+
+Tests for the Service Filters feature are organized into three main categories:
+
+1. **Hook Tests** (`useServiceFilters.test.tsx`)
+   - Test the custom hook that manages filter state and logic
+   - Verify filter persistence in local storage
+   - Test filter application logic
+   - Ensure proper filter group management (add, update, remove, clear)
+
+2. **Component Tests** (`ServiceFilters.test.tsx`, `ServiceFilterDialog.test.tsx`)
+   - Test UI rendering and interactions
+   - Verify dialog opening/closing behavior
+   - Test filter creation and editing workflows
+   - Ensure proper display of active filters
+
+3. **Integration Tests** (`ServiceStatus.test.tsx`)
+   - Test integration of filters with the service status display
+   - Verify filtered services are correctly displayed
+   - Test empty state when no services match filters
+
+### Testing Approach
+
+#### Accessibility-First Testing
+
+Tests are designed to use accessibility-friendly selectors whenever possible:
+
+- Using `getByRole` instead of `getByTestId` where appropriate
+- Testing with proper ARIA attributes
+- Ensuring keyboard navigation works correctly
+
+```tsx
+// Example: Finding a button by its accessible role and name
+const applyFilterButton = screen.getByRole('button', { name: /apply filter/i });
+```
+
+#### Mock Implementation
+
+For component testing, we use Jest mocks to isolate components and test their behavior:
+
+```tsx
+// Example: Mocking a child component
+jest.mock('@/components/monitoring/shared/ServiceFilterDialog', () => ({
+  ServiceFilterDialog: ({ isOpen, onClose, onApplyFilter, initialFilterGroup }) => {
+    // Mock implementation
+  }
+}));
+```
+
+#### Test Coverage
+
+The test suite aims to cover:
+
+- **User Interactions**: Clicking buttons, opening dialogs, applying filters
+- **State Management**: Proper state updates when filters change
+- **Edge Cases**: Empty states, invalid filters, persistence issues
+- **Accessibility**: Ensuring components are accessible
+
+### Best Practices
+
+1. **Isolated Tests**: Each test focuses on a specific behavior or feature
+2. **Realistic User Interactions**: Tests simulate actual user behavior
+3. **Minimal Test Coupling**: Tests don't depend on each other
+4. **Clear Assertions**: Each test has clear, specific assertions
+5. **Proper Cleanup**: Tests clean up after themselves
+
+### Common Testing Patterns
+
+#### Testing Filter Application
+
+```tsx
+it('should filter services based on status', () => {
+  const { result } = renderHook(() => useServiceFilters('test-project'));
+  
+  act(() => {
+    result.current.addFilterGroup({
+      operator: 'AND',
+      conditions: [{ field: 'status', value: 'Online' }]
+    });
+  });
+  
+  const filteredServices = result.current.filterServices(mockServices);
+  expect(filteredServices.length).toBe(1);
+  expect(filteredServices[0].status).toBe('Online');
+});
+```
+
+#### Testing UI Interactions
+
+```tsx
+it('should open filter dialog when add filter button is clicked', () => {
+  render(
+    <ServiceFilters
+      services={mockServices}
+      filterGroups={[]}
+      {...mockHandlers}
+    />
+  );
+  
+  fireEvent.click(screen.getByText('Add Filter'));
+  expect(screen.getByTestId('filter-dialog')).toBeInTheDocument();
+});
+```
+
+### Troubleshooting Common Test Issues
+
+1. **Selector Issues**: If tests can't find elements, check if the component structure has changed. Prefer role-based selectors over test IDs when possible.
+
+2. **Mock Function Calls**: Ensure mock functions are properly set up and that the component is correctly calling them.
+
+3. **Asynchronous Updates**: Use `act()` for state updates and `waitFor()` for asynchronous operations.
+
+4. **Local Storage Issues**: Mock localStorage for consistent test behavior across environments.
+
+5. **Component Isolation**: Use proper mocking to isolate the component under test from its dependencies.

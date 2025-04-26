@@ -41,11 +41,11 @@ describe('useForm', () => {
   it('validates fields according to validation rules', () => {
     const initialValues = { username: '', password: '' };
     const validationRules = {
-      username: (value: unknown, _formData: typeof initialValues) => {
+      username: (value: unknown) => {
         if (!(value as string).trim()) return 'Username is required';
         return undefined;
       },
-      password: (value: unknown, _formData: typeof initialValues) => {
+      password: (value: unknown) => {
         if (!value) return 'Password is required';
         if ((value as string).length < 6) return 'Password must be at least 6 characters';
         return undefined;
@@ -72,7 +72,7 @@ describe('useForm', () => {
   it('clears field error when user types in the field', () => {
     const initialValues = { username: '', password: '' };
     const validationRules = {
-      username: (value: unknown, _formData: typeof initialValues) => {
+      username: (value: unknown) => {
         if (!(value as string).trim()) return 'Username is required';
         return undefined;
       }
