@@ -1,10 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend, ResponsiveContainer } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { Activity } from 'lucide-react';
-import { CPUData, Service } from '@/types';
+import { CPUData, Service, Metric } from '@/types';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { ServiceSelector } from './shared';
+import { MetricsSelector } from './shared/MetricsSelector';
+import { useMetricsSelection } from './hooks';
 
 const CustomTooltip = memo(({ active, payload, label }: Partial<TooltipProps<ValueType, NameType>>) => {
   if (active && payload && payload.length) {
@@ -28,23 +30,49 @@ interface CPUChartProps {
   selectedService: string | null;
   services: Service[];
   onServiceSelect: (service: string) => void;
+  selectedProjectId: string;
 }
 
 export const CPUChart: React.FC<CPUChartProps> = memo(({ 
   data, 
   selectedService, 
   services,
-  onServiceSelect 
+  onServiceSelect,
+  selectedProjectId 
 }) => {
+  // Define default metrics
+  const defaultMetrics = useMemo<Metric[]>(() => [
+    { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
+    { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
+    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true }
+  ], []);
+  
+  // Use our custom hook for metrics selection with persistence
+  const { 
+    metrics, 
+    updateMetricSelection 
+  } = useMetricsSelection({
+    projectId: selectedProjectId,
+    serviceName: selectedService,
+    defaultMetrics
+  });
   return (
     <BoxedWrapper className="mt-4">
       <div className="flex items-center justify-between mb-4">
-        <SectionHeader
-          title="System Metrics"
-          HeaderIcon={Activity}
-          headerClassName="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100"
-          iconClassName="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400"
-        />
+        <div className="flex items-center space-x-4">
+          <SectionHeader
+            title="System Metrics"
+            HeaderIcon={Activity}
+            headerClassName="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100"
+            iconClassName="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400"
+          />
+          {selectedService && data && (
+            <MetricsSelector
+              metrics={metrics}
+              onMetricsChange={updateMetricSelection}
+            />
+          )}
+        </div>
         <ServiceSelector
           selectedService={selectedService}
           services={services}
@@ -76,9 +104,17 @@ export const CPUChart: React.FC<CPUChartProps> = memo(({
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Line type="monotone" dataKey="load" stroke="#4f46e5" name="CPU Load %" />
-              <Line type="monotone" dataKey="memory" stroke="#059669" name="Memory Usage %" />
-              <Line type="monotone" dataKey="threads" stroke="#db2777" name="Active Threads" />
+              {metrics.map(metric => (
+                metric.selected && (
+                  <Line 
+                    key={metric.id}
+                    type="monotone" 
+                    dataKey={metric.dataKey} 
+                    stroke={metric.color} 
+                    name={metric.name} 
+                  />
+                )
+              ))}
             </LineChart>
           </ResponsiveContainer>
         </div>
