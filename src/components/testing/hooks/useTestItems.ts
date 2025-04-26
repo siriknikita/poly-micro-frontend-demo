@@ -3,7 +3,7 @@ import { TestItem } from '@/types';
 
 // Define interfaces for better type safety
 interface StorageData {
-  [microserviceId: string]: any;
+  [microserviceId: string]: unknown;
 }
 
 // Local storage key constants
@@ -20,7 +20,7 @@ const storage = {
   /**
    * Save data to localStorage with error handling
    */
-  save: (key: string, microserviceId: string | null, data: any): void => {
+  save: (key: string, microserviceId: string | null, data: unknown): void => {
     if (!microserviceId) return;
     
     try {

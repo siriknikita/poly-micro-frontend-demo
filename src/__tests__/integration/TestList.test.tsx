@@ -55,7 +55,13 @@ vi.mock('../../context/ProjectContext', () => ({
 
 // Mock the TestItemComponent
 vi.mock('../../components/testing/components', () => ({
-  TestItemComponent: ({ item, isExpanded, onRunTest, onGenerateTest, onShowOutput }: any) => {
+  TestItemComponent: ({ item, isExpanded, onRunTest, onGenerateTest, onShowOutput }: {
+    item: { id: string; name: string };
+    isExpanded: boolean;
+    onRunTest: (item: { id: string; name: string }) => void;
+    onGenerateTest: (item: { id: string; name: string }) => void;
+    onShowOutput: (id: string) => void;
+  }) => {
     return (
       <div data-testid={`test-item-${item.id}`}>
         <span>{item.name}</span>
@@ -85,7 +91,12 @@ vi.mock('../../components/testing/components', () => ({
       </div>
     );
   },
-  IconButton: ({ onClick, title, icon, 'aria-label': ariaLabel }: any) => (
+  IconButton: ({ onClick, title, icon, 'aria-label': ariaLabel }: {
+    onClick?: () => void;
+    title?: string;
+    icon: React.ReactNode;
+    'aria-label'?: string;
+  }) => (
     <button 
       onClick={onClick} 
       title={title} 
@@ -95,7 +106,12 @@ vi.mock('../../components/testing/components', () => ({
       {icon}
     </button>
   ),
-  TestOutputModal: ({ isOpen, testId, output, onClose }: any) => 
+  TestOutputModal: ({ isOpen, testId, output, onClose }: {
+    isOpen: boolean;
+    testId: string;
+    output: string;
+    onClose: () => void;
+  }) => 
     isOpen ? (
       <div data-testid="test-output-modal">
         <div data-testid="modal-test-id">{testId}</div>

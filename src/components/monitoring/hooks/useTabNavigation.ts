@@ -24,7 +24,7 @@ export function useTabNavigation() {
   
   // Update URL when tab changes
   useEffect(() => {
-    const tabPath = Object.entries(PATH_TO_TAB).find(([_, tab]) => tab === activeTab)?.[0] || '/dashboard';
+    const tabPath = Object.entries(PATH_TO_TAB).find(([, tab]) => tab === activeTab)?.[0] || '/dashboard';
     if (location.pathname !== tabPath) {
       navigate(tabPath);
     }

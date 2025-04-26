@@ -1,52 +1,35 @@
 import React, { createContext, useContext } from 'react';
-import { toast, ToastOptions } from 'react-toastify';
-
-// Define the type for the context
-type ToastContextType = {
-  showSuccess: (message: string, options?: ToastOptions) => void;
-  showError: (message: string, options?: ToastOptions) => void;
-  showInfo: (message: string, options?: ToastOptions) => void;
-  showWarning: (message: string, options?: ToastOptions) => void;
-};
+import { toast } from 'react-toastify';
+import { ToastContextType, defaultOptions } from './toastTypes';
 
 // Create the context with a default value
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 // Custom hook to use the toast context
-export const useToast = () => {
+export function useToast() {
   const context = useContext(ToastContext);
   if (context === undefined) {
     throw new Error('useToast must be used within a ToastProvider');
   }
   return context;
-};
-
-// Default toast options
-const defaultOptions: ToastOptions = {
-  position: 'top-right',
-  autoClose: 3000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
-};
+}
 
 // Toast provider component
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export function ToastProvider({ children }: { children: React.ReactNode }) {
   // Toast functions
-  const showSuccess = (message: string, options?: ToastOptions) => {
+  const showSuccess = (message: string, options = {}) => {
     toast.success(message, { ...defaultOptions, ...options });
   };
 
-  const showError = (message: string, options?: ToastOptions) => {
+  const showError = (message: string, options = {}) => {
     toast.error(message, { ...defaultOptions, ...options });
   };
 
-  const showInfo = (message: string, options?: ToastOptions) => {
+  const showInfo = (message: string, options = {}) => {
     toast.info(message, { ...defaultOptions, ...options });
   };
 
-  const showWarning = (message: string, options?: ToastOptions) => {
+  const showWarning = (message: string, options = {}) => {
     toast.warning(message, { ...defaultOptions, ...options });
   };
 
@@ -55,4 +38,4 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
     </ToastContext.Provider>
   );
-};
+}

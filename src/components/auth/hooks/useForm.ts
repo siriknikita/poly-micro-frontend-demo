@@ -1,10 +1,10 @@
 import { useState, useCallback, FormEvent } from 'react';
 
 interface ValidationRules<T> {
-  [key: string]: (value: any, formData: T) => string | undefined;
+  [key: string]: (value: unknown, formData: T) => string | undefined;
 }
 
-export function useForm<T extends Record<string, any>>(
+export function useForm<T extends Record<string, unknown>>(
   initialValues: T,
   validationRules?: ValidationRules<T>,
   onSubmit?: (values: T) => Promise<void> | void
@@ -33,7 +33,7 @@ export function useForm<T extends Record<string, any>>(
     }
   }, [errors, submitError]);
 
-  const validateField = useCallback((name: string, value: any) => {
+  const validateField = useCallback((name: string, value: unknown) => {
     if (!validationRules || !validationRules[name]) return undefined;
     return validationRules[name](value, values);
   }, [validationRules, values]);

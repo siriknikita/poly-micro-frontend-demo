@@ -17,8 +17,8 @@ describe('useResizablePanel', () => {
     addEventListenerSpy = vi.fn();
     removeEventListenerSpy = vi.fn();
     
-    document.addEventListener = addEventListenerSpy as any;
-    document.removeEventListener = removeEventListenerSpy as any;
+    document.addEventListener = addEventListenerSpy as typeof document.addEventListener;
+    document.removeEventListener = removeEventListenerSpy as typeof document.removeEventListener;
     
     // Mock document.body.classList methods
     document.body.classList.add = vi.fn();
@@ -55,7 +55,7 @@ describe('useResizablePanel', () => {
     const { result } = renderHook(() => useResizablePanel());
     
     act(() => {
-      result.current.startResize({ preventDefault: vi.fn() } as any);
+      result.current.startResize({ preventDefault: vi.fn(), clientX: 100 } as unknown as React.MouseEvent<HTMLDivElement>);
     });
     
     expect(result.current.isDragging).toBe(true);
@@ -65,7 +65,7 @@ describe('useResizablePanel', () => {
     const { result } = renderHook(() => useResizablePanel());
     
     act(() => {
-      result.current.startResize({ preventDefault: vi.fn() } as any);
+      result.current.startResize({ preventDefault: vi.fn(), clientX: 100 } as unknown as React.MouseEvent<HTMLDivElement>);
     });
     
     // Should add mousemove and mouseup event listeners
@@ -80,7 +80,7 @@ describe('useResizablePanel', () => {
     const { result, unmount } = renderHook(() => useResizablePanel());
     
     act(() => {
-      result.current.startResize({ preventDefault: vi.fn() } as any);
+      result.current.startResize({ preventDefault: vi.fn(), clientX: 100 } as unknown as React.MouseEvent<HTMLDivElement>);
     });
     
     unmount();

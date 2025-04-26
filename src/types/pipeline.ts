@@ -1,7 +1,7 @@
 interface ConfigSchemaField {
   type: 'string' | 'number' | 'select' | 'array' | 'cron' | 'expression' | 'command';
   label: string;
-  default: any;
+  default: string | number | boolean | string[];
   options?: string[];
 }
 
@@ -17,7 +17,7 @@ export interface PipelineBlock {
 export interface BlockInstance extends PipelineBlock {
   instanceId: string;
   position: { x: number; y: number };
-  config: Record<string, any>;
+  config: Record<string, string | number | boolean | string[]>;
 }
 
 export interface PipelineConnection {

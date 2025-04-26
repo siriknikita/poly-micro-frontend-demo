@@ -1,8 +1,10 @@
 import React from 'react';
-import { vi } from 'vitest';
 
 // Mock TestItemComponent
-export const MockTestItemComponent = ({ item, isExpanded }: any) => (
+export const MockTestItemComponent = ({ item, isExpanded }: {
+  item: { id: string; name: string; status?: string };
+  isExpanded: boolean;
+}) => (
   <div data-testid={`test-item-${item.id}`}>
     {item.name}
     {isExpanded && (
@@ -17,7 +19,11 @@ export const MockTestItemComponent = ({ item, isExpanded }: any) => (
 );
 
 // Mock IconButton
-export const MockIconButton = ({ children, onClick, title }: any) => (
+export const MockIconButton = ({ children, onClick, title }: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  title?: string;
+}) => (
   <button onClick={onClick} title={title}>
     {children}
   </button>

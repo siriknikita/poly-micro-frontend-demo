@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { render as rtlRender, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { ProjectProvider } from '@/context/ProjectContext';
@@ -26,23 +26,23 @@ function AllProviders({ children }: ProvidersProps): JSX.Element {
 }
 
 // Interface for the extended render result
-interface CustomRenderResult extends ReturnType<typeof render> {
+interface CustomRenderResult extends ReturnType<typeof rtlRender> {
   user: ReturnType<typeof userEvent.setup>;
 }
 
 // Custom render function that includes the AllProviders wrapper
-const customRender = (
+function customRender(
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>,
-): CustomRenderResult => {
+): CustomRenderResult {
   return {
     user: userEvent.setup(),
-    ...render(ui, {
+    ...rtlRender(ui, {
       wrapper: AllProviders,
       ...options,
     }),
   };
-};
+}
 
 // Re-export everything from @testing-library/react
 export * from '@testing-library/react';

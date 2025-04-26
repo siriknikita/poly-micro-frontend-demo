@@ -3,7 +3,7 @@ import { useTestItems } from '@/components/testing/hooks/useTestItems';
 import { TestItem } from '@/types';
 
 // Create a mock state implementation that supports callback updates
-const createStateMock = (initialValue: any) => {
+const createStateMock = (initialValue: TestItem[] | null) => {
   let value = initialValue;
   const setValue = vi.fn((newValueOrFn) => {
     if (typeof newValueOrFn === 'function') {

@@ -2,7 +2,9 @@ import { vi } from 'vitest';
 import { mockTestItems } from './mockData';
 
 // Mock implementation of useTestItems hook
-export const mockUseTestItems = (tests: any, projectId: string, microserviceId: string) => ({
+import { TestItem } from '@/types';
+
+export const mockUseTestItems = (_tests: TestItem[], _projectId: string, _microserviceId: string) => ({
   testItems: mockTestItems,
   isLoading: false,
   error: null,
@@ -12,7 +14,7 @@ export const mockUseTestItems = (tests: any, projectId: string, microserviceId: 
   collapseAll: vi.fn(),
   showResults: true,
   toggleResultsVisibility: vi.fn(),
-  currentMicroserviceId: microserviceId,
+  currentMicroserviceId: _microserviceId,
   runTest: vi.fn(),
   viewTestOutput: vi.fn(),
   runningTests: {},
