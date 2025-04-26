@@ -9,7 +9,8 @@ The Monitoring feature provides real-time observability and performance tracking
 ```
 src/components/monitoring/
 ├── LogViewer/                 # Components for viewing and analyzing logs
-│   └── [Log viewer components]
+│   ├── LogViewer.tsx         # Main log viewing component
+│   └── TablePagination.tsx   # Pagination component for log tables
 ├── hooks/                     # Custom hooks for monitoring functionality
 │   ├── useAuthManagement.ts   # Hook for managing authentication state
 │   ├── useProjectManagement.ts # Hook for managing project selection

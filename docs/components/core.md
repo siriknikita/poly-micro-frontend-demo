@@ -1,17 +1,34 @@
-# Layout Components Documentation
+# Core and Layout Components Documentation
 
 ## Overview
 
-The Layout Components are the main structural elements of the Poly Micro Manager application. They provide the application's layout and navigation functionality. These components serve as the foundation upon which the feature-specific components are built.
+The Core and Layout Components are the main structural elements of the Poly Micro Manager application. They provide the application's layout, navigation functionality, and core application logic. These components serve as the foundation upon which the feature-specific components are built.
 
-## Components Structure
+## Project Structure
 
 ```
-src/components/layout/
-├── Sidebar.tsx                # Application sidebar navigation
-├── TopBar.tsx                 # Application top navigation bar
-├── ThemeToggle.tsx            # Dark/light theme toggle
-└── index.ts                   # Export file for layout components
+src/
+├── App.tsx                    # Main application component
+├── main.tsx                   # Application entry point
+├── index.css                  # Global CSS styles
+├── components/layout/         # Layout components
+│   ├── Sidebar.tsx            # Application sidebar navigation
+│   ├── TopBar.tsx             # Application top navigation bar
+│   ├── ThemeToggle.tsx        # Dark/light theme toggle
+│   └── index.ts               # Export file for layout components
+├── context/                   # Application context providers
+│   ├── ProjectContext.tsx     # Project context provider
+│   ├── ToastContext.tsx       # Toast notification context
+│   ├── projectTypes.ts        # Type definitions for project context
+│   ├── toastTypes.ts          # Type definitions for toast context
+│   ├── useProject.tsx         # Hook for accessing project context
+│   └── useToast.tsx           # Hook for accessing toast context
+├── hooks/                     # Application-wide custom hooks
+│   ├── useMonitoringData.ts   # Hook for fetching monitoring data
+│   ├── usePagination.ts       # Hook for pagination functionality
+│   ├── useTheme.ts            # Hook for theme management
+│   └── index.ts               # Export file for hooks
+└── types/                     # TypeScript type definitions
 ```
 
 ## Key Components

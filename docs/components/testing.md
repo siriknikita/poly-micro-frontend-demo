@@ -13,15 +13,14 @@ src/components/testing/
 │   ├── NavigationControls.tsx # Controls for microservice navigation
 │   ├── ResizeHandle.tsx       # Component for resizing panels
 │   ├── SearchInput.tsx        # Input component for searching microservices
-│   ├── TestItemComponent.tsx  # Component for rendering test items
+│   ├── TestItem.tsx           # Component for rendering test items
+│   ├── TestOutputModal.tsx    # Modal component for test output in components folder
 │   └── index.ts               # Export file for easier imports
 ├── hooks/                     # Custom hooks for testing functionality
-│   ├── useMicroserviceNavigation.tsx # Hook for navigating between microservices
-│   ├── useResizablePanel.tsx  # Hook for managing resizable panels
-│   ├── useTestItems.tsx       # Hook for managing test items and their expanded state
+│   ├── useMicroserviceNavigation.ts # Hook for navigating between microservices
+│   ├── useResizablePanel.ts   # Hook for managing resizable panels
+│   ├── useTestItems.ts        # Hook for managing test items and their expanded state
 │   └── index.ts               # Export file for easier imports
-├── context/                   # Context providers
-│   └── ToastContext.tsx       # Context provider for toast notifications
 ├── AIPromptModal.tsx          # Modal for AI-assisted test creation
 ├── AutomatedTesting.tsx       # Main container for the testing feature
 ├── ChatContainer.tsx          # Container for test chat interactions
