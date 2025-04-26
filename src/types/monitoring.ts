@@ -8,13 +8,15 @@ export interface CPUData {
 export type MockedCPUData = Record<string, Record<string, CPUData[]>>;
 
 export interface Service {
+  id?: string;
   name: string;
-  port: number;
-  status: 'Running' | 'Stopped' | 'Error';
-  health: 'Healthy' | 'Warning' | 'Critical';
-  uptime: string;
-  version: string;
-  lastDeployment: string;
+  port?: number;
+  url?: string;
+  status?: 'Running' | 'Stopped' | 'Error' | 'Online' | 'Offline';
+  health?: 'Healthy' | 'Warning' | 'Critical' | 'Degraded' | 'Error';
+  uptime?: string;
+  version?: string;
+  lastDeployment?: string;
 }
 
 export type MockedServices = Record<string, Service[]>;

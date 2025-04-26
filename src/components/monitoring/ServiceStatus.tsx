@@ -27,10 +27,10 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services }) =
               <p className="text-sm text-gray-600 dark:text-gray-400">Version: {service.version}</p>
               <p className="text-sm text-gray-600 dark:text-gray-400">Uptime: {service.uptime}</p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Status: <StatusBadge status={service.status} variant={getStatusVariant(service.status)} />
+                Status: <StatusBadge status={service.status || ''} variant={getStatusVariant(service.status || '')} />
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Health: <StatusBadge status={service.health} variant={getStatusVariant(service.health)} />
+                Health: <StatusBadge status={service.health || ''} variant={getStatusVariant(service.health || '')} />
               </p>
             </div>
           </div>

@@ -12,7 +12,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   iconClassName,
 }) => {
   return (
-    <h3 className={headerClassName}>
+    <h3 className={headerClassName} data-testId="section-header">
       <HeaderIcon className={iconClassName} />
       {title}
     </h3>

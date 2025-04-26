@@ -43,14 +43,15 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
   const buttonClasses = "flex items-center justify-center px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded disabled:opacity-50 hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors";
   
   return (
-    <div className={`flex items-center space-x-2 ${className}`}>
+    <div className={`flex items-center space-x-2 ${className}`} data-testid="table-pagination">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className={buttonClasses}
         aria-label="Previous page"
+        data-testId="previous-page"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-5 w-5" data-testId="chevron-left" />
       </button>
       
       {showPageNumbers && pageNumbers.map(number => (
@@ -74,8 +75,9 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
         disabled={currentPage === totalPages || totalPages === 0}
         className={buttonClasses}
         aria-label="Next page"
+        data-testId="next-page"
       >
-        <ChevronRight className="h-5 w-5" />
+        <ChevronRight className="h-5 w-5" data-testId="chevron-right" />
       </button>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Service } from '@types';
+import { Service } from '@/types';
 
 interface ServiceSelectorProps {
   selectedService: string | null;
@@ -26,6 +26,7 @@ export const ServiceSelector: React.FC<ServiceSelectorProps> = ({
       onChange={(e) => onServiceSelect(e.target.value)}
       className={`${baseClasses} ${className}`}
       aria-label={label}
+      data-testid="service-selector"
     >
       <option value="">{label}</option>
       {showAllOption && (
