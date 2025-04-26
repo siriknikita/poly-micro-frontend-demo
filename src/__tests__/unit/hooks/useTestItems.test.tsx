@@ -87,27 +87,22 @@ describe('useTestItems', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     
     // Use a fixed date instance to avoid recursion
-    const mockDate = vi.spyOn(global, 'Date').mockImplementation((args) => {
-      // When called as a constructor
-      if (args) {
-        // @ts-ignore - This is a mock
-        return new (vi.fn())(...args);
+    const originalDate = global.Date;
+    const mockDateConstructor = function(...args: unknown[]) {
+      if (args.length === 0) {
+        return FIXED_DATE;
       }
-      return FIXED_DATE;
-    });
+      // @ts-expect-error - We're mocking the Date constructor
+      return new originalDate(...args);
+    } as unknown as DateConstructor;
     
-    // Also mock the static Date.now() method
-    mockDate.mockImplementation((args) => {
-      if (args) {
-        // @ts-ignore - This is a mock
-        return new (vi.fn())(...args);
-      }
-      return FIXED_DATE;
-    });
+    // Add the necessary static methods
+    mockDateConstructor.now = vi.fn(() => FIXED_TIMESTAMP);
+    mockDateConstructor.parse = originalDate.parse;
+    mockDateConstructor.UTC = originalDate.UTC;
     
-    // Add the static now method to the Date constructor
-    // @ts-ignore - Adding static method to mocked constructor
-    global.Date.now = vi.fn(() => FIXED_TIMESTAMP);
+    // Replace the global Date
+    global.Date = mockDateConstructor;
   });
 
   it('can be imported', () => {
