@@ -10,7 +10,7 @@ import {
 import { Send } from 'lucide-react';
 import { TestItem } from '@/types';
 import { IconButton } from './components';
-import { useToast } from '@/context/ToastContext';
+import { useToast } from '@/context/useToast';
 
 interface TestChatProps {
   onGenerateTest: (test: TestItem) => void;
@@ -100,6 +100,7 @@ export const TestChat = forwardRef<
         ]);
       }
     }, 1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
 
   // Handle keyboard events

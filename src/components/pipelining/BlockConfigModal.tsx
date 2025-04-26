@@ -6,7 +6,7 @@ import { ConfigField, IconButton } from './components';
 
 interface BlockConfigModalProps {
   block: BlockInstance;
-  onSave: (instanceId: string, config: Record<string, any>) => void;
+  onSave: (instanceId: string, config: Record<string, string | number | boolean | string[]>) => void;
   onClose: () => void;
 }
 
@@ -15,10 +15,10 @@ export const BlockConfigModal = memo<BlockConfigModalProps>(({
   onSave,
   onClose
 }) => {
-  const [config, setConfig] = useState<Record<string, any>>(block.config || {});
+  const [config, setConfig] = useState<Record<string, string | number | boolean | string[]>>(block.config || {});
   
   // Handle field change
-  const handleFieldChange = useCallback((key: string, value: any) => {
+  const handleFieldChange = useCallback((key: string, value: string | number | boolean | string[]) => {
     setConfig(prev => ({ ...prev, [key]: value }));
   }, []);
 

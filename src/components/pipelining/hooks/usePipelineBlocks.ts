@@ -51,7 +51,7 @@ export function usePipelineBlocks(options: UsePipelineBlocksOptions = {}) {
   }, [snapToGrid]);
 
   // Update block configuration
-  const updateBlockConfig = useCallback((instanceId: string, config: Record<string, any>) => {
+  const updateBlockConfig = useCallback((instanceId: string, config: Record<string, string | number | boolean | string[]>) => {
     setBlocks(prev => prev.map(block =>
       block.instanceId === instanceId
         ? { ...block, config }

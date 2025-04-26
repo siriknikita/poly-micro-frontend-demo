@@ -63,7 +63,9 @@ describe('useTestItems', () => {
     const expectedExpandedItems: Record<string, boolean> = {};
     
     // Helper function to recursively add all items and their children to expectedExpandedItems
-    const addAllItems = (items: any[]) => {
+    // Define a recursive type for test items
+    type TestItemWithChildren = { id: string; children?: TestItemWithChildren[] };
+    const addAllItems = (items: TestItemWithChildren[]) => {
       items.forEach(item => {
         expectedExpandedItems[item.id] = true;
         if (item.children && item.children.length > 0) {

@@ -64,12 +64,16 @@ vi.mock('../../components/testing/hooks', () => {
   };
 });
 
-// Mock the ProjectContext
-vi.mock('../../context/ProjectContext', () => ({
+// Mock the useProject hook
+vi.mock('../../context/useProject', () => ({
   useProject: () => ({
     project: { id: 'project1', name: 'Test Project' },
     setProject: vi.fn(),
   }),
+}));
+
+// Mock the ProjectContext
+vi.mock('../../context/ProjectContext', () => ({
   ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 

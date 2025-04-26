@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Service } from '@types';
+import { Service } from '@/types';
 
 interface UseServiceSelectionProps {
   projectId: string;

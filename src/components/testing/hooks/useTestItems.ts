@@ -3,7 +3,7 @@ import { TestItem } from '@/types';
 
 // Define interfaces for better type safety
 interface StorageData {
-  [microserviceId: string]: any;
+  [microserviceId: string]: unknown;
 }
 
 // Local storage key constants
@@ -20,7 +20,7 @@ const storage = {
   /**
    * Save data to localStorage with error handling
    */
-  save: (key: string, microserviceId: string | null, data: any): void => {
+  save: (key: string, microserviceId: string | null, data: unknown): void => {
     if (!microserviceId) return;
     
     try {
@@ -49,7 +49,7 @@ const storage = {
       if (!storedData) return defaultValue;
       
       const parsedData = JSON.parse(storedData) as StorageData;
-      return microserviceId in parsedData ? parsedData[microserviceId] : defaultValue;
+      return microserviceId in parsedData ? (parsedData[microserviceId] as T) : defaultValue;
     } catch (error) {
       console.error(`Failed to load data from localStorage (${key}):`, error);
       return defaultValue;
@@ -67,7 +67,7 @@ export const useTestItems = (microservices: TestItem[] = [], projectId: string, 
   const [showResults, setShowResults] = useState<boolean>(true);
   const [currentMicroserviceId, setCurrentMicroserviceId] = useState<string | null>(initialMicroserviceId || null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, _] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
   const [isOutputModalOpen, setIsOutputModalOpen] = useState<boolean>(false);
   const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
   const [runningTests, setRunningTests] = useState<Record<string, boolean>>({});

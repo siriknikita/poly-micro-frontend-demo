@@ -7,20 +7,24 @@ const mockShowInfo = vi.fn();
 const mockShowSuccess = vi.fn();
 const mockShowError = vi.fn();
 
-vi.mock('../../context/ToastContext', () => ({
+// Mock the useToast hook
+vi.mock('../../context/useToast', () => ({
   useToast: () => ({
     showSuccess: mockShowSuccess,
     showError: mockShowError,
     showInfo: mockShowInfo,
   }),
+}));
+
+// Mock the ToastContext
+vi.mock('../../context/ToastContext', () => ({
   ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
 // Mock the hooks module first, before any imports that might use it
 vi.mock('../../components/testing/hooks', () => {
   return {
-  // @ts-ignore
-    useTestItems: vi.fn().mockImplementation((tests, projectId, microserviceId) => ({
+    useTestItems: vi.fn().mockImplementation((_tests, _projectId, microserviceId) => ({
       expandedItems: { test1: true, test2: false },
       functionResults: {},
       toggleExpand: vi.fn(),
@@ -45,8 +49,8 @@ vi.mock('../../components/testing/hooks', () => {
   };
 });
 
-// Mock the ProjectContext
-vi.mock('../../context/ProjectContext', () => ({
+// Mock the useProject hook
+vi.mock('../../context/useProject', () => ({
   useProject: () => ({
     project: { id: 'project1', name: 'Test Project' },
     setProject: vi.fn(),
@@ -54,10 +58,20 @@ vi.mock('../../context/ProjectContext', () => ({
   ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
+// Mock the ProjectContextProvider
+vi.mock('../../context/ProjectContext', () => ({
+  ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 // Mock the TestItemComponent
 vi.mock('../../components/testing/components', () => ({
-  // @ts-ignore
-  TestItemComponent: ({ item, isExpanded, onToggleExpand, onRunTest, onGenerateTest, onShowOutput }: any) => {
+  TestItemComponent: ({ item, isExpanded, onRunTest, onGenerateTest, onShowOutput }: {
+    item: { id: string; name: string };
+    isExpanded: boolean;
+    onRunTest: (item: { id: string; name: string }) => void;
+    onGenerateTest: (item: { id: string; name: string }) => void;
+    onShowOutput: (id: string) => void;
+  }) => {
     return (
       <div data-testid={`test-item-${item.id}`}>
         <span>{item.name}</span>
@@ -87,7 +101,12 @@ vi.mock('../../components/testing/components', () => ({
       </div>
     );
   },
-  IconButton: ({ onClick, title, icon, 'aria-label': ariaLabel }: any) => (
+  IconButton: ({ onClick, title, icon, 'aria-label': ariaLabel }: {
+    onClick?: () => void;
+    title?: string;
+    icon: React.ReactNode;
+    'aria-label'?: string;
+  }) => (
     <button 
       onClick={onClick} 
       title={title} 
@@ -97,7 +116,12 @@ vi.mock('../../components/testing/components', () => ({
       {icon}
     </button>
   ),
-  TestOutputModal: ({ isOpen, testId, output, onClose }: any) => 
+  TestOutputModal: ({ isOpen, testId, output, onClose }: {
+    isOpen: boolean;
+    testId: string;
+    output: string;
+    onClose: () => void;
+  }) => 
     isOpen ? (
       <div data-testid="test-output-modal">
         <div data-testid="modal-test-id">{testId}</div>
@@ -126,8 +150,7 @@ describe('TestList Integration', () => {
     vi.clearAllMocks();
     
     // Reset the mock implementation for each test
-    // @ts-ignore
-    vi.mocked(useTestItems).mockImplementation((tests, projectId, microserviceId) => ({
+    vi.mocked(useTestItems).mockImplementation((_tests, _projectId, microserviceId) => ({
       expandedItems: { func1: true, func2: false, func3: false },
       functionResults: {},
       toggleExpand: mockToggleExpand,

@@ -3,7 +3,7 @@ import { useTestItems } from '@/components/testing/hooks/useTestItems';
 import { TestItem } from '@/types';
 
 // Create a mock state implementation that supports callback updates
-const createStateMock = (initialValue: any) => {
+const createStateMock = (initialValue: TestItem[] | null) => {
   let value = initialValue;
   const setValue = vi.fn((newValueOrFn) => {
     if (typeof newValueOrFn === 'function') {
@@ -76,6 +76,7 @@ const createTestMicroservice = (id: string): TestItem => ({
 
 // Create a fixed date to avoid recursion
 const FIXED_DATE = new Date('2025-04-21T12:00:00Z');
+const FIXED_TIMESTAMP = FIXED_DATE.getTime();
 
 describe('useTestItems', () => {
   beforeEach(() => {
@@ -86,7 +87,22 @@ describe('useTestItems', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     
     // Use a fixed date instance to avoid recursion
-    vi.spyOn(global, 'Date').mockImplementation(() => FIXED_DATE);
+    const originalDate = global.Date;
+    const mockDateConstructor = function(...args: unknown[]) {
+      if (args.length === 0) {
+        return FIXED_DATE;
+      }
+      // @ts-expect-error - We're mocking the Date constructor
+      return new originalDate(...args);
+    } as unknown as DateConstructor;
+    
+    // Add the necessary static methods
+    mockDateConstructor.now = vi.fn(() => FIXED_TIMESTAMP);
+    mockDateConstructor.parse = originalDate.parse;
+    mockDateConstructor.UTC = originalDate.UTC;
+    
+    // Replace the global Date
+    global.Date = mockDateConstructor;
   });
 
   it('can be imported', () => {

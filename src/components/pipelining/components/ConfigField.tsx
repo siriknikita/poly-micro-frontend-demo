@@ -3,9 +3,17 @@ import { X } from 'lucide-react';
 
 interface ConfigFieldProps {
   name: string;
-  schema: any;
-  value: any;
-  onChange: (name: string, value: any) => void;
+  schema: {
+    type: string;
+    options?: string[];
+    default?: unknown;
+    required?: boolean;
+    min?: number;
+    max?: number;
+    label?: string;
+  };
+  value: string | number | boolean | string[];
+  onChange: (name: string, value: string | number | boolean | string[]) => void;
 }
 
 export const ConfigField = memo(({
@@ -14,7 +22,7 @@ export const ConfigField = memo(({
   value,
   onChange
 }: ConfigFieldProps) => {
-  const handleChange = (newValue: any) => {
+  const handleChange = (newValue: string | number | boolean | string[]) => {
     onChange(name, newValue);
   };
 
@@ -28,7 +36,7 @@ export const ConfigField = memo(({
         return (
           <input
             type="text"
-            value={fieldValue}
+            value={String(fieldValue)}
             onChange={(e) => handleChange(e.target.value)}
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
@@ -38,7 +46,7 @@ export const ConfigField = memo(({
         return (
           <input
             type="number"
-            value={fieldValue}
+            value={String(fieldValue)}
             onChange={(e) => handleChange(Number(e.target.value))}
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
@@ -47,11 +55,11 @@ export const ConfigField = memo(({
       case 'select':
         return (
           <select
-            value={fieldValue}
+            value={String(fieldValue)}
             onChange={(e) => handleChange(e.target.value)}
             className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
-            {schema.options.map((option: string) => (
+            {schema.options?.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -64,7 +72,7 @@ export const ConfigField = memo(({
           <div className="space-y-2">
             <input
               type="text"
-              value={fieldValue}
+              value={String(fieldValue)}
               onChange={(e) => handleChange(e.target.value)}
               placeholder="Enter command or select from suggestions"
               className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
@@ -82,7 +90,7 @@ export const ConfigField = memo(({
           </div>
         );
 
-      case 'array':
+      case 'array': {
         const arrayValue = Array.isArray(fieldValue) ? fieldValue : [];
         return (
           <div className="space-y-2">
@@ -119,6 +127,7 @@ export const ConfigField = memo(({
             </button>
           </div>
         );
+      }
 
       default:
         return null;

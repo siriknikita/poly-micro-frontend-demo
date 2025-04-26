@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Project } from '@/types';
 import { mockProjects } from '@data/mockData';
 import { mockTestDataByProject } from '@data/mockTestData';
-import { useProject } from '@/context/ProjectContext';
+import { useProject } from '@/context/useProject';
 
 /**
  * Custom hook for managing project selection and data

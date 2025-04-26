@@ -22,7 +22,7 @@ export const IconButton = memo<IconButtonProps>(({
   ...props
 }) => {
   // Get the variant class
-  const variantClass = BUTTON_VARIANTS[variant.toUpperCase()] || BUTTON_VARIANTS.OUTLINE;
+  const variantClass = BUTTON_VARIANTS[variant.toUpperCase() as keyof typeof BUTTON_VARIANTS] || BUTTON_VARIANTS.OUTLINE;
   
   // Get the size class
   const sizeClass = size === 'sm' 

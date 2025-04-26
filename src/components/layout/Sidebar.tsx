@@ -44,7 +44,13 @@ const tabs: Tab[] = [
 interface SidebarProps {
   activeTab: string;
   onTabChange: (tabId: string) => void;
-  user: any;
+  user: {
+    name: string;
+    email: string;
+    avatar?: string;
+    businessName?: string;
+    username?: string;
+  };
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }) => {

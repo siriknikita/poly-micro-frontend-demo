@@ -11,7 +11,7 @@ describe('TestOutputModal Component', () => {
     global.fetch = vi.fn();
     
     // Mock a successful response
-    (global.fetch as any).mockResolvedValue({
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,
       json: async () => ({ success: true, data: mockTestOutput }),
     });

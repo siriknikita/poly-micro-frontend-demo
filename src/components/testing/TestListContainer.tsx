@@ -5,6 +5,7 @@ import { TestItem } from '@/types';
 import { mockTestData } from '@data/mockTestData';
 import { NavigationControls } from './components';
 import { useTestItems } from './hooks';
+import { useProject } from '@/context/useProject';
 
 interface TestListContainerProps {
   selectedMicroservice: TestItem;
@@ -22,8 +23,11 @@ export const TestListContainer = memo<TestListContainerProps>(({
   handleGenerateTest,
   handleMicroserviceChange,
 }) => {
+  // Get project context
+  const { project } = useProject();
+  
   // Use our custom hook for test items
-  const { runTest } = useTestItems();
+  const { runTest } = useTestItems(mockTestData, project?.id || '', selectedMicroservice?.id);
   
   // Get the previous microservice name
   const getPreviousMicroserviceName = useCallback(() => {
@@ -49,6 +53,7 @@ export const TestListContainer = memo<TestListContainerProps>(({
         onRunTest={runTest}
         onGenerateTest={handleGenerateTest}
         functionResults={functionResults}
+        microserviceId={selectedMicroservice.id}
       />
     </div>
 
