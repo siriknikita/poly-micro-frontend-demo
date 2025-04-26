@@ -3,7 +3,7 @@ import { TestItem as TestItemType } from '@/types';
 import { useTestItems } from './hooks';
 import { TestItemComponent, IconButton, TestOutputModal } from './components';
 import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/context/ToastContext';
+import { useToast } from '@/context/useToast';
 
 interface TestListProps {
   tests: TestItemType[];
@@ -13,7 +13,7 @@ interface TestListProps {
   microserviceId: string;
 }
 
-import { useProject } from '@/context/ProjectContext';
+import { useProject } from '@/context/useProject';
 
 export const TestList = memo<TestListProps>(({
   tests,

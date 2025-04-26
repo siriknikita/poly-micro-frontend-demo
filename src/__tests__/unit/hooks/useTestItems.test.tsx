@@ -76,6 +76,7 @@ const createTestMicroservice = (id: string): TestItem => ({
 
 // Create a fixed date to avoid recursion
 const FIXED_DATE = new Date('2025-04-21T12:00:00Z');
+const FIXED_TIMESTAMP = FIXED_DATE.getTime();
 
 describe('useTestItems', () => {
   beforeEach(() => {
@@ -86,7 +87,27 @@ describe('useTestItems', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
     
     // Use a fixed date instance to avoid recursion
-    vi.spyOn(global, 'Date').mockImplementation(() => FIXED_DATE);
+    const mockDate = vi.spyOn(global, 'Date').mockImplementation((args) => {
+      // When called as a constructor
+      if (args) {
+        // @ts-ignore - This is a mock
+        return new (vi.fn())(...args);
+      }
+      return FIXED_DATE;
+    });
+    
+    // Also mock the static Date.now() method
+    mockDate.mockImplementation((args) => {
+      if (args) {
+        // @ts-ignore - This is a mock
+        return new (vi.fn())(...args);
+      }
+      return FIXED_DATE;
+    });
+    
+    // Add the static now method to the Date constructor
+    // @ts-ignore - Adding static method to mocked constructor
+    global.Date.now = vi.fn(() => FIXED_TIMESTAMP);
   });
 
   it('can be imported', () => {

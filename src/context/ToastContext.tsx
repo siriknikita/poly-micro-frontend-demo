@@ -1,18 +1,9 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext } from 'react';
 import { toast } from 'react-toastify';
 import { ToastContextType, defaultOptions } from './toastTypes';
 
 // Create the context with a default value
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
-
-// Custom hook to use the toast context
-export function useToast() {
-  const context = useContext(ToastContext);
-  if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
-  }
-  return context;
-}
+export const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 // Toast provider component
 export function ToastProvider({ children }: { children: React.ReactNode }) {

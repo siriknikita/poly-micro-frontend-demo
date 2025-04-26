@@ -7,12 +7,17 @@ const mockShowInfo = vi.fn();
 const mockShowSuccess = vi.fn();
 const mockShowError = vi.fn();
 
-vi.mock('../../context/ToastContext', () => ({
+// Mock the useToast hook
+vi.mock('../../context/useToast', () => ({
   useToast: () => ({
     showSuccess: mockShowSuccess,
     showError: mockShowError,
     showInfo: mockShowInfo,
   }),
+}));
+
+// Mock the ToastContext
+vi.mock('../../context/ToastContext', () => ({
   ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
@@ -44,12 +49,17 @@ vi.mock('../../components/testing/hooks', () => {
   };
 });
 
-// Mock the ProjectContext
-vi.mock('../../context/ProjectContext', () => ({
+// Mock the useProject hook
+vi.mock('../../context/useProject', () => ({
   useProject: () => ({
     project: { id: 'project1', name: 'Test Project' },
     setProject: vi.fn(),
   }),
+  ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+// Mock the ProjectContextProvider
+vi.mock('../../context/ProjectContext', () => ({
   ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
