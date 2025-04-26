@@ -25,7 +25,7 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
     const pageNumbers = [];
     const halfMaxButtons = Math.floor(maxPageButtons / 2);
     let startPage = Math.max(1, currentPage - halfMaxButtons);
-    let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+    const endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
     
     // Adjust if we're near the end
     if (endPage - startPage + 1 < maxPageButtons) {

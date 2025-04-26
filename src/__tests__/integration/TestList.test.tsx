@@ -19,8 +19,7 @@ vi.mock('../../context/ToastContext', () => ({
 // Mock the hooks module first, before any imports that might use it
 vi.mock('../../components/testing/hooks', () => {
   return {
-  // @ts-ignore
-    useTestItems: vi.fn().mockImplementation((tests, projectId, microserviceId) => ({
+    useTestItems: vi.fn().mockImplementation((_tests, _projectId, microserviceId) => ({
       expandedItems: { test1: true, test2: false },
       functionResults: {},
       toggleExpand: vi.fn(),
@@ -56,8 +55,7 @@ vi.mock('../../context/ProjectContext', () => ({
 
 // Mock the TestItemComponent
 vi.mock('../../components/testing/components', () => ({
-  // @ts-ignore
-  TestItemComponent: ({ item, isExpanded, onToggleExpand, onRunTest, onGenerateTest, onShowOutput }: any) => {
+  TestItemComponent: ({ item, isExpanded, onRunTest, onGenerateTest, onShowOutput }: any) => {
     return (
       <div data-testid={`test-item-${item.id}`}>
         <span>{item.name}</span>
@@ -126,8 +124,7 @@ describe('TestList Integration', () => {
     vi.clearAllMocks();
     
     // Reset the mock implementation for each test
-    // @ts-ignore
-    vi.mocked(useTestItems).mockImplementation((tests, projectId, microserviceId) => ({
+    vi.mocked(useTestItems).mockImplementation((_tests, _projectId, microserviceId) => ({
       expandedItems: { func1: true, func2: false, func3: false },
       functionResults: {},
       toggleExpand: mockToggleExpand,

@@ -54,7 +54,7 @@ export function useForm<T extends Record<string, any>>(
     
     setErrors(newErrors);
     return isValid;
-  }, [validateField, values]);
+  }, [validateField, values, validationRules]);
 
   const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();

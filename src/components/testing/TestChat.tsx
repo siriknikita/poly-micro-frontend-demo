@@ -100,6 +100,7 @@ export const TestChat = forwardRef<
         ]);
       }
     }, 1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input]);
 
   // Handle keyboard events

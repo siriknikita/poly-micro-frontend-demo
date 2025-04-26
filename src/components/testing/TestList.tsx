@@ -128,7 +128,7 @@ export const TestList = memo<TestListProps>(({
   // Wrap onRunTest to add toast notifications
   const handleRunTest = (test: TestItemType) => {
     showInfo(`Running test: ${test.name}...`);
-    const result = onRunTest(test);
+    onRunTest(test);
     
     // The actual toast notification will be shown when the test completes
     // This is handled in the timer callback in useTestItems

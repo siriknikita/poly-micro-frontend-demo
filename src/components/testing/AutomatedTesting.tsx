@@ -14,7 +14,7 @@ import { useProject } from '@/context/ProjectContext';
 // Using key instead of memo to force remount when project changes
 export const AutomatedTesting = () => {
   // State for selected test and chat visibility
-  const [selectedTest, setSelectedTest] = useState<TestItem | null>(null);
+  const [, setSelectedTest] = useState<TestItem | null>(null);
   const [showChat, setShowChat] = useState(true);
   
   // Use our custom hooks
@@ -67,7 +67,7 @@ export const AutomatedTesting = () => {
     if (!selectedMicroservice && filteredMicroservices.length > 0) {
       setSelectedMicroservice(filteredMicroservices[0]);
     }
-  }, [selectedMicroservice, filteredMicroservices]);
+  }, [selectedMicroservice, filteredMicroservices, setSelectedMicroservice]);
   
   // Show a toast notification when all tests complete, but only when tests were actually run
   useEffect(() => {
