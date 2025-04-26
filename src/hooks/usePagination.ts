@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import { Log } from '@/types';
 
 const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
@@ -16,18 +16,18 @@ const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
     currentPage * itemsPerPage
   ), [logs, currentPage, itemsPerPage]);
 
-  // Instead of using useRef directly, we'll maintain our own reference
-  let lastLogNodeRef: HTMLTableRowElement | null = null;
+  // Use useRef to maintain a reference that persists across renders
+  const lastLogNodeRef = useRef<HTMLTableRowElement | null>(null);
   
   // Create a callback ref function that will be used in the component
   const setLastLogRowRef = useCallback((node: HTMLTableRowElement | null) => {
-    // Store the reference in our variable
-    lastLogNodeRef = node;
+    // Store the reference in our ref object
+    lastLogNodeRef.current = node;
   }, []);
   
   // Function to access the current node
   const getLastLogNode = useCallback(() => {
-    return lastLogNodeRef;
+    return lastLogNodeRef.current;
   }, []);
 
   const handlePageChange = (page: number) => {
