@@ -170,6 +170,7 @@ export const TestList = memo<TestListProps>(({
               title={showResults ? 'Hide test results' : 'Show test results'}
               aria-label={showResults ? 'Hide test results' : 'Show test results'}
               variant="outline"
+              data-testId={showResults ? 'hide-results' : 'show-test-results'}
             />
             <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">
               {showResults ? 'Hide results' : 'Show results'}

@@ -6,8 +6,8 @@ describe('EmptyState Integration', () => {
   it('renders with default title and message', () => {
     render(<EmptyState />);
     
-    expect(screen.getByText('No Data Available')).toBeInTheDocument();
-    expect(screen.getByText('There is no data to display at this time.')).toBeInTheDocument();
+    expect(screen.getByText('No logs found for this microservice')).toBeInTheDocument();
+    expect(screen.getByText('Try triggering a pipeline to generate logs.')).toBeInTheDocument();
   });
   
   it('renders with custom title and message', () => {
