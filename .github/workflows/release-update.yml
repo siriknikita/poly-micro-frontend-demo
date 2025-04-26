@@ -110,10 +110,22 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
+          
+          # Checkout the main branch since we're in detached HEAD state
+          git checkout main
+          
+          # Pull the latest changes
+          git pull origin main
+          
+          # Update the release file (run the script again on main branch)
+          node scripts/update-release.js --version=$VERSION --title="Version $VERSION Release" --description="This release includes new features, improvements, and bug fixes." --changes=./changes.json
+          
+          # Add the changes
           git add releases/releases.json
           
           # Create commit message
           COMMIT_MSG="Feat: Update release notes for v$VERSION"
           
+          # Commit and push to main
           git commit -m "$COMMIT_MSG"
-          git push
+          git push origin main
