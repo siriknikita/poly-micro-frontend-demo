@@ -8,11 +8,15 @@ on:
 jobs:
   update-release:
     runs-on: ubuntu-latest
+    # Add permissions needed for pushing to the repository
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history for commit messages
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -128,4 +132,7 @@ jobs:
           
           # Commit and push to main
           git commit -m "$COMMIT_MSG"
+          
+          # Use the GitHub token for authentication when pushing
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin main
