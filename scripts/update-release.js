@@ -17,8 +17,9 @@
  *   --file         Path to the releases.json file (default: ../releases/releases.json)
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
@@ -38,6 +39,10 @@ if (!args.version || !args.title) {
 // Set default values
 const description = args.description || `Release ${args.version}`;
 const changesFile = args.changes || 'changes.json';
+// Get the directory name in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const releasesFile = args.file || path.join(__dirname, '../releases/releases.json');
 
 // Get current date in YYYY-MM-DD format
