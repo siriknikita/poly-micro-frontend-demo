@@ -28,7 +28,7 @@ export const useServiceFilters = ({ projectId, services }: UseServiceFiltersProp
   const [filterGroups, setFilterGroups] = useState<FilterGroup[]>([]);
   const [filteredServices, setFilteredServices] = useState<Service[]>(services);
   
-  // Load filters from localStorage on component mount
+  // Load filters from localStorage on component mount or when projectId changes
   useEffect(() => {
     const savedFilters = localStorage.getItem(`serviceFilters_${projectId}`);
     if (savedFilters) {
@@ -39,7 +39,11 @@ export const useServiceFilters = ({ projectId, services }: UseServiceFiltersProp
         console.error('Error parsing saved filters:', error);
         // Reset filters if there's an error
         localStorage.removeItem(`serviceFilters_${projectId}`);
+        setFilterGroups([]);
       }
+    } else {
+      // Reset filters when switching to a project with no saved filters
+      setFilterGroups([]);
     }
   }, [projectId]);
   
