@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useRelease } from '../../context/ReleaseContext';
 import { X, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 import { ReleaseChange } from '../../db/db';
 import { IndexableType } from 'dexie';
 import useTheme from '../../hooks/useTheme';
+import { useRelease } from '@/hooks/useRelease';
 
 const ReleaseModal: React.FC = () => {
   const { darkMode } = useTheme();

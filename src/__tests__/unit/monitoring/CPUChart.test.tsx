@@ -36,7 +36,10 @@ vi.mock('../../../components/monitoring/shared/ServiceSelector', () => ({
 }));
 
 vi.mock('../../../components/monitoring/shared/MetricsSelector', () => ({
-  MetricsSelector: ({ metrics, onMetricsChange }: { metrics: any[], onMetricsChange: (ids: string[]) => void }) => (
+  MetricsSelector: ({ metrics, onMetricsChange }: { 
+    metrics: Array<{ id: string; name: string; dataKey: string; color: string; selected: boolean }>, 
+    onMetricsChange: (ids: string[]) => void 
+  }) => (
     <div data-testid="metrics-selector">
       {metrics.map((metric) => (
         <div key={metric.id} data-testid={`metric-${metric.id}`}>
@@ -45,8 +48,8 @@ vi.mock('../../../components/monitoring/shared/MetricsSelector', () => ({
             checked={metric.selected}
             onChange={() => {
               const selectedIds = metrics
-                .filter((m: any) => m.id === metric.id ? !m.selected : m.selected)
-                .map((m: any) => m.id);
+                .filter((m) => m.id === metric.id ? !m.selected : m.selected)
+                .map((m) => m.id);
               onMetricsChange(selectedIds);
             }}
           />

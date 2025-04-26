@@ -5,3 +5,4 @@ export * from './useAuthManagement';
 export * from './useMetricsSelection';
 export * from './useDropdown';
 export * from './useMetricsDropdown';
+export * from './useServiceFilters';

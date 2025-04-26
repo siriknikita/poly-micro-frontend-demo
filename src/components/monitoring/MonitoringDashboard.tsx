@@ -59,6 +59,7 @@ export const MonitoringDashboard: React.FC<MonitoringDashboardProps> = memo(({ s
       />
       <ServiceStatus
         services={services[selectedProjectId]}
+        projectId={selectedProjectId}
       />
       <LogViewer
         logs={logs}

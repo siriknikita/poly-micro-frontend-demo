@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
-import { useRelease } from '../../context/ReleaseContext';
 import useTheme from '../../hooks/useTheme';
+import { useRelease } from '@/hooks/useRelease';
 
 const ReleaseNotification: React.FC = () => {
   const { hasUnacknowledgedRelease, openReleaseModal, latestRelease } = useRelease();

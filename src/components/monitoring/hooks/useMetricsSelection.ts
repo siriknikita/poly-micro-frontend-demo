@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Metric } from '@/types';
 
 interface UseMetricsSelectionProps {
@@ -24,7 +24,7 @@ export const useMetricsSelection = ({
   const storageKey = 'metrics-selection-preferences';
   
   // Get the initial metrics state from localStorage or use defaults
-  const getInitialMetrics = (): Metric[] => {
+  const getInitialMetrics = useCallback((): Metric[] => {
     try {
       const storedPreferences = localStorage.getItem(storageKey);
       
@@ -48,7 +48,7 @@ export const useMetricsSelection = ({
     
     // Return default metrics if no stored preferences or error
     return defaultMetrics;
-  };
+  }, [projectId, serviceName, defaultMetrics, storageKey]);
 
   // State for metrics
   const [metrics, setMetrics] = useState<Metric[]>(getInitialMetrics);
@@ -61,7 +61,7 @@ export const useMetricsSelection = ({
       // Reset to defaults if no service is selected
       setMetrics(defaultMetrics);
     }
-  }, [projectId, serviceName]);
+  }, [projectId, serviceName, defaultMetrics, getInitialMetrics]);
 
   // Selected metric IDs
   const selectedMetricIds = useMemo(() => 
