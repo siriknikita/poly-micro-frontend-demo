@@ -1,6 +1,7 @@
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
-import { AVAILABLE_BLOCKS_MAP } from '@constants';
 import { BlockInstance } from '@/types/pipeline';
+import { DragEvent } from 'react';
+import { AVAILABLE_BLOCKS_MAP } from '@constants';
 
 interface PipelineBlockProps {
   block: BlockInstance;
@@ -27,7 +28,7 @@ export const PipelineBlock = memo<PipelineBlockProps>(({
   }, []);
 
   // Handle drag start
-  const handleDragStart = useCallback((e: MouseEvent) => {
+  const handleDragStart = useCallback((e: DragEvent<HTMLDivElement>) => {
     if (isSimulating) return;
     
     setIsDragging(true);
@@ -44,7 +45,7 @@ export const PipelineBlock = memo<PipelineBlockProps>(({
   }, [isSimulating]);
 
   // Handle drag
-  const handleDrag = useCallback((e: MouseEvent) => {
+  const handleDrag = useCallback((e: DragEvent<HTMLDivElement>) => {
     if (!e.clientX || !e.clientY) return;
     
     const x = e.clientX - dragOffset.current.x;
@@ -69,7 +70,7 @@ export const PipelineBlock = memo<PipelineBlockProps>(({
     setPosition(block.position);
   }, [block.position]);
 
-  const IconComponent = block.icon;
+  const IconComponent = AVAILABLE_BLOCKS_MAP[block.name as keyof typeof AVAILABLE_BLOCKS_MAP];
 
   return (
     <div
@@ -90,7 +91,7 @@ export const PipelineBlock = memo<PipelineBlockProps>(({
       ref={blockRef}
     >
       <div className="flex items-center space-x-3">
-        <IconComponent className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+        {IconComponent && <IconComponent className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />}
         <div className="flex-1">
           <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {block.name}
