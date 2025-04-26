@@ -49,7 +49,7 @@ const storage = {
       if (!storedData) return defaultValue;
       
       const parsedData = JSON.parse(storedData) as StorageData;
-      return microserviceId in parsedData ? parsedData[microserviceId] : defaultValue;
+      return microserviceId in parsedData ? (parsedData[microserviceId] as T) : defaultValue;
     } catch (error) {
       console.error(`Failed to load data from localStorage (${key}):`, error);
       return defaultValue;

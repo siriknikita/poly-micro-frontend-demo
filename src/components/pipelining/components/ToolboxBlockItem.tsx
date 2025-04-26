@@ -14,7 +14,7 @@ export const ToolboxBlockItem = memo(({
   onDragStart
 }: ToolboxBlockItemProps) => {
   const blockName = block.name;
-  const BlockIcon = AVAILABLE_BLOCKS_MAP[blockName];
+  const BlockIcon = AVAILABLE_BLOCKS_MAP[blockName as keyof typeof AVAILABLE_BLOCKS_MAP];
 
   return (
     <div

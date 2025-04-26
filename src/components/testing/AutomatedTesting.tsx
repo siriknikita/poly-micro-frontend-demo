@@ -8,8 +8,8 @@ import { useResizablePanel, useTestItems, useMicroserviceNavigation } from './ho
 import { IconButton, NavigationControls, SearchInput, ResizeHandle } from './components';
 import { DEFAULT_PROMPTS } from './constants';
 
-import { useToast } from '@/context/ToastContext';
-import { useProject } from '@/context/ProjectContext';
+import { useToast } from '@/context/useToast';
+import { useProject } from '@/context/useProject';
 
 // Using key instead of memo to force remount when project changes
 export const AutomatedTesting = () => {

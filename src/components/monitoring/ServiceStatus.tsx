@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 import { Server } from 'lucide-react';
-import { Service } from '@types';
+import { Service } from '@/types';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
-import { StatusBadge, getStatusVariant } from './shared';
+import StatusBadge from './shared/StatusBadge';
+import { getStatusVariant } from './shared/statusUtils';
 
 interface ServiceStatusProps {
   services: Service[];

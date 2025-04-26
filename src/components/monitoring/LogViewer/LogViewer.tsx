@@ -2,7 +2,7 @@ import React, { memo, useMemo } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { usePagination } from '@hooks/index';
-import { Log, Service } from '@types';
+import { Log, Service } from '@/types';
 import {
   DEFAULT_ITEMS_PER_PAGE,
   LOGS_TABLE_HEADERS,
@@ -10,7 +10,8 @@ import {
   SEVERITY_LEVELS,
 } from '@constants';
 import { TablePagination } from './TablePagination';
-import { ServiceSelector, StatusBadge } from '../shared';
+import { ServiceSelector } from '../shared';
+import StatusBadge from '../shared/StatusBadge';
 
 interface LogViewerProps {
   logs: Log[];

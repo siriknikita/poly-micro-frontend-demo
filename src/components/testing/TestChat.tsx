@@ -10,7 +10,7 @@ import {
 import { Send } from 'lucide-react';
 import { TestItem } from '@/types';
 import { IconButton } from './components';
-import { useToast } from '@/context/ToastContext';
+import { useToast } from '@/context/useToast';
 
 interface TestChatProps {
   onGenerateTest: (test: TestItem) => void;

@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend, ResponsiveContainer } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { Activity } from 'lucide-react';
-import { CPUData, Service } from '@types';
+import { CPUData, Service } from '@/types';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { ServiceSelector } from './shared';
 

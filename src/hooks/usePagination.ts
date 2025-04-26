@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Log } from '@/types';
 
 const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
@@ -16,9 +16,18 @@ const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
     currentPage * itemsPerPage
   ), [logs, currentPage, itemsPerPage]);
 
-  const lastLogRef = useRef<HTMLTableRowElement>(null);
+  // Instead of using useRef directly, we'll maintain our own reference
+  let lastLogNodeRef: HTMLTableRowElement | null = null;
+  
+  // Create a callback ref function that will be used in the component
   const setLastLogRowRef = useCallback((node: HTMLTableRowElement | null) => {
-    lastLogRef.current = node;
+    // Store the reference in our variable
+    lastLogNodeRef = node;
+  }, []);
+  
+  // Function to access the current node
+  const getLastLogNode = useCallback(() => {
+    return lastLogNodeRef;
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -26,8 +35,9 @@ const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
     if (nextPageLogs.length > paginatedLogs.length) {
       setCurrentPage(page);
       setTimeout(() => {
-        if (lastLogRef.current) {
-          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        const node = getLastLogNode();
+        if (node) {
+          node.scrollIntoView({ behavior: 'smooth' });
         }
       }, 0);
     } else {
@@ -42,8 +52,9 @@ const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
       setItemsPerPage(newItemsPerPage);
       setCurrentPage(1);
       setTimeout(() => {
-        if (lastLogRef.current) {
-          lastLogRef.current.scrollIntoView({ behavior: 'smooth' });
+        const node = getLastLogNode();
+        if (node) {
+          node.scrollIntoView({ behavior: 'smooth' });
         }
       }, 0);
     } else {

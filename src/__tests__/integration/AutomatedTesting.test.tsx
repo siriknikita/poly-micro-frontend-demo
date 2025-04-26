@@ -9,9 +9,8 @@ const mockShowSuccess = vi.fn();
 const mockStartResize = vi.fn();
 const mockRunAllTests = vi.fn(() => ({ totalTests: 3, microserviceName: 'Microservice 1' }));
 
-// Mock the context providers and hooks
-vi.mock('@/context/ProjectContext', () => ({
-  ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+// Mock the useProject hook
+vi.mock('@/context/useProject', () => ({
   useProject: vi.fn(() => ({
     project: {
       id: 'project1',
@@ -20,14 +19,24 @@ vi.mock('@/context/ProjectContext', () => ({
   }))
 }));
 
-vi.mock('@/context/ToastContext', () => ({
-  ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+// Mock the context provider
+vi.mock('@/context/ProjectContext', () => ({
+  ProjectProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+// Mock the useToast hook
+vi.mock('@/context/useToast', () => ({
   useToast: vi.fn(() => ({
     showInfo: mockShowInfo,
     showSuccess: mockShowSuccess,
     showError: vi.fn(),
     showWarning: vi.fn()
   }))
+}));
+
+// Mock the toast context
+vi.mock('@/context/ToastContext', () => ({
+  ToastProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
 // Mock the custom hooks
