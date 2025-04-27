@@ -1,14 +1,17 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RegisterForm, LoginForm } from './components/auth';
 import { Dashboard } from './components/monitoring/Dashboard';
 import { ProjectProvider } from './context/ProjectContext';
 import { ToastProvider } from './context/ToastContext';
 import { ReleaseProvider } from './context/ReleaseContext';
+import { GuidanceProvider } from './context/GuidanceContext';
 import { ReleaseModal, ReleaseNotification, ReleaseDebug } from './components/releases';
+import { WelcomeGuidance, CompletionGuidance } from './components/guidance';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import autoSyncReleases from './utils/releaseSync';
+import { useAuth } from './components/auth/hooks/useAuth';
 
 function App() {
   // Auto-sync releases when the app starts
@@ -17,10 +20,31 @@ function App() {
   }, []);
 
   return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
+
+function AppContent() {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+
+  // Handle navigation after logout
+  useEffect(() => {
+    if (!isAuthenticated && !window.location.pathname.includes('/login') && 
+        !window.location.pathname.includes('/register')) {
+      // Use navigate instead of direct window.location modification
+      // to preserve React context and state
+      navigate('/login', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  return (
     <ProjectProvider>
       <ToastProvider>
         <ReleaseProvider>
-          <Router>
+          <GuidanceProvider currentUser={user}>
             <Routes>
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/login" element={<LoginForm />} />
@@ -34,7 +58,9 @@ function App() {
             <ReleaseModal />
             <ReleaseNotification />
             <ReleaseDebug />
-          </Router>
+            <WelcomeGuidance />
+            <CompletionGuidance />
+          </GuidanceProvider>
         </ReleaseProvider>
       </ToastProvider>
     </ProjectProvider>

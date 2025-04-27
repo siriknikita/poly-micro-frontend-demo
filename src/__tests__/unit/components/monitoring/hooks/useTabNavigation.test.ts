@@ -46,7 +46,7 @@ describe('useTabNavigation', () => {
       result.current.setActiveTab('monitoring');
     });
     
-    expect(mockNavigate).toHaveBeenCalledWith('/monitoring');
+    expect(mockNavigate).toHaveBeenCalledWith('/monitoring', { replace: true });
   });
 
   it('should not navigate if the current path already corresponds to the active tab', () => {

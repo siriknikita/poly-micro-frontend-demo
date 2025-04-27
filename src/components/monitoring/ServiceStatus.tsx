@@ -6,6 +6,8 @@ import StatusBadge from './shared/StatusBadge';
 import { getStatusVariant } from './shared/statusUtils';
 import { ServiceFilters } from './shared/ServiceFilters';
 import { useServiceFilters } from './hooks/useServiceFilters';
+import { GuidanceTooltip } from '@/components/guidance';
+import { OnboardingStep } from '@/context/GuidanceContext';
 
 interface ServiceStatusProps {
   services: Service[];
@@ -24,7 +26,13 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
 
   return (
     <BoxedWrapper>
-      <div className="flex flex-col">
+      <GuidanceTooltip
+        step={OnboardingStep.MICROSERVICES}
+        title="Microservices Management"
+        description="Monitor and manage your microservices from this panel. You can see their status, health, and performance metrics. Use the filters to find specific services."
+        position="left"
+        className="flex flex-col services-panel"
+      >
         <SectionHeader
           title="Services Status"
           HeaderIcon={Server}
@@ -65,7 +73,7 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
             </div>
           )}
         </div>
-      </div>
+      </GuidanceTooltip>
     </BoxedWrapper>
   );
 });

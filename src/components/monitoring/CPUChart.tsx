@@ -7,6 +7,8 @@ import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { ServiceSelector } from './shared';
 import { MetricsSelector } from './shared/MetricsSelector';
 import { useMetricsSelection } from './hooks';
+import { GuidanceTooltip } from '@/components/guidance';
+import { OnboardingStep } from '@/context/GuidanceContext';
 
 const CustomTooltip = memo(({ active, payload, label }: Partial<TooltipProps<ValueType, NameType>>) => {
   if (active && payload && payload.length) {
@@ -58,6 +60,13 @@ export const CPUChart: React.FC<CPUChartProps> = memo(({
   });
   return (
     <BoxedWrapper className="mt-4">
+      <GuidanceTooltip
+        step={OnboardingStep.SYSTEM_METRICS}
+        title="System Metrics"
+        description="Monitor your microservices' performance metrics in real-time. You can track CPU load, memory usage, and active threads for each service. Select different metrics to visualize using the checkboxes."
+        position="top"
+        className="flex flex-col"
+      >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-4">
           <SectionHeader
@@ -119,6 +128,7 @@ export const CPUChart: React.FC<CPUChartProps> = memo(({
           </ResponsiveContainer>
         </div>
       )}
+      </GuidanceTooltip>
     </BoxedWrapper>
   );
 });

@@ -9,35 +9,33 @@ import {
   ChevronRight,
   Settings,
   User,
-  HelpCircle
+  HelpCircle,
+  BookOpen
 } from 'lucide-react';
 import { Tab } from '@/types';
-import { MonitoringDashboard } from '../monitoring/MonitoringDashboard';
+import { useGuidance, OnboardingStep } from '@/context/GuidanceContext';
+import { GuidanceTooltip } from '@/components/guidance';
 
 const tabs: Tab[] = [
   {
     id: 'dashboard',
     name: 'Dashboard',
     icon: LayoutDashboard,
-    component: MonitoringDashboard
   },
   {
     id: 'monitoring',
     name: 'Microservices',
     icon: Activity,
-    component: MonitoringDashboard
   },
   {
     id: 'cicd',
     name: 'CI/CD Pipeline',
     icon: GitBranch,
-    component: () => <div>CI/CD Pipeline Content</div>
   },
   {
     id: 'testing',
     name: 'Automated Testing',
     icon: TestTube2,
-    component: () => <div>Automated Testing Content</div>
   }
 ];
 
@@ -58,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
   const [isExpanded, setIsExpanded] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { showGuidance } = useGuidance();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -91,7 +90,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
       </div>
 
       <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-4">
+        <GuidanceTooltip
+          step={OnboardingStep.SIDEBAR}
+          title="Navigation Sidebar"
+          description="Use the sidebar to navigate between different sections of the application: Dashboard, Microservices, CI/CD Pipeline, and Automated Testing."
+          position="right"
+          className="space-y-4 sidebar-tabs"
+        >
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -114,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
               </button>
             );
           })}
-        </div>
+        </GuidanceTooltip>
       </div>
 
       <div className="p-3 border-t border-gray-200 dark:border-gray-700" ref={menuRef}>
@@ -137,6 +142,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
               <button className="w-full flex items-center space-x-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
                 <Settings className="h-5 w-5" />
                 <span>Settings</span>
+              </button>
+              <button 
+                onClick={() => {
+                  setShowUserMenu(false);
+                  showGuidance();
+                }}
+                className="w-full flex items-center space-x-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+              >
+                <BookOpen className="h-5 w-5" />
+                <span>Show Guide</span>
               </button>
               <button className="w-full flex items-center space-x-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
                 <HelpCircle className="h-5 w-5" />

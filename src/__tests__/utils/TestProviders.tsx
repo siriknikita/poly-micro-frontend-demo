@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { ProjectProvider } from '@/context/ProjectContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { ToastContainer } from 'react-toastify';
+import { GuidanceProvider } from '@/context/GuidanceContext';
+import { User } from '@/db/db';
 
 // Interface for providers props
 interface ProvidersProps {
@@ -11,12 +13,24 @@ interface ProvidersProps {
 
 // Add any providers that components need to the wrapper
 function AllProviders({ children }: ProvidersProps): JSX.Element {
+  // Mock user for GuidanceProvider
+  const mockUser: User = {
+    id: 'test-user',
+    username: 'testuser',
+    email: 'test@example.com',
+    businessName: 'Test Business',
+    password: 'password123',
+    hasCompletedOnboarding: true
+  };
+  
   return (
     <BrowserRouter>
       <ProjectProvider>
         <ToastProvider>
-          {children}
-          <ToastContainer />
+          <GuidanceProvider currentUser={mockUser}>
+            {children}
+            <ToastContainer />
+          </GuidanceProvider>
         </ToastProvider>
       </ProjectProvider>
     </BrowserRouter>

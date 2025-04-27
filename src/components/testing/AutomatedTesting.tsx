@@ -10,6 +10,8 @@ import { DEFAULT_PROMPTS } from './constants';
 
 import { useToast } from '@/context/useToast';
 import { useProject } from '@/context/useProject';
+import { GuidanceTooltip } from '@/components/guidance';
+import { useGuidance, OnboardingStep } from '@/context/GuidanceContext';
 
 // Using key instead of memo to force remount when project changes
 export const AutomatedTesting = () => {
@@ -21,6 +23,7 @@ export const AutomatedTesting = () => {
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
   const { project } = useProject();
   const { showInfo, showSuccess } = useToast();
+  const { isGuidanceVisible, currentStep } = useGuidance();
 
   // Use the current project's microservices
   const microservices = project?.microservices || [];
@@ -83,6 +86,44 @@ export const AutomatedTesting = () => {
   useEffect(() => {
     setCurrentMicroservice(selectedMicroservice);
   }, [selectedMicroservice, setCurrentMicroservice]);
+  
+  // Handle guidance state when component mounts
+  useEffect(() => {
+    // Check if we need to restore guidance state
+    const guidanceVisible = localStorage.getItem('guidanceVisible');
+    const guidanceStep = localStorage.getItem('guidanceCurrentStep');
+    const forceTestingTab = sessionStorage.getItem('forceTestingTab');
+    
+    if (guidanceVisible === 'true' && guidanceStep && forceTestingTab === 'true') {
+      console.log('AutomatedTesting detected active guidance state:', guidanceStep);
+      // Force a refresh of the guidance state to ensure tooltips are shown
+      const stepNumber = parseInt(guidanceStep, 10);
+      if (stepNumber === OnboardingStep.AUTOMATED_TESTING) {
+        // Clear the force flag to prevent infinite loops
+        sessionStorage.removeItem('forceTestingTab');
+        console.log('Forcing guidance visibility for testing tab');
+      }
+    }
+    
+    // Log current guidance state for debugging
+    console.log('Current guidance state:', { isGuidanceVisible, currentStep });
+  }, [isGuidanceVisible, currentStep]);
+  
+  // Force guidance visibility when in testing tab with the right step
+  useEffect(() => {
+    if (window.location.pathname === '/testing') {
+      const guidanceStep = localStorage.getItem('guidanceCurrentStep');
+      if (guidanceStep) {
+        const stepNumber = parseInt(guidanceStep, 10);
+        if (stepNumber === OnboardingStep.AUTOMATED_TESTING || 
+            stepNumber === OnboardingStep.EXPAND_ALL_TESTS || 
+            stepNumber === OnboardingStep.RUN_ALL_TESTS || 
+            stepNumber === OnboardingStep.TEST_ASSISTANT) {
+          console.log('Testing tab with relevant guidance step detected');
+        }
+      }
+    }
+  }, []);
 
   if (!selectedMicroservice) {
     return (
@@ -113,33 +154,56 @@ export const AutomatedTesting = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <IconButton
-              onClick={() => {
-                if (selectedMicroservice) {
-                  const result = runAllTests();
-                  if (result) {
-                    showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+            <GuidanceTooltip
+              step={OnboardingStep.RUN_ALL_TESTS}
+              title="Run All Tests"
+              description="Click this button to run all tests for the selected microservice. This is useful when you want to verify the overall health of your service."
+              position="bottom"
+              className="inline-block"
+            >
+              <IconButton
+                onClick={() => {
+                  if (selectedMicroservice) {
+                    const result = runAllTests();
+                    if (result) {
+                      showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+                    }
                   }
-                }
-              }}
-              icon={<Play className="h-4 w-4" />}
-              label="Run All Tests"
-              variant="primary"
-              size="md"
-            />
-            <IconButton
-              onClick={() => setShowChat(!showChat)}
-              icon={<MessageSquare className="h-5 w-5" />}
-              variant={showChat ? "outline" : "active"}
-              title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-              aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-            />
+                }}
+                icon={<Play className="h-4 w-4" />}
+                label="Run All Tests"
+                variant="primary"
+                size="md"
+              />
+            </GuidanceTooltip>
+            <GuidanceTooltip
+              step={OnboardingStep.TEST_ASSISTANT}
+              title="Test Assistant"
+              description="The Test Assistant helps you generate and modify tests using AI. You can ask it to create new tests or explain existing ones."
+              position="left"
+              className="inline-block"
+            >
+              <IconButton
+                onClick={() => setShowChat(!showChat)}
+                icon={<MessageSquare className="h-5 w-5" />}
+                variant={showChat ? "outline" : "active"}
+                title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
+                aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
+              />
+            </GuidanceTooltip>
           </div>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 relative">
+          <GuidanceTooltip
+            step={OnboardingStep.AUTOMATED_TESTING}
+            title="Automated Testing"
+            description="Run and generate tests for your microservices. You can execute individual tests or run all tests for a service. Use the Test Assistant chat on the right to generate new tests or get help with testing."
+            position="bottom"
+            className="h-full"
+          >
           <div className="p-4 overflow-auto h-full">
             {selectedMicroservice.children && selectedMicroservice.children.length > 0 ? (
               <TestList
@@ -153,6 +217,7 @@ export const AutomatedTesting = () => {
               <EmptyState />
             )}
           </div>
+          </GuidanceTooltip>
 
           <NavigationControls
             onNavigate={navigateMicroservice}

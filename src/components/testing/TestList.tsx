@@ -4,6 +4,8 @@ import { useTestItems } from './hooks';
 import { TestItemComponent, IconButton, TestOutputModal } from './components';
 import { ChevronDown, ChevronUp, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/context/useToast';
+import { GuidanceTooltip } from '@/components/guidance';
+import { OnboardingStep } from '@/context/GuidanceContext';
 
 interface TestListProps {
   tests: TestItemType[];
@@ -149,18 +151,26 @@ export const TestList = memo<TestListProps>(({
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
       <div className="flex justify-start mb-3 space-x-4">
-        <div className="flex items-center">
-          <IconButton
-            onClick={handleToggleAll}
-            icon={areAllExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            title={areAllExpanded ? 'Collapse all' : 'Expand all functions'}
-            aria-label={areAllExpanded ? 'Collapse all tests' : 'Expand all tests'}
-            variant="outline"
-          />
-          <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-            {areAllExpanded ? 'Collapse all' : 'Expand all functions'}
-          </span>
-        </div>
+        <GuidanceTooltip
+          step={OnboardingStep.EXPAND_ALL_TESTS}
+          title="Expand All Functions"
+          description="Click this button to expand all test functions at once. This gives you a complete overview of all tests in the microservice and their nested structure."
+          position="bottom"
+          className="flex items-center"
+        >
+          <div className="flex items-center">
+            <IconButton
+              onClick={handleToggleAll}
+              icon={areAllExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              title={areAllExpanded ? 'Collapse all' : 'Expand all functions'}
+              aria-label={areAllExpanded ? 'Collapse all tests' : 'Expand all tests'}
+              variant="outline"
+            />
+            <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-400">
+              {areAllExpanded ? 'Collapse all' : 'Expand all functions'}
+            </span>
+          </div>
+        </GuidanceTooltip>
         
         {hasResults && (
           <div className="flex items-center">
