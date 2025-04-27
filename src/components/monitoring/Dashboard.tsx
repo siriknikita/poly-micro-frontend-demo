@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useTheme } from '@/hooks';
 
 import { Sidebar } from '../layout/Sidebar';
@@ -21,7 +22,50 @@ export function Dashboard() {
   // Use custom hooks to manage different aspects of the dashboard
   const { activeTab, setActiveTab } = useTabNavigation();
   const { selectedProject, handleSelectProject } = useProjectManagement(activeTab);
-  const { user, handleLogout, getLastSelectedService } = useAuthManagement();
+  const { user, handleLogout, getLastSelectedService, refreshAuthState } = useAuthManagement();
+  
+  // Check for force testing tab flag from guidance navigation
+  useEffect(() => {
+    const forceTestingTab = sessionStorage.getItem('forceTestingTab');
+    if (forceTestingTab === 'true') {
+      console.log('Dashboard detected forceTestingTab flag, setting active tab to testing');
+      setActiveTab('testing');
+      // Clear the flag to prevent infinite redirects
+      sessionStorage.removeItem('forceTestingTab');
+    }
+  }, [setActiveTab]);
+  
+  // Ensure authentication state is preserved when navigating
+  useEffect(() => {
+    // Check URL parameters for guidance navigation
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGuidanceNavigation = urlParams.get('guidance') === 'true';
+    
+    if (isGuidanceNavigation) {
+      console.log('Detected guidance navigation, ensuring auth state is preserved...');
+      // Force refresh the auth state
+      refreshAuthState();
+    }
+    
+    // Always refresh auth state when tab changes
+    if (activeTab === 'testing') {
+      console.log('Testing tab active, refreshing auth state...');
+      refreshAuthState();
+    }
+  }, [activeTab, refreshAuthState]);
+  
+  // Handle URL parameters for guidance navigation
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGuidanceNavigation = urlParams.get('guidance') === 'true';
+    const stepParam = urlParams.get('step');
+    
+    if (isGuidanceNavigation && stepParam) {
+      // Clear URL parameters without page reload
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
 
   // Determine main content class based on active tab
   const mainPageRenderClassName = selectedProject && (activeTab === 'testing' || activeTab === 'cicd')
@@ -39,7 +83,11 @@ export function Dashboard() {
       <Sidebar 
         activeTab={activeTab} 
         onTabChange={setActiveTab} 
-        user={user} 
+        user={{
+          ...user,
+          // Add name property if missing to fix lint error
+          name: user?.username || 'User'
+        }} 
       />
 
       <div className="flex-1 flex flex-col">

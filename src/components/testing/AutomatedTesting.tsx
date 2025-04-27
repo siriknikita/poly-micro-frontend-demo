@@ -11,7 +11,7 @@ import { DEFAULT_PROMPTS } from './constants';
 import { useToast } from '@/context/useToast';
 import { useProject } from '@/context/useProject';
 import { GuidanceTooltip } from '@/components/guidance';
-import { OnboardingStep } from '@/context/GuidanceContext';
+import { useGuidance, OnboardingStep } from '@/context/GuidanceContext';
 
 // Using key instead of memo to force remount when project changes
 export const AutomatedTesting = () => {
@@ -23,6 +23,7 @@ export const AutomatedTesting = () => {
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
   const { project } = useProject();
   const { showInfo, showSuccess } = useToast();
+  const { isGuidanceVisible, currentStep } = useGuidance();
 
   // Use the current project's microservices
   const microservices = project?.microservices || [];
@@ -85,6 +86,44 @@ export const AutomatedTesting = () => {
   useEffect(() => {
     setCurrentMicroservice(selectedMicroservice);
   }, [selectedMicroservice, setCurrentMicroservice]);
+  
+  // Handle guidance state when component mounts
+  useEffect(() => {
+    // Check if we need to restore guidance state
+    const guidanceVisible = localStorage.getItem('guidanceVisible');
+    const guidanceStep = localStorage.getItem('guidanceCurrentStep');
+    const forceTestingTab = sessionStorage.getItem('forceTestingTab');
+    
+    if (guidanceVisible === 'true' && guidanceStep && forceTestingTab === 'true') {
+      console.log('AutomatedTesting detected active guidance state:', guidanceStep);
+      // Force a refresh of the guidance state to ensure tooltips are shown
+      const stepNumber = parseInt(guidanceStep, 10);
+      if (stepNumber === OnboardingStep.AUTOMATED_TESTING) {
+        // Clear the force flag to prevent infinite loops
+        sessionStorage.removeItem('forceTestingTab');
+        console.log('Forcing guidance visibility for testing tab');
+      }
+    }
+    
+    // Log current guidance state for debugging
+    console.log('Current guidance state:', { isGuidanceVisible, currentStep });
+  }, [isGuidanceVisible, currentStep]);
+  
+  // Force guidance visibility when in testing tab with the right step
+  useEffect(() => {
+    if (window.location.pathname === '/testing') {
+      const guidanceStep = localStorage.getItem('guidanceCurrentStep');
+      if (guidanceStep) {
+        const stepNumber = parseInt(guidanceStep, 10);
+        if (stepNumber === OnboardingStep.AUTOMATED_TESTING || 
+            stepNumber === OnboardingStep.EXPAND_ALL_TESTS || 
+            stepNumber === OnboardingStep.RUN_ALL_TESTS || 
+            stepNumber === OnboardingStep.TEST_ASSISTANT) {
+          console.log('Testing tab with relevant guidance step detected');
+        }
+      }
+    }
+  }, []);
 
   if (!selectedMicroservice) {
     return (

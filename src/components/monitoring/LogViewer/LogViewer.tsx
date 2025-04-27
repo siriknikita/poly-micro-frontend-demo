@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { usePagination } from '@hooks/index';
@@ -32,6 +33,8 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
   onSeverityChange,
   services,
 }) => {
+  const navigate = useNavigate();
+  
   // Filter logs based on selected service and severity
   const filteredLogs = useMemo(() => {
     return logs.filter(log => {
@@ -40,6 +43,16 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
       return serviceMatch && severityMatch;
     });
   }, [logs, selectedService, selectedSeverity]);
+  
+  // Handle navigation to testing section
+  const handleContinueToTesting = () => {
+    // Store the next step in sessionStorage
+    sessionStorage.setItem('forceTestingTab', 'true');
+    sessionStorage.setItem('pendingGuidanceStep', '6'); // OnboardingStep.AUTOMATED_TESTING = 6
+    
+    // Navigate to testing section
+    navigate('/testing');
+  };
 
   const {
     currentPage,
@@ -67,8 +80,17 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           headerClassName="text-lg font-semibold flex items-center text-gray-900 dark:text-gray-100"
           iconClassName="h-5 w-5 mr-2 text-indigo-600 dark:text-indigo-400"
         />
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          {filteredLogs.length} {filteredLogs.length === 1 ? 'entry' : 'entries'}
+        <div className="flex items-center space-x-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            {filteredLogs.length} {filteredLogs.length === 1 ? 'entry' : 'entries'}
+          </div>
+          <button
+            onClick={handleContinueToTesting}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            aria-label="Continue to Testing"
+          >
+            Continue to Testing →
+          </button>
         </div>
       </div>
 

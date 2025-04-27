@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/components/auth/hooks/useAuth';
 
 /**
  * Custom hook for managing authentication-related functionality
@@ -7,16 +8,19 @@ import { useNavigate } from 'react-router-dom';
  */
 export function useAuthManagement() {
   const navigate = useNavigate();
+  const { user, logout, refreshAuthState } = useAuth();
   
-  // Get user from localStorage
-  const userString = localStorage.getItem('currentUser');
-  const user = userString ? JSON.parse(userString) : null;
+  // Refresh auth state when the component mounts or when the URL changes
+  useEffect(() => {
+    // This ensures we always have the latest auth state
+    refreshAuthState();
+  }, [refreshAuthState, window.location.pathname]);
   
   // Handle logout
   const handleLogout = useCallback(() => {
-    localStorage.removeItem('currentUser');
+    logout();
     navigate('/login');
-  }, [navigate]);
+  }, [logout, navigate]);
   
   // Get the last selected service for the current tab and project
   const getLastSelectedService = useCallback((projectId: string, tabName: string) => {
@@ -27,6 +31,7 @@ export function useAuthManagement() {
   return {
     user,
     handleLogout,
-    getLastSelectedService
+    getLastSelectedService,
+    refreshAuthState
   };
 }

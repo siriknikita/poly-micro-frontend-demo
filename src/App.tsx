@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RegisterForm, LoginForm } from './components/auth';
 import { Dashboard } from './components/monitoring/Dashboard';
 import { ProjectProvider } from './context/ProjectContext';
@@ -27,15 +27,18 @@ function App() {
 }
 
 function AppContent() {
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
 
   // Handle navigation after logout
   useEffect(() => {
     if (!isAuthenticated && !window.location.pathname.includes('/login') && 
         !window.location.pathname.includes('/register')) {
-      window.location.href = '/login';
+      // Use navigate instead of direct window.location modification
+      // to preserve React context and state
+      navigate('/login', { replace: true });
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <ProjectProvider>
