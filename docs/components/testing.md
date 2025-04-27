@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Testing feature provides a comprehensive suite of tools for automated testing of microservices. It allows users to create, manage, and execute tests against their microservices, view test results, and use AI assistance for test creation. The system includes toast notifications for real-time feedback on test execution and other key actions.
+The Testing feature provides a comprehensive suite of tools for automated testing of microservices. It allows users to create, manage, and execute tests against their microservices, view test results, and use AI assistance for test creation. The system includes toast notifications for real-time feedback on test execution and other key actions. The feature has been recently refactored to improve code organization, reusability, and performance through custom hooks and reusable UI components.
 
 ## Components Structure
 
@@ -163,6 +163,23 @@ Toast notifications are triggered by key user actions and system events, providi
 
 The Service Filters feature allows users to filter microservices based on their status and health. The testing approach for this feature follows best practices for React component testing, focusing on component behavior, user interactions, and proper state management.
 
+## Comprehensive Test Suite
+
+### Overview
+
+The application includes a comprehensive test suite for both the testing feature components and the authentication components. This ensures high code quality, reliability, and helps prevent regressions during development.
+
+### Testing Framework
+
+All tests are implemented using:
+- **Vitest**: For test running and assertions
+- **React Testing Library**: For rendering and interacting with components
+- **userEvent**: For simulating user interactions
+
+### Test Coverage
+
+The test suite provides extensive coverage across multiple areas:
+
 ### Test Structure
 
 Tests for the Service Filters feature are organized into three main categories:
@@ -197,6 +214,55 @@ Tests are designed to use accessibility-friendly selectors whenever possible:
 ```tsx
 // Example: Finding a button by its accessible role and name
 const applyFilterButton = screen.getByRole('button', { name: /apply filter/i });
+```
+
+#### Testing Components
+
+1. **Testing Feature Tests**:
+   - **Component Tests**:
+     - Individual UI components (IconButton, TestItem, NavigationControls, etc.)
+     - Container components (TestList, AutomatedTesting)
+     - Modal components (TestOutputModal, AIPromptModal)
+   - **Hook Tests**:
+     - useResizablePanel: Tests for panel resizing functionality
+     - useTestItems: Tests for test item state management
+     - useMicroserviceNavigation: Tests for navigation between microservices
+
+2. **Authentication Feature Tests**:
+   - **Hook Tests**:
+     - useAuth.test.tsx: Tests for authentication state management, login, registration, and logout functionality
+     - useForm.test.tsx: Tests for form state management, validation, submission, and error handling
+   - **Component Tests**:
+     - LoginForm.test.tsx: Tests for rendering, validation, submission, and error handling
+     - RegisterForm.test.tsx: Tests for rendering, validation, submission, and error handling
+     - AuthLayout.test.tsx: Tests for layout rendering and styling
+     - Button.test.tsx: Tests for button states (default, loading, disabled) and event handling
+     - FormInput.test.tsx: Tests for input rendering, validation, and error states
+
+### Test Best Practices
+
+- **Isolation**: Each test is isolated and does not depend on other tests
+- **Mocking**: External dependencies are properly mocked
+- **User-centric**: Tests focus on user interactions rather than implementation details
+- **Accessibility**: Tests use accessibility-friendly selectors
+- **Comprehensive**: Tests cover happy paths, edge cases, and error scenarios
+
+### Running Tests
+
+To run the test suite:
+
+```bash
+# Run all tests
+npm test
+
+# Run tests with coverage report
+npm test -- --coverage
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests for a specific file
+npm test -- components/testing/hooks/useResizablePanel.test.tsx
 ```
 
 #### Mock Implementation
