@@ -1,6 +1,34 @@
 {
   "releases": [
     {
+      "version": "1.6.0",
+      "releaseDate": "2025-04-27",
+      "title": "Version 1.6.0 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add documenation for onboarding system"
+        },
+        {
+          "type": "feature",
+          "description": "Improve auth state management and guidance navigation across app"
+        },
+        {
+          "type": "feature",
+          "description": "Add user onboarding with interactive guidance tooltips"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.5.0"
+        },
+        {
+          "type": "fix",
+          "description": "Refactor test setup and mocks for improved test reliability and organization"
+        }
+      ]
+    },
+    {
       "version": "1.5.0",
       "releaseDate": "2025-04-26",
       "title": "Version 1.5.0 Release",
