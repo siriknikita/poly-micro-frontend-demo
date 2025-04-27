@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { User, db } from '@/db/db';
 
 interface AuthState {
@@ -9,7 +8,6 @@ interface AuthState {
 }
 
 export function useAuth() {
-  const navigate = useNavigate();
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -93,8 +91,8 @@ export function useAuth() {
       isAuthenticated: false,
       isLoading: false
     });
-    navigate('/login');
-  }, [navigate]);
+    // Navigation will be handled by the component that uses this hook
+  }, []);
 
   return {
     ...authState,

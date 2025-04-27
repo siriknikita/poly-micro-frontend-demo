@@ -4,11 +4,14 @@ import { Dashboard } from './components/monitoring/Dashboard';
 import { ProjectProvider } from './context/ProjectContext';
 import { ToastProvider } from './context/ToastContext';
 import { ReleaseProvider } from './context/ReleaseContext';
+import { GuidanceProvider } from './context/GuidanceContext';
 import { ReleaseModal, ReleaseNotification, ReleaseDebug } from './components/releases';
+import { WelcomeGuidance, CompletionGuidance } from './components/guidance';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import autoSyncReleases from './utils/releaseSync';
+import { useAuth } from './components/auth/hooks/useAuth';
 
 function App() {
   // Auto-sync releases when the app starts
@@ -17,10 +20,28 @@ function App() {
   }, []);
 
   return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}
+
+function AppContent() {
+  const { user, isAuthenticated } = useAuth();
+
+  // Handle navigation after logout
+  useEffect(() => {
+    if (!isAuthenticated && !window.location.pathname.includes('/login') && 
+        !window.location.pathname.includes('/register')) {
+      window.location.href = '/login';
+    }
+  }, [isAuthenticated]);
+
+  return (
     <ProjectProvider>
       <ToastProvider>
         <ReleaseProvider>
-          <Router>
+          <GuidanceProvider currentUser={user}>
             <Routes>
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/login" element={<LoginForm />} />
@@ -34,7 +55,9 @@ function App() {
             <ReleaseModal />
             <ReleaseNotification />
             <ReleaseDebug />
-          </Router>
+            <WelcomeGuidance />
+            <CompletionGuidance />
+          </GuidanceProvider>
         </ReleaseProvider>
       </ToastProvider>
     </ProjectProvider>

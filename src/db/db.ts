@@ -6,6 +6,7 @@ export interface User {
   email: string;
   username: string;
   password: string;
+  hasCompletedOnboarding?: boolean;
 }
 
 export interface Release {
@@ -37,8 +38,8 @@ export class AppDatabase extends Dexie {
 
   constructor() {
     super('AppDatabase');
-    this.version(2).stores({
-      users: '++id, username, email',
+    this.version(3).stores({
+      users: '++id, username, email, hasCompletedOnboarding',
       releases: '++id, version, releaseDate, isLatest',
       userAcknowledgments: '++id, userId, releaseId'
     });

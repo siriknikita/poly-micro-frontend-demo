@@ -10,6 +10,8 @@ import { DEFAULT_PROMPTS } from './constants';
 
 import { useToast } from '@/context/useToast';
 import { useProject } from '@/context/useProject';
+import { GuidanceTooltip } from '@/components/guidance';
+import { OnboardingStep } from '@/context/GuidanceContext';
 
 // Using key instead of memo to force remount when project changes
 export const AutomatedTesting = () => {
@@ -113,33 +115,56 @@ export const AutomatedTesting = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <IconButton
-              onClick={() => {
-                if (selectedMicroservice) {
-                  const result = runAllTests();
-                  if (result) {
-                    showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+            <GuidanceTooltip
+              step={OnboardingStep.RUN_ALL_TESTS}
+              title="Run All Tests"
+              description="Click this button to run all tests for the selected microservice. This is useful when you want to verify the overall health of your service."
+              position="bottom"
+              className="inline-block"
+            >
+              <IconButton
+                onClick={() => {
+                  if (selectedMicroservice) {
+                    const result = runAllTests();
+                    if (result) {
+                      showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+                    }
                   }
-                }
-              }}
-              icon={<Play className="h-4 w-4" />}
-              label="Run All Tests"
-              variant="primary"
-              size="md"
-            />
-            <IconButton
-              onClick={() => setShowChat(!showChat)}
-              icon={<MessageSquare className="h-5 w-5" />}
-              variant={showChat ? "outline" : "active"}
-              title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-              aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
-            />
+                }}
+                icon={<Play className="h-4 w-4" />}
+                label="Run All Tests"
+                variant="primary"
+                size="md"
+              />
+            </GuidanceTooltip>
+            <GuidanceTooltip
+              step={OnboardingStep.TEST_ASSISTANT}
+              title="Test Assistant"
+              description="The Test Assistant helps you generate and modify tests using AI. You can ask it to create new tests or explain existing ones."
+              position="left"
+              className="inline-block"
+            >
+              <IconButton
+                onClick={() => setShowChat(!showChat)}
+                icon={<MessageSquare className="h-5 w-5" />}
+                variant={showChat ? "outline" : "active"}
+                title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
+                aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
+              />
+            </GuidanceTooltip>
           </div>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 relative">
+          <GuidanceTooltip
+            step={OnboardingStep.AUTOMATED_TESTING}
+            title="Automated Testing"
+            description="Run and generate tests for your microservices. You can execute individual tests or run all tests for a service. Use the Test Assistant chat on the right to generate new tests or get help with testing."
+            position="bottom"
+            className="h-full"
+          >
           <div className="p-4 overflow-auto h-full">
             {selectedMicroservice.children && selectedMicroservice.children.length > 0 ? (
               <TestList
@@ -153,6 +178,7 @@ export const AutomatedTesting = () => {
               <EmptyState />
             )}
           </div>
+          </GuidanceTooltip>
 
           <NavigationControls
             onNavigate={navigateMicroservice}

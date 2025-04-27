@@ -42,7 +42,6 @@ export type Tab = {
   id: string;
   name: string;
   icon: React.ComponentType<React.ComponentProps<'svg'>>; // Allow SVG props including className
-  component: React.ComponentType<unknown>; // Allow components with unknown props
 };
 
 export interface Metric {

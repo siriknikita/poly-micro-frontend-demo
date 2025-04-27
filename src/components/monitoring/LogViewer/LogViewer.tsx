@@ -12,6 +12,8 @@ import {
 import { TablePagination } from './TablePagination';
 import { ServiceSelector } from '../shared';
 import StatusBadge from '../shared/StatusBadge';
+import { GuidanceTooltip } from '@/components/guidance';
+import { OnboardingStep } from '@/context/GuidanceContext';
 
 interface LogViewerProps {
   logs: Log[];
@@ -51,6 +53,13 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
 
   return (
     <BoxedWrapper>
+      <GuidanceTooltip
+        step={OnboardingStep.LOGS}
+        title="Log Monitoring"
+        description="View and filter logs from all your microservices. You can filter by service, severity level, and adjust how many entries to display per page. Use this to troubleshoot issues and monitor application behavior."
+        position="right"
+        className="flex flex-col"
+      >
       <div className="flex items-center justify-between mb-4">
         <SectionHeader
           title="Logs"
@@ -147,6 +156,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           No logs found matching the current filters
         </div>
       )}
+      </GuidanceTooltip>
     </BoxedWrapper>
   );
 });
