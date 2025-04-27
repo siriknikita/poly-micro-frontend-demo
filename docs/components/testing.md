@@ -163,6 +163,8 @@ Toast notifications are triggered by key user actions and system events, providi
 
 The Service Filters feature allows users to filter microservices based on their status and health. The testing approach for this feature follows best practices for React component testing, focusing on component behavior, user interactions, and proper state management.
 
+For detailed implementation information, refer to the [Service Filters Implementation](../implementation/service-filters-implementation.md) document.
+
 ## Comprehensive Test Suite
 
 ### Overview

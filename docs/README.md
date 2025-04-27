@@ -63,9 +63,21 @@ Detailed documentation for each feature can be found in the following sections:
 - [Core Components](./components/core.md)
 - [Component Import Guide](./components/import-guide.md)
 
+## User Guide
+
+A comprehensive user guide is available to help you understand and use the application effectively:
+
+- [User Guide](./user-guide.md) - Detailed instructions for using all features of the application
+
+## Implementation Details
+
+For developers, we provide detailed implementation documentation:
+
+- [Service Filters Implementation](./implementation/service-filters-implementation.md) - Technical details of the service filtering system
+
 ## Getting Started
 
-To understand how these components work together, start with the [Core Components](./components/core.md) documentation, which explains the main application structure and navigation flow.
+To understand how these components work together, start with the [User Guide](./user-guide.md) for a high-level overview, then explore the [Core Components](./components/core.md) documentation, which explains the main application structure and navigation flow.
 
 ## Online Documentation
 
