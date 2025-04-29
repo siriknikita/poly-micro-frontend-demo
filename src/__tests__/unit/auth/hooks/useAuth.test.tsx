@@ -74,6 +74,12 @@ describe('useAuth', () => {
   });
 
   it('initializes with loading state and no user', () => {
+    /**
+     * Steps:
+     * 1. Mock localStorage.getItem to return null (no user)
+     * 2. Render the useAuth hook
+     * 3. Check initial state
+     */
     // Mock localStorage.getItem to return null (no user)
     mockLocalStorage.getItem.mockReturnValueOnce(null);
 
@@ -86,6 +92,12 @@ describe('useAuth', () => {
   });
 
   it('loads user from localStorage on initialization', async () => {
+    /**
+     * Steps:
+     * 1. Setup localStorage with a user
+     * 2. Render the useAuth hook
+     * 3. Check initial state
+     */
     // Setup localStorage with a user
     const storedUser = JSON.stringify(mockUser);
     mockLocalStorage.getItem.mockReturnValueOnce(storedUser);
@@ -100,6 +112,15 @@ describe('useAuth', () => {
   });
 
   it('handles login success', async () => {
+    /**
+     * Steps:
+     * 1. Create a test user that matches the mock in the test
+     * 2. Mock db.users.where().equals().first() to return our test user
+     * 3. Render the useAuth hook
+     * 4. Call login with correct credentials
+     * 5. Check state after login
+     * 6. Check localStorage
+     */
     // Create a test user that matches the mock in the test
     const testUser = {
       id: 1,
@@ -125,6 +146,13 @@ describe('useAuth', () => {
   });
 
   it('handles login failure with invalid credentials', async () => {
+    /**
+     * Steps:
+     * 1. Mock db.users.where().equals().first() to return null (user not found)
+     * 2. Render the useAuth hook
+     * 3. Call login with invalid credentials
+     * 4. Check state after failed login
+     */
     // Mock db.users.where().equals().first() to return null (user not found)
     vi.mocked(db.users.where('username').equals('wronguser').first).mockResolvedValueOnce(null);
 
@@ -139,6 +167,13 @@ describe('useAuth', () => {
   });
 
   it('handles login failure with correct username but wrong password', async () => {
+    /**
+     * Steps:
+     * 1. Mock db.users.where().equals().first() to return a user with different password
+     * 2. Render the useAuth hook
+     * 3. Call login with correct username but wrong password
+     * 4. Check state after failed login
+     */
     // Mock db.users.where().equals().first() to return a user with different password
     vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce({
       id: 1,
@@ -159,6 +194,14 @@ describe('useAuth', () => {
   });
 
   it('handles registration success', async () => {
+    /**
+     * Steps:
+     * 1. Mock db.users.where().equals().first() to return null (username doesn't exist)
+     * 2. Render the useAuth hook
+     * 3. Call register with new user data
+     * 4. Check state after registration
+     * 5. Check localStorage
+     */
     // Mock db.users.where().equals().first() to return null (username doesn't exist)
     vi.mocked(db.users.where('username').equals('newuser').first).mockResolvedValueOnce(null);
     
@@ -179,6 +222,13 @@ describe('useAuth', () => {
   });
 
   it('handles registration failure when username exists', async () => {
+    /**
+     * Steps:
+     * 1. Mock db.users.where().equals().first() to return a user (username exists)
+     * 2. Render the useAuth hook
+     * 3. Call register with existing username
+     * 4. Check state after failed registration
+     */
     // Mock db.users.where().equals().first() to return a user (username exists)
     vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce({
       id: 1,
@@ -204,6 +254,14 @@ describe('useAuth', () => {
   });
 
   it('handles logout correctly', () => {
+    /**
+     * Steps:
+     * 1. Setup: First set a user in the state
+     * 2. Render the useAuth hook
+     * 3. Call logout
+     * 4. Check state after logout
+     * 5. Check localStorage
+     */
     // Setup: First set a user in the state
     const testUser = {
       id: 1,
@@ -230,3 +288,16 @@ describe('useAuth', () => {
     expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('currentUser');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should initialize with loading state and no user | + |
+ * | 2 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should load user from localStorage on initialization | + |
+ * | 3 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle login success | + |
+ * | 4 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle login failure with invalid credentials | + |
+ * | 5 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle login failure with correct username but wrong password | + |
+ * | 6 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle registration success | + |
+ * | 7 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle registration failure when username exists | + |
+ * | 8 | Web Browser | - Render the useAuth hook <br> - Check for initial state <br> - Check for successful login | should handle logout correctly | + |
+ */

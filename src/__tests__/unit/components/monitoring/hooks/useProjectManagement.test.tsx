@@ -201,6 +201,12 @@ describe('useProjectManagement', () => {
   });
 
   it('should load saved project from localStorage on mount', () => {
+    /**
+     * Steps:
+     * 1. Render the useProjectManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     localStorageMock.setItem('lastSelectedProject', '1');
     
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
@@ -209,12 +215,24 @@ describe('useProjectManagement', () => {
   });
 
   it('should not set a project if none is saved in localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useProjectManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
     
     expect(result.current.selectedProject).toBeNull();
   });
 
   it('should update project context with microservices when on testing tab', () => {
+    /**
+     * Steps:
+     * 1. Render the useProjectManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useProjectManagement('testing'), { wrapper });
     
     act(() => {
@@ -228,6 +246,12 @@ describe('useProjectManagement', () => {
   });
 
   it('should update project context without microservices when not on testing tab', () => {
+    /**
+     * Steps:
+     * 1. Render the useProjectManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
     
     act(() => {
@@ -241,6 +265,12 @@ describe('useProjectManagement', () => {
   });
 
   it('should save selected project to localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useProjectManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
     
     act(() => {
@@ -251,3 +281,13 @@ describe('useProjectManagement', () => {
     expect(result.current.selectedProject).toEqual(mockProjects[1]);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useProjectManagement hook <br> - Check for initial state <br> - Check for correct rendering | should load saved project from localStorage on mount | + |
+ * | 2 | Web Browser | - Render the useProjectManagement hook <br> - Check for initial state <br> - Check for correct rendering | should not set a project if none is saved in localStorage | + |
+ * | 3 | Web Browser | - Render the useProjectManagement hook <br> - Check for initial state <br> - Check for correct rendering | should update project context with microservices when on testing tab | + |
+ * | 4 | Web Browser | - Render the useProjectManagement hook <br> - Check for initial state <br> - Check for correct rendering | should update project context without microservices when not on testing tab | + |
+ * | 5 | Web Browser | - Render the useProjectManagement hook <br> - Check for initial state <br> - Check for correct rendering | should save selected project to localStorage | + |
+ */

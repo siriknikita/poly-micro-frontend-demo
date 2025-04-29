@@ -110,6 +110,12 @@ describe('useTestItems', () => {
   });
 
   it('returns an object with expected properties', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for properties
+     */
     const result = useTestItems([], 'project1');
     
     // Check that the hook returns an object with expected properties
@@ -125,6 +131,12 @@ describe('useTestItems', () => {
   });
   
   it('initializes with empty state', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for empty state
+     */
     const result = useTestItems([], 'project1');
     
     // Make sure result is defined before accessing properties
@@ -136,6 +148,12 @@ describe('useTestItems', () => {
   });
   
   it('initializes with provided microserviceId', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for provided microserviceId
+     */
     const ms1 = createTestMicroservice('ms1');
     const result = useTestItems([ms1], 'project1', 'ms1');
     
@@ -147,6 +165,12 @@ describe('useTestItems', () => {
   });
   
   it('toggles expanded state for a test item', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for toggleExpand
+     */
     // Create a test microservice with a valid ID
     const ms1 = createTestMicroservice('ms1');
     const result = useTestItems([ms1], 'project1', 'ms1');
@@ -163,6 +187,12 @@ describe('useTestItems', () => {
   });
   
   it('expands all items', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for expandAll
+     */
     const testMicroservice = createTestMicroservice('ms1');
     const result = useTestItems([testMicroservice], 'project1', 'ms1');
     
@@ -178,6 +208,12 @@ describe('useTestItems', () => {
   });
   
   it('collapses all items', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for collapseAll
+     */
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
     
     // Make sure result is defined before accessing properties
@@ -192,6 +228,12 @@ describe('useTestItems', () => {
   });
   
   it('toggles results visibility', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for toggleResultsVisibility
+     */
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
     
     // Make sure result is defined before accessing properties
@@ -206,6 +248,12 @@ describe('useTestItems', () => {
   });
   
   it('handles viewing test output', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for viewTestOutput
+     */
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
     
     // Make sure result is defined before accessing properties
@@ -221,6 +269,12 @@ describe('useTestItems', () => {
   });
   
   it('sets current microservice', () => {
+    /**
+     * Steps:
+     * 1. Render the useTestItems hook
+     * 2. Check for initial state
+     * 3. Check for setCurrentMicroservice
+     */
     const ms1 = createTestMicroservice('ms1');
     const ms2 = createTestMicroservice('ms2');
     
@@ -251,3 +305,18 @@ describe('useTestItems', () => {
     expect(setCurrentMicroserviceId).toHaveBeenCalledWith(null);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | can be imported | + |
+ * | 2 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | returns an object with expected properties | + |
+ * | 3 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | initializes with empty state | + |
+ * | 4 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | initializes with provided microserviceId | + |
+ * | 5 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | toggles expanded state for a test item | + |
+ * | 6 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | expands all items | + |
+ * | 7 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | collapses all items | + |
+ * | 8 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | toggles results visibility | + |
+ * | 9 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | handles viewing test output | + |
+ * | 10 | Web Browser | - Render the useResizablePanel hook <br> - Check for initial state <br> - Check for correct rendering | sets current microservice | + |
+ */

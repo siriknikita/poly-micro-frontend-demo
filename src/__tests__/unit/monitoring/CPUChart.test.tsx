@@ -95,6 +95,12 @@ describe('CPUChart Component', () => {
   });
 
   it('renders the prompt to select a service when no service is selected', () => {
+    /**
+     * Steps:
+     * 1. Render the CPUChart component
+     * 2. Check for initial state
+     * 3. Check for prompt to select a service
+     */
     render(
       <CPUChart
         data={null}
@@ -110,6 +116,12 @@ describe('CPUChart Component', () => {
   });
 
   it('renders "No metrics available" message when service is selected but no data', () => {
+    /**
+     * Steps:
+     * 1. Render the CPUChart component
+     * 2. Check for initial state
+     * 3. Check for "No metrics available" message
+     */
     render(
       <CPUChart
         data={null}
@@ -124,6 +136,12 @@ describe('CPUChart Component', () => {
   });
 
   it('renders the chart when service is selected and data is available', () => {
+    /**
+     * Steps:
+     * 1. Render the CPUChart component
+     * 2. Check for initial state
+     * 3. Check for chart
+     */
     render(
       <CPUChart
         data={mockCPUData}
@@ -143,6 +161,12 @@ describe('CPUChart Component', () => {
   });
 
   it('renders the metrics selector when service is selected and data is available', () => {
+    /**
+     * Steps:
+     * 1. Render the CPUChart component
+     * 2. Check for initial state
+     * 3. Check for metrics selector
+     */
     render(
       <CPUChart
         data={mockCPUData}
@@ -157,6 +181,12 @@ describe('CPUChart Component', () => {
   });
 
   it('allows service selection through the service selector', async () => {
+    /**
+     * Steps:
+     * 1. Render the CPUChart component
+     * 2. Check for initial state
+     * 3. Check for service selection
+     */
     const { user } = render(
       <CPUChart
         data={null}
@@ -173,3 +203,13 @@ describe('CPUChart Component', () => {
     expect(mockOnServiceSelect).toHaveBeenCalledWith('service1');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the CPUChart component <br> - Check for initial state <br> - Check for correct rendering | renders the prompt to select a service when no service is selected | + |
+ * | 2 | Web Browser | - Render the CPUChart component <br> - Check for initial state <br> - Check for correct rendering | renders "No metrics available" message when service is selected but no data | + |
+ * | 3 | Web Browser | - Render the CPUChart component <br> - Check for initial state <br> - Check for correct rendering | renders the chart when service is selected and data is available | + |
+ * | 4 | Web Browser | - Render the CPUChart component <br> - Check for initial state <br> - Check for correct rendering | renders the metrics selector when service is selected and data is available | + |
+ * | 5 | Web Browser | - Render the CPUChart component <br> - Check for initial state <br> - Check for correct rendering | allows service selection through the service selector | + |
+ */

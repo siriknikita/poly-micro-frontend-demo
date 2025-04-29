@@ -84,6 +84,12 @@ describe('MetricsSelector Component', () => {
   });
 
   it('renders correctly with all subcomponents', () => {
+    /**
+     * Steps:
+     * 1. Render the MetricsSelector component
+     * 2. Check for initial state
+     * 3. Check for subcomponents
+     */
     render(
       <MetricsSelector
         metrics={mockMetrics}
@@ -105,6 +111,12 @@ describe('MetricsSelector Component', () => {
   });
 
   it('shows correct selected state for metrics', () => {
+    /**
+     * Steps:
+     * 1. Render the MetricsSelector component
+     * 2. Check for initial state
+     * 3. Check for correct selected state
+     */
     render(
       <MetricsSelector
         metrics={mockMetrics}
@@ -119,6 +131,12 @@ describe('MetricsSelector Component', () => {
   });
 
   it('shows correct selected count in toggle button', () => {
+    /**
+     * Steps:
+     * 1. Render the MetricsSelector component
+     * 2. Check for initial state
+     * 3. Check for correct selected count
+     */
     render(
       <MetricsSelector
         metrics={mockMetrics}
@@ -131,6 +149,12 @@ describe('MetricsSelector Component', () => {
   });
 
   it('calls onMetricsChange when a metric is toggled', async () => {
+    /**
+     * Steps:
+     * 1. Render the MetricsSelector component
+     * 2. Check for initial state
+     * 3. Check for onMetricsChange
+     */
     const { user } = render(
       <MetricsSelector
         metrics={mockMetrics}
@@ -155,6 +179,12 @@ describe('MetricsSelector Component', () => {
   });
 
   it('applies custom className when provided', () => {
+    /**
+     * Steps:
+     * 1. Render the MetricsSelector component
+     * 2. Check for initial state
+     * 3. Check for custom className
+     */
     render(
       <MetricsSelector
         metrics={mockMetrics}
@@ -168,3 +198,14 @@ describe('MetricsSelector Component', () => {
     expect(rootElement).toHaveClass('custom-class');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | renders correctly with all subcomponents | + |
+ * | 2 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | allows service selection through the service selector | + |
+ * | 3 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | shows correct selected state for metrics | + |
+ * | 4 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | shows correct selected count in toggle button | + |
+ * | 5 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | calls onMetricsChange when a metric is toggled | + |
+ * | 6 | Web Browser | - Render the MetricsSelector component <br> - Check for initial state <br> - Check for correct rendering | applies custom className when provided | + |
+ */

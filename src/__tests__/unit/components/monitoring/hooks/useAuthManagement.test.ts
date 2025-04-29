@@ -75,6 +75,12 @@ describe('useAuthManagement', () => {
   });
   
   it('should retrieve user data from localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useAuthManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const wrapper = createWrapper(mockUser);
     
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
@@ -83,6 +89,12 @@ describe('useAuthManagement', () => {
   });
   
   it('should return null if user not in localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useAuthManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const wrapper = createWrapper(null);
     
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
@@ -91,6 +103,12 @@ describe('useAuthManagement', () => {
   });
   
   it('should handle logout correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the useAuthManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const wrapper = createWrapper(mockUser);
     
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
@@ -106,6 +124,12 @@ describe('useAuthManagement', () => {
   });
   
   it('should get the last selected service', () => {
+    /**
+     * Steps:
+     * 1. Render the useAuthManagement hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const wrapper = createWrapper(mockUser);
     
     const projectId = 'project1';
@@ -128,3 +152,12 @@ describe('useAuthManagement', () => {
     expect(lastSelected).toBe(serviceId);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useAuthManagement hook <br> - Check for initial state <br> - Check for correct rendering | should retrieve user data from localStorage | + |
+ * | 2 | Web Browser | - Render the useAuthManagement hook <br> - Check for initial state <br> - Check for correct rendering | should return null if user not in localStorage | + |
+ * | 3 | Web Browser | - Render the useAuthManagement hook <br> - Check for initial state <br> - Check for correct rendering | should handle logout correctly | + |
+ * | 4 | Web Browser | - Render the useAuthManagement hook <br> - Check for initial state <br> - Check for correct rendering | should get the last selected service | + |
+ */

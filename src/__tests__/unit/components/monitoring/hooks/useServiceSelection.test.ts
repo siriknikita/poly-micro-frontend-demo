@@ -36,6 +36,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should select the service provided by initialServiceName', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useServiceSelection({
       projectId,
       services: mockServices,
@@ -46,6 +52,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should select the service from localStorage if initialServiceName is not provided', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     localStorageMock.setItem(`lastSelected_monitoring_${projectId}`, 'service3');
     
     const { result } = renderHook(() => useServiceSelection({
@@ -57,6 +69,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should select the first service if initialServiceName is not provided and nothing is in localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useServiceSelection({
       projectId,
       services: mockServices
@@ -66,6 +84,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should select the first service if initialServiceName is not found in services', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useServiceSelection({
       projectId,
       services: mockServices,
@@ -76,6 +100,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should save the selected service to localStorage when it changes', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useServiceSelection({
       projectId,
       services: mockServices
@@ -93,6 +123,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should use custom storageKey if provided', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const customKey = 'customKey';
     
     const { result } = renderHook(() => useServiceSelection({
@@ -112,6 +148,12 @@ describe('useServiceSelection', () => {
   });
 
   it('should handle empty services array', () => {
+    /**
+     * Steps:
+     * 1. Render the useServiceSelection hook
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { result } = renderHook(() => useServiceSelection({
       projectId,
       services: []
@@ -120,3 +162,15 @@ describe('useServiceSelection', () => {
     expect(result.current.selectedService).toBeNull();
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should select the service provided by initialServiceName | + |
+ * | 2 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should select the service from localStorage if initialServiceName is not provided | + |
+ * | 3 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should select the first service if initialServiceName is not provided and nothing is in localStorage | + |
+ * | 4 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should select the first service if initialServiceName is not found in services | + |
+ * | 5 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should save the selected service to localStorage when it changes | + |
+ * | 6 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should use custom storageKey if provided | + |
+ * | 7 | Web Browser | - Render the useServiceSelection hook <br> - Check for initial state <br> - Check for correct rendering | should handle empty services array | + |
+ */

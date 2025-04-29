@@ -19,6 +19,12 @@ describe('useTabNavigation', () => {
   });
 
   it('should initialize with the correct active tab based on URL path', () => {
+    /**
+     * Steps:
+     * 1. Render the useTabNavigation hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     mockLocation = { pathname: '/monitoring' };
     mockUseLocation.mockReturnValue(mockLocation);
 
@@ -28,6 +34,12 @@ describe('useTabNavigation', () => {
   });
 
   it('should default to dashboard when path is not recognized', () => {
+    /**
+     * Steps:
+     * 1. Render the useTabNavigation hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     mockLocation = { pathname: '/unknown' };
     mockUseLocation.mockReturnValue(mockLocation);
 
@@ -37,6 +49,12 @@ describe('useTabNavigation', () => {
   });
 
   it('should navigate to the corresponding path when activeTab changes', () => {
+    /**
+     * Steps:
+     * 1. Render the useTabNavigation hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     mockLocation = { pathname: '/dashboard' };
     mockUseLocation.mockReturnValue(mockLocation);
 
@@ -50,6 +68,12 @@ describe('useTabNavigation', () => {
   });
 
   it('should not navigate if the current path already corresponds to the active tab', () => {
+    /**
+     * Steps:
+     * 1. Render the useTabNavigation hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     mockLocation = { pathname: '/monitoring' };
     mockUseLocation.mockReturnValue(mockLocation);
 
@@ -63,6 +87,12 @@ describe('useTabNavigation', () => {
   });
 
   it('should export pathToTab mapping object', () => {
+    /**
+     * Steps:
+     * 1. Render the useTabNavigation hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     const { result } = renderHook(() => useTabNavigation());
     
     expect(result.current.pathToTab).toEqual({
@@ -73,3 +103,12 @@ describe('useTabNavigation', () => {
     });
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useTabNavigation hook <br> - Check for initial state <br> - Check for correct rendering | should initialize with the correct active tab based on URL path | + |
+ * | 2 | Web Browser | - Render the useTabNavigation hook <br> - Check for initial state <br> - Check for correct rendering | should update active tab when setActiveTab is called | + |
+ * | 3 | Web Browser | - Render the useTabNavigation hook <br> - Check for initial state <br> - Check for correct rendering | should not navigate if the current path already corresponds to the active tab | + |
+ * | 4 | Web Browser | - Render the useTabNavigation hook <br> - Check for initial state <br> - Check for correct rendering | should export pathToTab mapping object | + |
+ */

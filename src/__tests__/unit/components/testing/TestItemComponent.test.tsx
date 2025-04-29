@@ -11,7 +11,14 @@ const mockTestItem: TestItem = {
 };
 
 describe('TestItemComponent', () => {
+
   it('renders test item with correct name', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <TestItemComponent 
         item={mockTestItem} 
@@ -26,6 +33,12 @@ describe('TestItemComponent', () => {
   });
   
   it('expands when clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const mockToggleExpand = vi.fn();
     const testItemWithChildren: TestItem = {
       ...mockTestItem,
@@ -49,6 +62,12 @@ describe('TestItemComponent', () => {
   });
   
   it('calls onRunTest when run button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const mockRunTest = vi.fn();
     const { user } = render(
       <TestItemComponent 
@@ -66,6 +85,12 @@ describe('TestItemComponent', () => {
   });
   
   it('calls onGenerateTest when generate button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const mockGenerateTest = vi.fn();
     const { user } = render(
       <TestItemComponent 
@@ -83,3 +108,12 @@ describe('TestItemComponent', () => {
   });
   
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | renders test item with correct name| + |
+ * | 2 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | expands when clicked| + |
+ * | 3 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | calls onRunTest when run button is clicked| + |
+ * | 4 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | calls onGenerateTest when generate button is clicked| + |
+ */

@@ -5,6 +5,12 @@ import { useForm } from '@/components/auth/hooks/useForm';
 describe('useForm', () => {
   // Test initial values
   it('initializes with provided values', () => {
+    /**
+     * Steps:
+     * 1. Define initial values
+     * 2. Render the useForm hook
+     * 3. Check initial state
+     */
     const initialValues = { username: '', password: '' };
     const { result } = renderHook(() => useForm(initialValues));
     
@@ -16,6 +22,13 @@ describe('useForm', () => {
 
   // Test form field changes
   it('updates values when handleChange is called', () => {
+    /**
+     * Steps:
+     * 1. Define initial values
+     * 2. Render the useForm hook
+     * 3. Call handleChange with a mock event
+     * 4. Check updated state
+     */
     const initialValues = { username: '', password: '' };
     const { result } = renderHook(() => useForm(initialValues));
     
@@ -39,6 +52,13 @@ describe('useForm', () => {
 
   // Test field validation
   it('validates fields according to validation rules', () => {
+    /**
+     * Steps:
+     * 1. Define initial values and validation rules
+     * 2. Render the useForm hook
+     * 3. Call handleSubmit to trigger validation
+     * 4. Check validation errors
+     */
     const initialValues = { username: '', password: '' };
     const validationRules = {
       username: (value: unknown) => {
@@ -70,6 +90,14 @@ describe('useForm', () => {
 
   // Test error clearing on input change
   it('clears field error when user types in the field', () => {
+    /**
+     * Steps:
+     * 1. Define initial values and validation rules
+     * 2. Render the useForm hook
+     * 3. Call handleSubmit to trigger validation and set errors
+     * 4. Call handleChange to clear errors
+     * 5. Check state after input change
+     */
     const initialValues = { username: '', password: '' };
     const validationRules = {
       username: (value: unknown) => {
@@ -103,6 +131,14 @@ describe('useForm', () => {
 
   // Test form submission
   it('calls onSubmit with form values when validation passes', async () => {
+    /**
+     * Steps:
+     * 1. Define initial values and onSubmit function
+     * 2. Render the useForm hook
+     * 3. Call handleSubmit to trigger validation and submit
+     * 4. Check onSubmit function was called with correct values
+     * 5. Check isSubmitting state
+     */
     const initialValues = { username: 'testuser', password: 'password123' };
     const onSubmit = vi.fn().mockResolvedValue(undefined);
     
@@ -120,6 +156,14 @@ describe('useForm', () => {
 
   // Test form submission error handling
   it('handles submission errors', async () => {
+    /**
+     * Steps:
+     * 1. Define initial values and onSubmit function
+     * 2. Render the useForm hook
+     * 3. Call handleSubmit to trigger validation and submit
+     * 4. Check onSubmit function was called with correct values
+     * 5. Check isSubmitting state
+     */
     const initialValues = { username: 'testuser', password: 'password123' };
     const errorMessage = 'Submission failed';
     const onSubmit = vi.fn().mockRejectedValue(new Error(errorMessage));
@@ -139,6 +183,14 @@ describe('useForm', () => {
 
   // Test form reset
   it('resets form to initial values', () => {
+    /**
+     * Steps:
+     * 1. Define initial values
+     * 2. Render the useForm hook
+     * 3. Change form values
+     * 4. Call reset
+     * 5. Check state after reset
+     */
     const initialValues = { username: '', password: '' };
     const { result } = renderHook(() => useForm(initialValues));
     
@@ -172,6 +224,14 @@ describe('useForm', () => {
 
   // Test clearing submit error when input changes
   it('clears submit error when form values change', () => {
+    /**
+     * Steps:
+     * 1. Define initial values
+     * 2. Render the useForm hook
+     * 3. Set a submit error manually
+     * 4. Call handleChange to clear errors
+     * 5. Check state after input change
+     */
     const initialValues = { username: 'testuser', password: 'password123' };
     const { result } = renderHook(() => useForm(initialValues));
     
@@ -195,6 +255,13 @@ describe('useForm', () => {
 
   // Test setValues function
   it('allows direct setting of form values', () => {
+    /**
+     * Steps:
+     * 1. Define initial values
+     * 2. Render the useForm hook
+     * 3. Call setValues with new values
+     * 4. Check state after setting new values
+     */
     const initialValues = { username: '', password: '' };
     const { result } = renderHook(() => useForm(initialValues));
     
@@ -207,3 +274,10 @@ describe('useForm', () => {
     expect(result.current.values).toEqual(newValues);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useForm hook <br> - Check for initial state <br> - Check for successful login | should initialize with loading state and no user | + |
+ * | 2 | Web Browser | 
+ */

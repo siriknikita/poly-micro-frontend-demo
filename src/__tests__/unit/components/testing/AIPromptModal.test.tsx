@@ -3,7 +3,14 @@ import { render, screen } from '../../../utils/test-utils';
 import { AIPromptModal } from '@/components/testing/AIPromptModal';
 
 describe('AIPromptModal Component', () => {
+
   it('renders correctly when isOpen is true', () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <AIPromptModal
         isOpen={true}
@@ -17,6 +24,12 @@ describe('AIPromptModal Component', () => {
   });
   
   it('does not render when isOpen is false', () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <AIPromptModal
         isOpen={false}
@@ -28,6 +41,12 @@ describe('AIPromptModal Component', () => {
   });
   
   it('calls onClose when close button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleClose = vi.fn();
     const { user } = render(
       <AIPromptModal
@@ -42,6 +61,12 @@ describe('AIPromptModal Component', () => {
   });
   
   it('calls onSubmit with prompt value when submit button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleSubmit = vi.fn();
     const { user } = render(
       <AIPromptModal
@@ -61,6 +86,12 @@ describe('AIPromptModal Component', () => {
   });
   
   it('disables submit button when input is empty', () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <AIPromptModal
         isOpen={true}
@@ -73,6 +104,12 @@ describe('AIPromptModal Component', () => {
   });
   
   it('enables submit button when input has text', async () => {
+    /**
+     * Steps:
+     * 1. Render the AIPromptModal component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { user } = render(
       <AIPromptModal
         isOpen={true}
@@ -87,3 +124,14 @@ describe('AIPromptModal Component', () => {
   });
   
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | renders correctly when isOpen is true | + |
+ * | 2 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | does not render when isOpen is false | + |
+ * | 3 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | calls onClose when close button is clicked | + |
+ * | 4 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | calls onSubmit with prompt value when submit button is clicked | + |
+ * | 5 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | disables submit button when input is empty | + |
+ * | 6 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | enables submit button when input has text | + |
+ */

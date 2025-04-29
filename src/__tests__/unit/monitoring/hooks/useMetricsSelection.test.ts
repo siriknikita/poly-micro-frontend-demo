@@ -41,6 +41,12 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should return default metrics when no stored preferences exist', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsSelection hook
+     * 2. Check for initial state
+     * 3. Check for default metrics
+     */
     const { result } = renderHook(() => useMetricsSelection({
       projectId,
       serviceName,
@@ -52,6 +58,12 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should load stored preferences when they exist', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsSelection hook
+     * 2. Check for initial state
+     * 3. Check for stored preferences
+     */
     // Setup stored preferences
     const storedPreferences = {
       [projectId]: {
@@ -76,6 +88,12 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should update metrics selection and save to localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsSelection hook
+     * 2. Check for initial state
+     * 3. Check for update metrics selection
+     */
     const { result } = renderHook(() => useMetricsSelection({
       projectId,
       serviceName,
@@ -105,6 +123,12 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should handle localStorage errors gracefully', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsSelection hook
+     * 2. Check for initial state
+     * 3. Check for localStorage errors
+     */
     // Mock localStorage.getItem to throw an error
     mockLocalStorage.getItem.mockImplementationOnce(() => {
       throw new Error('localStorage error');
@@ -121,6 +145,12 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should update metrics when project or service changes', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsSelection hook
+     * 2. Check for initial state
+     * 3. Check for project or service changes
+     */
     // Setup stored preferences for two different services
     const storedPreferences = {
       [projectId]: {
@@ -150,3 +180,14 @@ describe('useMetricsSelection Hook', () => {
     expect(result.current.selectedMetricIds).toEqual(['threads']);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | renders correctly with all subcomponents | + |
+ * | 2 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | allows service selection through the service selector | + |
+ * | 3 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | shows correct selected state for metrics | + |
+ * | 4 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | calls updateMetricSelection when metrics change | + |
+ * | 5 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | handles localStorage errors gracefully | + |
+ * | 6 | Web Browser | - Render the useMetricsSelection hook <br> - Check for initial state <br> - Check for correct rendering | updates metrics when project or service changes | + |
+ */

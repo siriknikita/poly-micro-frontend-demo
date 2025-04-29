@@ -35,6 +35,13 @@ describe('useResizablePanel', () => {
   });
 
   it('initializes with default values', () => {
+    /**
+     * Steps:
+     * 1. Render the useResizablePanel hook
+     * 2. Check for initial state
+     * 3. Check for default width
+     * 4. Check for default isDragging
+     */
     const { result } = renderHook(() => useResizablePanel());
     
     expect(result.current.width).toBe(CHAT_PANEL.DEFAULT_WIDTH);
@@ -42,6 +49,12 @@ describe('useResizablePanel', () => {
   });
   
   it('initializes with custom values', () => {
+    /**
+     * Steps:
+     * 1. Render the useResizablePanel hook
+     * 2. Check for initial state
+     * 3. Check for custom width
+     */
     const { result } = renderHook(() => useResizablePanel({
       initialWidth: 500,
       minWidth: 250,
@@ -52,6 +65,12 @@ describe('useResizablePanel', () => {
   });
   
   it('starts resizing on mouse down', () => {
+    /**
+     * Steps:
+     * 1. Render the useResizablePanel hook
+     * 2. Check for initial state
+     * 3. Check for isDragging
+     */
     const { result } = renderHook(() => useResizablePanel());
     
     act(() => {
@@ -62,6 +81,12 @@ describe('useResizablePanel', () => {
   });
   
   it('sets up event listeners when dragging starts', () => {
+    /**
+     * Steps:
+     * 1. Render the useResizablePanel hook
+     * 2. Check for initial state
+     * 3. Check for event listeners
+     */
     const { result } = renderHook(() => useResizablePanel());
     
     act(() => {
@@ -77,6 +102,12 @@ describe('useResizablePanel', () => {
   });
   
   it('cleans up event listeners when unmounted', () => {
+    /**
+     * Steps:
+     * 1. Render the useResizablePanel hook
+     * 2. Check for initial state
+     * 3. Check for event listeners
+     */
     const { result, unmount } = renderHook(() => useResizablePanel());
     
     act(() => {
@@ -91,3 +122,13 @@ describe('useResizablePanel', () => {
     expect(document.body.classList.remove).toHaveBeenCalledWith('resize-no-select');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useMicroserviceNavigation hook <br> - Check for initial state <br> - Check for correct rendering | initializes with custom values| + |
+ * | 2 | Web Browser | - Render the useMicroserviceNavigation hook <br> - Check for initial state <br> - Check for correct rendering | starts resizing on mouse down| + |
+ * | 3 | Web Browser | - Render the useMicroserviceNavigation hook <br> - Check for initial state <br> - Check for correct rendering | sets up event listeners when dragging starts| + |
+ * | 4 | Web Browser | - Render the useMicroserviceNavigation hook <br> - Check for initial state <br> - Check for correct rendering | cleans up event listeners when unmounted| + |
+ * | 5 | Web Browser | - Render the useMicroserviceNavigation hook <br> - Check for initial state <br> - Check for correct rendering | initializes with default values| + |
+ */

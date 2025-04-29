@@ -4,7 +4,16 @@ import { useMicroserviceNavigation } from '@/components/testing/hooks/useMicrose
 import { mockMicroservices } from '../../mocks/mockData';
 
 describe('useMicroserviceNavigation', () => {
+
   it('initializes with empty microservices list', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for empty microservices list
+     * 4. Check for empty filtered microservices list
+     * 5. Check for empty search query
+     */
     const { result } = renderHook(() => useMicroserviceNavigation({
       microservices: []
     }));
@@ -15,6 +24,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('selects the first microservice by default', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for first microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -25,6 +40,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('uses initialMicroservice when provided', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for initial microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     const initialMicroservice = projectMicroservices[1]; // User Service
     
@@ -37,6 +58,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('changes the selected microservice', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for selected microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -52,6 +79,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('resets selected microservice when microservices array changes', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for selected microservice
+     */
     const project1Microservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result, rerender } = renderHook(
@@ -71,6 +104,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('handles filtering microservices by search query', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for filtered microservices
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -88,6 +127,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('navigates to previous microservice', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for previous microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -107,6 +152,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('navigates to next microservice', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for next microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -126,6 +177,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('gets previous microservice name', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for previous microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -142,6 +199,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('gets next microservice name', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for next microservice
+     */
     const projectMicroservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result } = renderHook(() => useMicroserviceNavigation({
@@ -158,6 +221,12 @@ describe('useMicroserviceNavigation', () => {
   });
   
   it('clears search query when microservices change', () => {
+    /**
+     * Steps:
+     * 1. Render the useMicroserviceNavigation hook
+     * 2. Check for initial state
+     * 3. Check for search query
+     */
     const project1Microservices = mockMicroservices.filter(ms => ms.projectId === 'project1');
     
     const { result, rerender } = renderHook(
@@ -180,3 +249,19 @@ describe('useMicroserviceNavigation', () => {
     expect(result.current.searchQuery).toBe('');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | initializes with empty microservices list| + |
+ * | 2 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | selects the first microservice by default| + |
+ * | 3 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | uses initialMicroservice when provided| + |
+ * | 4 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | changes the selected microservice| + |
+ * | 5 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | resets selected microservice when microservices array changes| + |
+ * | 6 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | handles filtering microservices by search query| + |
+ * | 7 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | navigates to previous microservice| + |
+ * | 8 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | navigates to next microservice| + |
+ * | 9 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | gets previous microservice name| + |
+ * | 10 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | gets next microservice name| + |
+ * | 11 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | clears search query when microservices change| + |
+ */

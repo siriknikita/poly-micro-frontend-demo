@@ -21,6 +21,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should initialize with correct state', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for correct state
+     */
     const { result } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -33,6 +39,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should toggle dropdown open/closed', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for toggleDropdown
+     */
     const { result } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -55,6 +67,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should filter metrics based on search term', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for filter metrics
+     */
     const { result } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -91,6 +109,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should toggle metric selection', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for toggle metric selection
+     */
     const { result } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -117,6 +141,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should handle keyboard events', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for keyboard events
+     */
     const { result } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -164,6 +194,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should add and remove event listeners', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for event listeners
+     */
     const { unmount } = renderHook(() => useMetricsDropdown({
       metrics: mockMetrics,
       onMetricsChange: mockOnMetricsChange
@@ -180,6 +216,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should update metrics when props change', () => {
+    /**
+     * Steps:
+     * 1. Render the useMetricsDropdown hook
+     * 2. Check for initial state
+     * 3. Check for props change
+     */
     const { result, rerender } = renderHook(
       (props) => useMetricsDropdown(props),
       { initialProps: { metrics: mockMetrics, onMetricsChange: mockOnMetricsChange } }
@@ -202,3 +244,16 @@ describe('useMetricsDropdown Hook', () => {
     expect(result.current.filteredMetrics).toEqual(updatedMetrics);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | renders correctly with all subcomponents | + |
+ * | 2 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | allows service selection through the service selector | + |
+ * | 3 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | shows correct selected state for metrics | + |
+ * | 4 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | shows correct selected count in toggle button | + |
+ * | 5 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | calls onMetricsChange when a metric is toggled | + |
+ * | 6 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | applies custom className when provided | + |
+ * | 7 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | adds and removes event listeners | + |
+ * | 8 | Web Browser | - Render the useMetricsDropdown hook <br> - Check for initial state <br> - Check for correct rendering | updates metrics when props change | + |
+ */

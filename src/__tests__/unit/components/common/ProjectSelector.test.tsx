@@ -18,6 +18,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('renders with all projects in dropdown', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for all projects in dropdown
+     */
     render(
       <ProjectSelector 
         projects={mockProjects} 
@@ -40,6 +46,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('displays the selected project', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for selected project
+     */
     const selectedProject = mockProjects[1]; // Banking System
     
     render(
@@ -56,6 +68,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('calls onSelectProject when a project is selected', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for onSelectProject
+     */
     render(
       <ProjectSelector 
         projects={mockProjects} 
@@ -76,6 +94,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('does not call onSelectProject when empty option is selected', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for onSelectProject
+     */
     render(
       <ProjectSelector 
         projects={mockProjects} 
@@ -95,6 +119,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('handles empty projects array', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for empty projects array
+     */
     render(
       <ProjectSelector 
         projects={[]} 
@@ -110,6 +140,12 @@ describe('ProjectSelector Component', () => {
   });
 
   test('renders with correct styling', () => {
+    /**
+     * Steps:
+     * 1. Render the ProjectSelector component
+     * 2. Check for initial state
+     * 3. Check for correct styling
+     */
     render(
       <ProjectSelector 
         projects={mockProjects} 
@@ -128,3 +164,14 @@ describe('ProjectSelector Component', () => {
     expect(folderIcon).toBeInTheDocument();
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | renders correctly with all subcomponents | + |
+ * | 2 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | allows service selection through the service selector | + |
+ * | 3 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | shows correct selected state for projects | + |
+ * | 4 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | calls onSelectProject when a project is selected | + |
+ * | 5 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | handles empty projects array | + |
+ * | 6 | Web Browser | - Render the ProjectSelector component <br> - Check for initial state <br> - Check for all projects in dropdown | renders with correct styling | + |
+ */

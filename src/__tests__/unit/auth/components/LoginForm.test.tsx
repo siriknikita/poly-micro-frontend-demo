@@ -43,6 +43,15 @@ describe('LoginForm', () => {
   };
   
   it('renders the login form correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the LoginForm component
+     * 2. Check for form elements
+     * 3. Check for username input
+     * 4. Check for password input
+     * 5. Check for submit button
+     * 6. Check for registration link
+     */
     renderLoginForm();
     
     // Check for form elements
@@ -54,6 +63,12 @@ describe('LoginForm', () => {
   });
   
   it('validates required fields', async () => {
+    /**
+     * Steps:
+     * 1. Render the LoginForm component
+     * 2. Submit the form without filling in any fields
+     * 3. Check for validation errors
+     */
     renderLoginForm();
     
     // Submit the form without filling in any fields
@@ -66,6 +81,13 @@ describe('LoginForm', () => {
   });
   
   it('submits the form with valid data', async () => {
+    /**
+     * Steps:
+     * 1. Render the LoginForm component
+     * 2. Fill in the form
+     * 3. Submit the form
+     * 4. Check for login call
+     */
     renderLoginForm();
     const user = userEvent.setup();
     
@@ -83,6 +105,14 @@ describe('LoginForm', () => {
   });
   
   it('displays an error message when login fails', async () => {
+    /**
+     * Steps:
+     * 1. Setup login to fail
+     * 2. Render the LoginForm component
+     * 3. Fill in the form
+     * 4. Submit the form
+     * 5. Check for error message
+     */
     // Setup login to fail
     mockLogin.mockRejectedValueOnce(new Error('Invalid username or password'));
     
@@ -103,6 +133,12 @@ describe('LoginForm', () => {
   });
   
   it('allows typing in form fields', async () => {
+    /**
+     * Steps:
+     * 1. Render the LoginForm component
+     * 2. Type in the username field
+     * 3. Check for updated input value
+     */
     renderLoginForm();
     const user = userEvent.setup();
     
@@ -114,6 +150,12 @@ describe('LoginForm', () => {
   });
   
   it('has a working link to the registration page', () => {
+    /**
+     * Steps:
+     * 1. Render the LoginForm component
+     * 2. Check for registration link
+     * 3. Check for link href
+     */
     renderLoginForm();
     
     const registerLink = screen.getByText(/don't have an account\? sign up!/i);

@@ -43,6 +43,17 @@ describe('RegisterForm', () => {
   };
   
   it('renders the registration form correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Check for form elements
+     * 3. Check for business name input
+     * 4. Check for email input
+     * 5. Check for username input
+     * 6. Check for password input
+     * 7. Check for submit button
+     * 8. Check for login link
+     */
     renderRegisterForm();
     
     // Check for form elements
@@ -56,6 +67,12 @@ describe('RegisterForm', () => {
   });
   
   it('validates required fields', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Submit the form without filling in any fields
+     * 3. Check for validation errors
+     */
     renderRegisterForm();
     
     // Submit the form without filling in any fields
@@ -68,6 +85,13 @@ describe('RegisterForm', () => {
   });
   
   it('validates email format', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Fill in the form with invalid email
+     * 3. Submit the form
+     * 4. Check for validation errors
+     */
     renderRegisterForm();
     const user = userEvent.setup();
     
@@ -87,6 +111,13 @@ describe('RegisterForm', () => {
   });
   
   it('validates username length', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Fill in the form with short username
+     * 3. Submit the form
+     * 4. Check for validation errors
+     */
     renderRegisterForm();
     const user = userEvent.setup();
     
@@ -109,6 +140,13 @@ describe('RegisterForm', () => {
   });
   
   it('validates password length', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Fill in the form with short password
+     * 3. Submit the form
+     * 4. Check for validation errors
+     */
     renderRegisterForm();
     const user = userEvent.setup();
     
@@ -131,6 +169,13 @@ describe('RegisterForm', () => {
   });
   
   it('submits the form with valid data', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Fill in the form with valid data
+     * 3. Submit the form
+     * 4. Check for register call
+     */
     renderRegisterForm();
     const user = userEvent.setup();
     
@@ -155,6 +200,14 @@ describe('RegisterForm', () => {
   });
   
   it('displays an error message when registration fails', async () => {
+    /**
+     * Steps:
+     * 1. Setup register to fail
+     * 2. Render the RegisterForm component
+     * 3. Fill in the form with valid data
+     * 4. Submit the form
+     * 5. Check for error message
+     */
     // Setup register to fail
     mockRegister.mockRejectedValueOnce(new Error('Username already exists'));
     
@@ -177,6 +230,12 @@ describe('RegisterForm', () => {
   });
   
   it('allows typing in form fields', async () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Type in the business name field
+     * 3. Check for updated input value
+     */
     renderRegisterForm();
     const user = userEvent.setup();
     
@@ -188,6 +247,12 @@ describe('RegisterForm', () => {
   });
   
   it('has a working link to the login page', () => {
+    /**
+     * Steps:
+     * 1. Render the RegisterForm component
+     * 2. Check for login link
+     * 3. Check for link href
+     */
     renderRegisterForm();
     
     const loginLink = screen.getByText(/already have an account\? sign in!/i);

@@ -31,12 +31,24 @@ describe('useTestItems', () => {
   });
 
   it('should initialize with empty expanded items', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for empty state
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     expect(result.current.expandedItems).toEqual({});
   });
 
   it('should toggle expanded state for a single item', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for toggle expanded state
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     act(() => {
@@ -53,6 +65,12 @@ describe('useTestItems', () => {
   });
 
   it('should expand all items when expandAll is called', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for expand all
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     act(() => {
@@ -80,6 +98,12 @@ describe('useTestItems', () => {
   });
 
   it('should collapse all items when collapseAll is called', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for collapse all
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     // First expand all items
@@ -96,6 +120,12 @@ describe('useTestItems', () => {
   });
 
   it('should save expanded state to localStorage', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for save expanded state
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     act(() => {
@@ -115,6 +145,12 @@ describe('useTestItems', () => {
   });
 
   it('should handle multiple expanded items correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for handle multiple expanded items
+     */
     const { result } = renderHook(() => useTestItems(mockTestItems, 'project1', 'ms1'));
     
     act(() => {
@@ -131,3 +167,14 @@ describe('useTestItems', () => {
     expect(result.current.expandedItems).toEqual({ func1: false, func2: true });
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should initialize with empty expanded items | + |
+ * | 2 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should toggle expanded state for a single item | + |
+ * | 3 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should expand all items when expandAll is called | + |
+ * | 4 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should collapse all items when collapseAll is called | + |
+ * | 5 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should save expanded state to localStorage | + |
+ * | 6 | Web Browser | - Render the useTestItems hook <br> - Check for initial state <br> - Check for toggle expand | should handle multiple expanded items correctly | + |
+ */

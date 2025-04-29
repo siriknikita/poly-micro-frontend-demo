@@ -16,6 +16,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should render with default label', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for default label
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -28,6 +34,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should render with custom label', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for custom label
+     */
     const customLabel = 'Choose a microservice';
     render(
       <ServiceSelector
@@ -42,6 +54,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should render all provided services as options', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for all services options
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -56,6 +74,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should show "All Services" option when showAllOption is true', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for "All Services" option
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -69,6 +93,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should not show "All Services" option when showAllOption is false', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for "All Services" option
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -82,6 +112,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should select the provided selectedService', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for selected service
+     */
     render(
       <ServiceSelector
         selectedService="Service 2"
@@ -95,6 +131,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should call onServiceSelect with the selected service name', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for selected service
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -110,6 +152,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should apply custom className if provided', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for custom class
+     */
     const customClass = 'custom-test-class';
     render(
       <ServiceSelector
@@ -125,6 +173,12 @@ describe('ServiceSelector', () => {
   });
 
   it('should handle empty services array', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceSelector component
+     * 2. Check for initial state
+     * 3. Check for empty services array
+     */
     render(
       <ServiceSelector
         selectedService={null}
@@ -138,3 +192,17 @@ describe('ServiceSelector', () => {
     expect(screen.getAllByRole('option').length).toBe(1);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should render with default label | + |
+ * | 2 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should render with custom label | + |
+ * | 3 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should render all provided services as options | + |
+ * | 4 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should show "All Services" option when showAllOption is true | + |
+ * | 5 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should not show "All Services" option when showAllOption is false | + |
+ * | 6 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should select the provided selectedService | + |
+ * | 7 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should call onServiceSelect with the selected service name | + |
+ * | 8 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should apply custom className if provided | + |
+ * | 9 | Web Browser | - Render the ServiceSelector component <br> - Check for initial state <br> - Check for default label | should handle empty services array | + |
+ */

@@ -3,7 +3,14 @@ import { render, screen } from '../../../utils/test-utils';
 import { NavigationControls } from '@/components/testing/components';
 
 describe('NavigationControls Component', () => {
+
   it('renders navigation buttons when showControls is true', async () => {
+    /**
+     * Steps:
+     * 1. Render the NavigationControls component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleNavigate = vi.fn();
     const { user } = render(
       <NavigationControls
@@ -34,6 +41,12 @@ describe('NavigationControls Component', () => {
   });
   
   it('does not render when showControls is false', () => {
+    /**
+     * Steps:
+     * 1. Render the NavigationControls component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <NavigationControls
         onNavigate={() => {}}
@@ -48,6 +61,12 @@ describe('NavigationControls Component', () => {
   });
   
   it('calls onNavigate with correct direction when buttons are clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the NavigationControls component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleNavigate = vi.fn();
     const { user } = render(
       <NavigationControls
@@ -75,6 +94,12 @@ describe('NavigationControls Component', () => {
   });
   
   it('renders with correct button icons', () => {
+    /**
+     * Steps:
+     * 1. Render the NavigationControls component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <NavigationControls
         onNavigate={() => {}}
@@ -94,3 +119,13 @@ describe('NavigationControls Component', () => {
     });
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the NavigationControls component <br> - Check for initial state <br> - Check for correct rendering |  | + |
+ * | 2 | Web Browser | - Render the NavigationControls component <br> - Check for initial state <br> - Check for correct rendering | renders navigation buttons when showControls is true | + |
+ * | 3 | Web Browser | - Render the NavigationControls component <br> - Check for initial state <br> - Check for correct rendering | does not render when showControls is false | + |
+ * | 4 | Web Browser | - Render the NavigationControls component <br> - Check for initial state <br> - Check for correct rendering | calls onNavigate with correct direction when buttons are clicked | + |
+ * | 5 | Web Browser | - Render the NavigationControls component <br> - Check for initial state <br> - Check for correct rendering | renders with correct button icons | + |
+ */

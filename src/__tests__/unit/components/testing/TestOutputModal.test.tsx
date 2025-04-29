@@ -18,6 +18,12 @@ describe('TestOutputModal Component', () => {
   });
   
   it('renders correctly when isOpen is true', () => {
+    /**
+     * Steps:
+     * 1. Render the TestOutputModal
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <TestOutputModal
         isOpen={true}
@@ -36,6 +42,12 @@ describe('TestOutputModal Component', () => {
   });
   
   it('does not render when isOpen is false', () => {
+    /**
+     * Steps:
+     * 1. Render the TestOutputModal
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <TestOutputModal
         isOpen={false}
@@ -53,6 +65,12 @@ describe('TestOutputModal Component', () => {
   });
   
   it('calls onClose when close button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestOutputModal
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleClose = vi.fn();
     const { user } = render(
       <TestOutputModal
@@ -73,6 +91,12 @@ describe('TestOutputModal Component', () => {
   });
   
   it('handles keyboard events for accessibility', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestOutputModal
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const handleClose = vi.fn();
     const { user } = render(
       <TestOutputModal
@@ -93,3 +117,12 @@ describe('TestOutputModal Component', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the ResizeHandle component <br> - Check for initial state <br> - Check for correct rendering | renders correctly when isOpen is true | + |
+ * | 2 | Web Browser | - Render the ResizeHandle component <br> - Check for initial state <br> - Check for correct rendering | does not render when isOpen is false | + |
+ * | 3 | Web Browser | - Render the ResizeHandle component <br> - Check for initial state <br> - Check for correct rendering | calls onClose when close button is clicked | + |
+ * | 4 | Web Browser | - Render the ResizeHandle component <br> - Check for initial state <br> - Check for correct rendering | handles keyboard events for accessibility | + |
+ */

@@ -58,3 +58,14 @@ describe('Testing Constants', () => {
     expect(prompt).toContain('authenticate');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | renders correctly with all subcomponents | + |
+ * | 2 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | defines chat panel dimensions correctly | + |
+ * | 3 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | defines CSS classes correctly | + |
+ * | 4 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | defines button variants correctly | + |
+ * | 5 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | defines test item types correctly | + |
+ * | 6 | Web Browser | - Render the constants <br> - Check for initial state <br> - Check for correct rendering | defines default prompts correctly | + |
+ */

@@ -4,7 +4,14 @@ import { IconButton } from '../../../../components/testing/components/IconButton
 import { X } from 'lucide-react';
 
 describe('IconButton Component', () => {
+
   it('renders correctly with icon and text', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(<IconButton icon={<X data-testid="x-icon" />} label="Close" />);
     
     expect(screen.getByTestId('x-icon')).toBeInTheDocument();
@@ -12,6 +19,12 @@ describe('IconButton Component', () => {
   });
   
   it('calls onClick handler when clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const mockOnClick = vi.fn();
     const { user } = render(<IconButton icon={<X />} onClick={mockOnClick} label="Close" />);
     
@@ -21,6 +34,12 @@ describe('IconButton Component', () => {
   });
   
   it('applies custom class names', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <IconButton 
         icon={<X />}
@@ -34,12 +53,24 @@ describe('IconButton Component', () => {
   });
   
   it('renders as disabled when disabled prop is true', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(<IconButton icon={<X />} onClick={() => {}} label="Close" disabled={true} />);
     
     expect(screen.getByRole('button')).toBeDisabled();
   });
   
   it('renders only icon when label is not provided', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(<IconButton icon={<X data-testid="x-icon" />} onClick={() => {}} />);
     
     expect(screen.getByTestId('x-icon')).toBeInTheDocument();
@@ -47,6 +78,12 @@ describe('IconButton Component', () => {
   });
 
   it('renders with different variants', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { rerender } = render(
       <IconButton icon={<X />} onClick={() => {}} variant="primary" />
     );
@@ -64,6 +101,12 @@ describe('IconButton Component', () => {
   });
   
   it('renders with different sizes', () => {
+    /**
+     * Steps:
+     * 1. Render the IconButton component
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { rerender } = render(
       <IconButton icon={<X />} onClick={() => {}} size="sm" />
     );
@@ -80,3 +123,15 @@ describe('IconButton Component', () => {
     expect(screen.getByRole('button')).toHaveClass('px-6 py-3');
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | renders correctly with icon and text | + |
+ * | 2 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | calls onClick handler when clicked | + |
+ * | 3 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | applies custom class names | + |
+ * | 4 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | renders as disabled when disabled prop is true | + |
+ * | 5 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | renders only icon when label is not provided | + |
+ * | 6 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | renders with different variants | + |
+ * | 7 | Web Browser | - Render the IconButton component <br> - Check for initial state <br> - Check for correct rendering | renders with different sizes | + |
+ */

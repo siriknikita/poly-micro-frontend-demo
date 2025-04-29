@@ -29,6 +29,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should not render when isOpen is false', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for not rendered dialog
+     */
     render(
       <ServiceFilterDialog
         isOpen={false}
@@ -42,6 +48,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should render with default values when opened for adding', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for default values
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -68,6 +80,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should render with initial values when opened for editing', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for initial values
+     */
     const initialFilter: FilterGroup = {
       operator: 'NOT',
       conditions: [
@@ -96,6 +114,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should close when X button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for close button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -110,6 +134,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should add a new condition when Add condition button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for add condition button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -129,6 +159,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should remove a condition when remove button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for remove button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -152,6 +188,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should not remove the last condition', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for last condition
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -171,6 +213,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should update operator when changed', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for operator update
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -192,6 +240,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should update field and value when changed', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for field and value update
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -223,6 +277,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should reset form when Reset button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for reset button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -251,6 +311,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should reset to initial values when editing and Reset is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for reset button
+     */
     const initialFilter: FilterGroup = {
       operator: 'NOT',
       conditions: [
@@ -279,6 +345,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should apply filter when Apply Filter button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for apply button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -310,6 +382,12 @@ describe('ServiceFilterDialog', () => {
   });
 
   it('should not apply filter with empty values', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceFilterDialog component
+     * 2. Check for initial state
+     * 3. Check for apply button
+     */
     render(
       <ServiceFilterDialog
         isOpen={true}
@@ -325,3 +403,21 @@ describe('ServiceFilterDialog', () => {
     expect(mockHandlers.onApplyFilter).not.toHaveBeenCalled();
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should not render when isOpen is false | + |
+ * | 2 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should render with default values when opened for adding | + |
+ * | 3 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should render with initial values when opened for editing | + |
+ * | 4 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should close when X button is clicked | + |
+ * | 5 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should add a new condition when Add condition button is clicked | + |
+ * | 6 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should remove a condition when remove button is clicked | + |
+ * | 7 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should not remove the last condition | + |
+ * | 8 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should update operator when changed | + |
+ * | 9 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should update field and value when changed | + |
+ * | 10 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should reset form when Reset button is clicked | + |
+ * | 11 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should reset to initial values when editing and Reset is clicked | + |
+ * | 12 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should apply filter when Apply Filter button is clicked | + |
+ * | 13 | Web Browser | - Render the ServiceFilterDialog component <br> - Check for initial state <br> - Check for correct rendering | should not apply filter with empty values | + |
+ */

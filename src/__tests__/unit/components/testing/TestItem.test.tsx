@@ -35,6 +35,12 @@ describe('TestItemComponent', () => {
   const mockGenerateTest = vi.fn();
   
   it('renders function item correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <TestItemComponent
         item={functionItem}
@@ -57,6 +63,12 @@ describe('TestItemComponent', () => {
   });
   
   it('renders test case item correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     render(
       <TestItemComponent
         item={testCaseItem}
@@ -79,6 +91,12 @@ describe('TestItemComponent', () => {
   });
   
   it('calls onToggleExpand when expand button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { user } = render(
       <TestItemComponent
         item={functionItem}
@@ -97,6 +115,12 @@ describe('TestItemComponent', () => {
   });
   
   it('calls onRunTest when run button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { user } = render(
       <TestItemComponent
         item={functionItem}
@@ -115,6 +139,12 @@ describe('TestItemComponent', () => {
   });
   
   it('calls onGenerateTest when generate button is clicked', async () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { user } = render(
       <TestItemComponent
         item={functionItem}
@@ -133,6 +163,12 @@ describe('TestItemComponent', () => {
   });
   
   it('shows test result when showResults is true and result is provided', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const testResult = 'Test result output';
     
     render(
@@ -152,6 +188,12 @@ describe('TestItemComponent', () => {
   });
   
   it('does not show test result when showResults is false', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const testResult = 'Test result output';
     
     render(
@@ -171,6 +213,12 @@ describe('TestItemComponent', () => {
   });
   
   it('changes icon when expanded', () => {
+    /**
+     * Steps:
+     * 1. Render the TestItemComponent
+     * 2. Check for initial state
+     * 3. Check for correct rendering
+     */
     const { rerender } = render(
       <TestItemComponent
         item={functionItem}
@@ -199,3 +247,16 @@ describe('TestItemComponent', () => {
     expect(screen.getByRole('collapseButton', { name: 'Collapse' })).toBeInTheDocument();
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | renders function item correctly | + |
+ * | 2 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | renders test case item correctly | + |
+ * | 3 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | calls onToggleExpand when expand button is clicked | + |
+ * | 4 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | calls onRunTest when run button is clicked | + |
+ * | 5 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | calls onGenerateTest when generate button is clicked | + |
+ * | 6 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | shows test result when showResults is true and result is provided | + |
+ * | 7 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | does not show test result when showResults is false | + |
+ * | 8 | Web Browser | - Render the TestItemComponent <br> - Check for initial state <br> - Check for correct rendering | changes icon when expanded | + |
+ */

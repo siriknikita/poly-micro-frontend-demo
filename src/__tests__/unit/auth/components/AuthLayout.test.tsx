@@ -5,6 +5,13 @@ import { User } from 'lucide-react';
 
 describe('AuthLayout', () => {
   it('renders the layout with title and icon', () => {
+    /**
+     * Steps:
+     * 1. Render the AuthLayout component with title and icon
+     * 2. Check for title
+     * 3. Check for icon
+     * 4. Check for content
+     */
     render(
       <AuthLayout 
         title="Test Title" 
@@ -26,6 +33,12 @@ describe('AuthLayout', () => {
   });
   
   it('renders with a null icon', () => {
+    /**
+     * Steps:
+     * 1. Render the AuthLayout component with title and null icon
+     * 2. Check for title
+     * 3. Check for content
+     */
     render(
       <AuthLayout title="Test Title" icon={null}>
         <div data-testid="test-content">Test Content</div>

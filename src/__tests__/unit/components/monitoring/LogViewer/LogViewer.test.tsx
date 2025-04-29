@@ -88,6 +88,12 @@ describe('LogViewer', () => {
   });
 
   it('should render the component with logs', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for logs
+     */
     render(
       <LogViewer
         logs={mockLogs}
@@ -106,6 +112,12 @@ describe('LogViewer', () => {
   });
 
   it('should display filtered logs count correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for filtered logs count
+     */
     // Set up the pagination hook to return fewer logs to simulate filtering
     mockPaginationReturn.paginatedLogs = [mockLogs[0]];
 
@@ -124,6 +136,12 @@ describe('LogViewer', () => {
   });
 
   it('should call onServiceChange when service filter changes', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for onServiceChange
+     */
     const mockOnServiceChange = jest.fn();
     
     render(
@@ -144,6 +162,12 @@ describe('LogViewer', () => {
   });
 
   it('should call onSeverityChange when severity filter changes', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for onSeverityChange
+     */
     const mockOnSeverityChange = jest.fn();
     
     render(
@@ -164,6 +188,12 @@ describe('LogViewer', () => {
   });
 
   it('should render with items per page selector', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for items per page selector
+     */
     render(
       <LogViewer
         logs={mockLogs}
@@ -184,6 +214,12 @@ describe('LogViewer', () => {
   });
 
   it('should display table headers', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for table headers
+     */
     render(
       <LogViewer
         logs={mockLogs}
@@ -203,6 +239,12 @@ describe('LogViewer', () => {
   });
 
   it('should show pagination when there are logs', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for pagination
+     */
     render(
       <LogViewer
         logs={mockLogs}
@@ -218,6 +260,12 @@ describe('LogViewer', () => {
   });
 
   it('should show "No logs found" message when no logs match filters', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for "No logs found" message
+     */
     // Set up the pagination hook to return no logs
     mockPaginationReturn.paginatedLogs = [];
 
@@ -237,6 +285,12 @@ describe('LogViewer', () => {
   });
 
   it('should display log details correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the LogViewer component
+     * 2. Check for initial state
+     * 3. Check for log details
+     */
     render(
       <LogViewer
         logs={mockLogs}
@@ -268,3 +322,17 @@ describe('LogViewer', () => {
     expect(screen.getAllByTestId('status-badge-INFO').length).toBe(2);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should render the component with logs | + |
+ * | 2 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should display filtered logs count correctly | + |
+ * | 3 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should call onServiceChange when service filter changes | + |
+ * | 4 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should call onSeverityChange when severity filter changes | + |
+ * | 5 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should render with items per page selector | + |
+ * | 6 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should display table headers | + |
+ * | 7 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should show pagination when there are logs | + |
+ * | 8 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should show "No logs found" message when no logs match filters | + |
+ * | 9 | Web Browser | - Render the LogViewer component <br> - Check for initial state <br> - Check for correct rendering | should display log details correctly | + |
+ */

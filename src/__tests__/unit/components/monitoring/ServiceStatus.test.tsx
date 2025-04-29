@@ -131,6 +131,12 @@ describe('ServiceStatus', () => {
   ];
 
   it('should render the component with section header', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for section header
+     */
     render(<ServiceStatus services={mockServices} projectId="test-project" />);
     
     expect(screen.getByTestId('boxed-wrapper')).toBeInTheDocument();
@@ -139,6 +145,13 @@ describe('ServiceStatus', () => {
   });
 
   it('should render all services with their details', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for service names
+     * 4. Check for service details
+     */
     render(<ServiceStatus services={mockServices} projectId="test-project" />);
     
     // Check service names
@@ -161,6 +174,12 @@ describe('ServiceStatus', () => {
   });
 
   it('should render empty state when no services are provided', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for empty state
+     */
     render(<ServiceStatus services={[]} projectId="test-project" />);
     
     // Header should still be present
@@ -173,12 +192,24 @@ describe('ServiceStatus', () => {
   });
 
   it('should render the service filters component', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for service filters component
+     */
     render(<ServiceStatus services={mockServices} projectId="test-project" />);
     
     expect(screen.getByTestId('service-filters')).toBeInTheDocument();
   });
 
   it('should pass the correct props to ServiceFilters', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for ServiceFilters props
+     */
     // Reset the mock before this test
     mockUseServiceFilters.mockClear();
     
@@ -205,6 +236,12 @@ describe('ServiceStatus', () => {
   });
 
   it('should display all services when no filters are applied', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for all services
+     */
     // Default mock implementation returns all services
     render(<ServiceStatus services={mockServices} projectId="test-project" />);
     
@@ -215,6 +252,12 @@ describe('ServiceStatus', () => {
   });
   
   it('should handle the empty state correctly', () => {
+    /**
+     * Steps:
+     * 1. Render the ServiceStatus component
+     * 2. Check for initial state
+     * 3. Check for empty state
+     */
     // Test with empty services array
     render(<ServiceStatus services={[]} projectId="test-project" />);
     
@@ -224,3 +267,15 @@ describe('ServiceStatus', () => {
     expect(screen.queryByText('Database Service')).not.toBeInTheDocument();
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should render the component with section header | + |
+ * | 2 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should render all services with their details | + |
+ * | 3 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should render empty state when no services are provided | + |
+ * | 4 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should render the service filters component | + |
+ * | 5 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should pass the correct props to ServiceFilters | + |
+ * | 6 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should display all services when no filters are applied | + |
+ * | 7 | Web Browser | - Render the ServiceStatus component <br> - Check for initial state <br> - Check for section header | should handle the empty state correctly | + |
+ */

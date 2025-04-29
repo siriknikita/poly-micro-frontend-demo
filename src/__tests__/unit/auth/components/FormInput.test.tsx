@@ -5,6 +5,13 @@ import userEvent from '@testing-library/user-event';
 
 describe('FormInput', () => {
   it('renders an input with label', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component
+     * 2. Check for label
+     * 3. Check for input
+     * 4. Check for input attributes
+     */
     render(
       <FormInput
         id="test-input"
@@ -28,6 +35,12 @@ describe('FormInput', () => {
   });
   
   it('displays the provided value', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with value
+     * 2. Check for input
+     * 3. Check for input value
+     */
     render(
       <FormInput
         id="test-input"
@@ -44,6 +57,13 @@ describe('FormInput', () => {
   });
   
   it('calls onChange when the input value changes', async () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with onChange prop
+     * 2. Check for input
+     * 3. Call onChange handler
+     * 4. Check for handler call
+     */
     const handleChange = vi.fn();
     
     render(
@@ -64,6 +84,13 @@ describe('FormInput', () => {
   });
   
   it('displays an error message when error is provided', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with error prop
+     * 2. Check for input
+     * 3. Check for error message
+     * 4. Check for error styling
+     */
     render(
       <FormInput
         id="test-input"
@@ -85,6 +112,12 @@ describe('FormInput', () => {
   });
   
   it('marks the input as required when required prop is true', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with required prop
+     * 2. Check for input
+     * 3. Check for required attribute
+     */
     render(
       <FormInput
         id="test-input"
@@ -102,6 +135,12 @@ describe('FormInput', () => {
   });
   
   it('renders a password input when type is password', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with type="password"
+     * 2. Check for input
+     * 3. Check for password type
+     */
     render(
       <FormInput
         id="password-input"
@@ -118,6 +157,12 @@ describe('FormInput', () => {
   });
   
   it('renders an email input when type is email', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with type="email"
+     * 2. Check for input
+     * 3. Check for email type
+     */
     render(
       <FormInput
         id="email-input"
@@ -134,6 +179,13 @@ describe('FormInput', () => {
   });
   
   it('applies additional className when provided', () => {
+    /**
+     * Steps:
+     * 1. Render the FormInput component with custom className
+     * 2. Check for input
+     * 3. Check for custom className
+     * 4. Check for default classes
+     */
     render(
       <FormInput
         id="test-input"

@@ -15,6 +15,12 @@ describe('TablePagination', () => {
   });
 
   it('should display current page and total pages when showPageNumbers is false', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for current page and total pages
+     */
     render(
       <TablePagination
         currentPage={2}
@@ -28,6 +34,12 @@ describe('TablePagination', () => {
   });
 
   it('should display page number buttons when showPageNumbers is true', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for page number buttons
+     */
     render(
       <TablePagination
         currentPage={3}
@@ -46,6 +58,12 @@ describe('TablePagination', () => {
   });
 
   it('should handle limited number of page buttons with maxPageButtons', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for limited number of page buttons
+     */
     render(
       <TablePagination
         currentPage={5}
@@ -67,6 +85,12 @@ describe('TablePagination', () => {
   });
 
   it('should call handlePageChange with correct page number when previous button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for previous button
+     */
     render(
       <TablePagination
         currentPage={3}
@@ -82,6 +106,12 @@ describe('TablePagination', () => {
   });
 
   it('should call handlePageChange with correct page number when next button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for next button
+     */
     render(
       <TablePagination
         currentPage={3}
@@ -97,6 +127,12 @@ describe('TablePagination', () => {
   });
 
   it('should disable previous button on first page', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for disabled previous button
+     */
     render(
       <TablePagination
         currentPage={1}
@@ -110,6 +146,12 @@ describe('TablePagination', () => {
   });
 
   it('should disable next button on last page', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for disabled next button
+     */
     render(
       <TablePagination
         currentPage={5}
@@ -123,6 +165,12 @@ describe('TablePagination', () => {
   });
 
   it('should apply custom className if provided', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for custom className
+     */
     const customClass = 'custom-pagination';
     render(
       <TablePagination
@@ -138,6 +186,12 @@ describe('TablePagination', () => {
   });
 
   it('should handle case when totalPages is 0', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for totalPages is 0
+     */
     render(
       <TablePagination
         currentPage={1}
@@ -152,6 +206,12 @@ describe('TablePagination', () => {
   });
 
   it('should call handlePageChange when a page number button is clicked', () => {
+    /**
+     * Steps:
+     * 1. Render the TablePagination component
+     * 2. Check for initial state
+     * 3. Check for page number button
+     */
     render(
       <TablePagination
         currentPage={2}
@@ -167,3 +227,18 @@ describe('TablePagination', () => {
     expect(mockHandlePageChange).toHaveBeenCalledWith(4);
   });
 });
+
+/**
+ * | Test Number | Testing Environment | Test | Expected Result | Result |
+ * |-----------|----------------------|------|------------------|--------|
+ * | 1 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should display current page and total pages when showPageNumbers is false | + |
+ * | 2 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should display page number buttons when showPageNumbers is true | + |
+ * | 3 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should handle limited number of page buttons with maxPageButtons | + |
+ * | 4 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should call handlePageChange with correct page number when previous button is clicked | + |
+ * | 5 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should call handlePageChange with correct page number when next button is clicked | + |
+ * | 6 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should disable previous button on first page | + |
+ * | 7 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should disable next button on last page | + |
+ * | 8 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should apply custom className if provided | + |
+ * | 9 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should handle case when totalPages is 0 | + |
+ * | 10 | Web Browser | - Render the TablePagination component <br> - Check for initial state <br> - Check for correct rendering | should call handlePageChange when a page number button is clicked | + |
+ */
