@@ -1,0 +1,6 @@
+[
+  {
+    "type": "feature",
+    "description": "Add persist-credentials flag to git checkout action for push authentication"
+  }
+]

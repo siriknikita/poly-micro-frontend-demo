@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.34",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.34 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add persist-credentials flag to git checkout action for push authentication"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",
