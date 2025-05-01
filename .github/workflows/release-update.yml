@@ -127,12 +127,8 @@ jobs:
           # Set the GH_CONFIG_DIR environment variable
           export GH_CONFIG_DIR=/home/runner/gh_config
           mkdir -p "$GH_CONFIG_DIR"
-          
-          # Attempt to use the token with gh api to trigger authentication
-          echo "Attempting authentication with gh api..."
-          gh api --method GET "user" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
+          # Authenticate using GitHub token
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
 
       - name: Create Pull Request using GitHub CLI
         run: |
