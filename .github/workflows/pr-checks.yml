@@ -20,7 +20,21 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install dependencies
+      - name: Check for lock file
+        id: check-lock
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ] || [ -f yarn.lock ]; then
+            echo "has_lock=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_lock=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Install dependencies (with lock)
+        if: steps.check-lock.outputs.has_lock == 'true'
+        run: npm ci
+      
+      - name: Install dependencies (without lock)
+        if: steps.check-lock.outputs.has_lock != 'true'
         run: npm install
       
       - name: Lint check (errors only)
