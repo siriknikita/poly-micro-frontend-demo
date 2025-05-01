@@ -124,9 +124,11 @@ jobs:
 
       - name: Authenticate GitHub CLI
         run: |
-          # Ensure the config directory exists and set correct permissions
-          sudo mkdir -p /home/runner/.config/gh
-          sudo chown -R $USER:$USER /home/runner/.config
+          # Ensure the config directory exists
+          mkdir -p /home/runner/.config/gh
+          
+          # Set ownership to the runner user
+          chown -R $(whoami):$(whoami) /home/runner/.config
           
           # Authenticate using GitHub token stored in secrets
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
