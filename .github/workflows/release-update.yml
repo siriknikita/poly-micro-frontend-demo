@@ -119,8 +119,13 @@ jobs:
           # Update the release file
           node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
       
-      - name: Install GitHub CLI via Snap
-        run: sudo snap install gh
+      - name: Set up GitHub CLI
+        run: |
+          # GitHub CLI is pre-installed on GitHub-hosted runners
+          # Just make sure it's the latest version
+          gh --version
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
       
       - name: Authenticate GitHub CLI
         run: |
@@ -130,20 +135,23 @@ jobs:
           
           # Clear GH_TOKEN from environment to avoid conflict
           unset GH_TOKEN
-      
-          # Authenticate using GitHub token
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
 
       - name: Create Pull Request using GitHub CLI
         run: |
+          # Ensure GitHub CLI is authenticated
+          export GH_CONFIG_DIR=/home/runner/gh_config
+          
           gh pr create \
           --base main \
           --head "release-update-${{ github.ref_name }}" \
           --title "Feat: Update release notes for ${{ github.ref_name }}" \
           --body "This PR updates the release notes for version ${{ github.ref_name }}.\n\nAutomated PR created by GitHub Actions."
         id: create_pr
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Wait for status checks
         run: |
@@ -154,6 +162,9 @@ jobs:
             gh pr checks $PR_NUMBER && break
             sleep 30
           done
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable Pull Request Auto-Merge
         if: steps.create_pr.outputs.pull-request-operation == 'created'
@@ -170,4 +181,5 @@ jobs:
           # Approve the PR
           gh pr review "$PR_NUMBER" --approve
         env:
+          GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
