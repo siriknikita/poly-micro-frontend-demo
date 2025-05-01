@@ -139,21 +139,20 @@ jobs:
       - name: Set up GitHub CLI
         run: |
           # GitHub CLI is pre-installed on GitHub-hosted runners
-          # Just make sure it's the latest version
+          # Output the version for debugging
           gh --version
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
-      
-      - name: Authenticate GitHub CLI
-        run: |
-          # Set the GH_CONFIG_DIR environment variable
-          export GH_CONFIG_DIR=/home/runner/gh_config
+          # Make sure the directory exists
           mkdir -p "$GH_CONFIG_DIR"
           
-          # Clear GH_TOKEN from environment to avoid conflict
-          unset GH_TOKEN
+          # Authenticate GitHub CLI using environment variable
+          # This is more reliable than using echo
+          gh auth setup-git
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Note on authentication
+        run: echo "Authentication is now handled in the Set up GitHub CLI step"
 
       - name: Create Pull Request using GitHub CLI
         run: |
@@ -162,16 +161,17 @@ jobs:
           
           PR_TITLE="Feat: Update release notes for v${VERSION}"
           
-          # Create PR and capture the PR number
-          PR_URL=$(gh pr create \
+          # Create PR and capture the output
+          PR_OUTPUT=$(gh pr create \
           --base main \
           --head release-update-v${VERSION} \
           --title "$PR_TITLE" \
-          --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions." \
-          --json number,url -q '.url')
+          --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions.")
           
-          # Extract PR number from URL
-          PR_NUMBER=$(echo $PR_URL | grep -o '[0-9]*$')
+          # Extract PR number and URL from the output
+          PR_URL=$PR_OUTPUT
+          PR_NUMBER=$(echo $PR_URL | sed -E 's|.*/([0-9]+)$|\1|')
+          
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
           echo "Created PR #${PR_NUMBER}: $PR_URL"
         id: create_pr
