@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.37",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.37 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "escape character in PR event logging message"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",

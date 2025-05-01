@@ -1,0 +1,6 @@
+[
+  {
+    "type": "fix",
+    "description": "escape character in PR event logging message"
+  }
+]
