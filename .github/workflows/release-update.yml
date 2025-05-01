@@ -106,6 +106,10 @@ jobs:
       
       - name: Update release file
         run: |
+          # Ensure VERSION is set from the environment
+          # We use the VERSION that was set in the 'Extract version from tag' step
+          echo "Using VERSION=$VERSION"
+          
           # Create title based on version
           TITLE="Version $VERSION Release"
           
@@ -115,58 +119,51 @@ jobs:
           # Update the release file
           node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
       
-      - name: Commit changes to a new branch and create PR
+      - name: Install GitHub CLI
         run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          
-          # Create a new branch for the release update
-          BRANCH_NAME="release-update-v$VERSION"
-          git checkout -b $BRANCH_NAME
-          
-          # Update the release file on the new branch
-          node scripts/update-release.js --version=$VERSION --title="Version $VERSION Release" --description="This release includes new features, improvements, and bug fixes." --changes=./changes.json
-          
-          # Add the changes
-          git add releases/releases.json
-          
-          # Create commit message
-          COMMIT_MSG="Feat: Update release notes for v$VERSION"
-          
-          # Commit and push to the new branch
-          git commit -m "$COMMIT_MSG"
-          
-          # Use the GitHub token for authentication when pushing
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push -u origin $BRANCH_NAME
-          
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
       - name: Create Pull Request
         id: create_pr
         uses: peter-evans/create-pull-request@v5
-        env:
-          VERSION: ${{ env.VERSION }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Feat: Update release notes for v${{ env.VERSION }}"
+          commit-message: "Feat: Update release notes for v${{ github.ref_name }}"
           committer: GitHub Actions <actions@github.com>
           author: GitHub Actions <actions@github.com>
-          branch: "release-update-v${{ env.VERSION }}"
+          branch: "release-update-${{ github.ref_name }}"
           delete-branch: true
-          title: "Feat: Update release notes for v${{ env.VERSION }}"
+          title: "Feat: Update release notes for ${{ github.ref_name }}"
           body: |
-            This PR updates the release notes for version ${{ env.VERSION }}.
+            This PR updates the release notes for version ${{ github.ref_name }}.
             
             Automated PR created by GitHub Actions.
           base: main
+
+      - name: Wait for status checks
+        run: |
+          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
+          echo "Created PR #${PR_NUMBER}"
           
+          for i in {1..10}; do
+            gh pr checks $PR_NUMBER && break
+            sleep 30
+          done
+
       - name: Enable Pull Request Auto-Merge
         if: steps.create_pr.outputs.pull-request-operation == 'created'
         run: |
-          PR_NUMBER=$(echo '${{ steps.create_pr.outputs.pull-request-number }}')
+          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
           echo "Created PR #${PR_NUMBER}"
           
           # Wait for checks to pass before merging
-          sleep 120 # Give time for PR checks to start
+          sleep 60 # Give time for PR checks to start
           
           # Enable auto-merge for the PR
           gh pr merge --auto --merge "$PR_NUMBER"
@@ -175,4 +172,3 @@ jobs:
           gh pr review "$PR_NUMBER" --approve
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ env.VERSION }}
