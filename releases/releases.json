@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.35",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.35 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add GitHub check reporting for bot PR validation workflow"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",

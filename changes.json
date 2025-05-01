@@ -1,0 +1,6 @@
+[
+  {
+    "type": "feature",
+    "description": "Add GitHub check reporting for bot PR validation workflow"
+  }
+]
