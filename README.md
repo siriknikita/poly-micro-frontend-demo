@@ -9,6 +9,24 @@ This repository contains the frontend demo for the Poly Micro Manager project, a
 - **Monitoring**: Real-time monitoring of microservice health and performance
 - **Pipelining**: CI/CD pipeline management for microservices
 
+## Design Patterns and Architecture
+
+The project follows modern React best practices and design patterns:
+
+### 🏛️ Architecture Principles
+- **SOLID Principles**: Each component has a single responsibility, is open for extension but closed for modification
+- **Feature-Based Organization**: Code organized by feature rather than by type
+- **Custom Hooks Pattern**: Logic extracted into reusable hooks
+- **Component Composition**: Complex UIs built through component composition
+
+### 🧩 Key Patterns
+- **Custom Hooks**: For state management, side effects, and feature-specific logic
+- **Context API**: For global state management
+- **Atomic Design**: UI components organized following atomic design principles
+- **TypeScript**: Strong typing throughout the application
+
+See our [complete patterns documentation](./docs/architecture/patterns.md) for more details.
+
 ## Project Structure
 
 The application follows a modular architecture with components organized by feature and functionality:
@@ -49,6 +67,7 @@ Detailed documentation for each feature can be found in the `docs/` directory:
 - [User Guide](./docs/user-guide.md)
 - [Component Documentation](./docs/components/)
 - [Implementation Details](./docs/implementation/)
+- [Architecture Patterns](./docs/architecture/patterns.md)
 - [SonarQube Setup](./SONARQUBE.md)
 
 You can also access the documentation online using the following [link](https://siriknikita.github.io/poly-micro-frontend-demo/#/)!
@@ -60,3 +79,4 @@ You can also access the documentation online using the following [link](https://
 - Improved monitoring dashboard with better service status visualization
 - Enhanced CI/CD pipeline management with visual pipeline builder
 - Updated documentation with user guidance for new features
+- Added detailed architecture patterns documentation
