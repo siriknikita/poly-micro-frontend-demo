@@ -87,3 +87,88 @@ jobs:
               status: status,
               conclusion: conclusion,
             });
+
+  # Auto-merge PR when checks pass
+  auto-merge:
+    name: Auto-merge PR
+    needs: [validate, bot-success]
+    runs-on: ubuntu-latest
+    # Run if either the validation job succeeded or the bot auto-approval succeeded
+    if: |
+      always() && 
+      (needs.validate.result == 'success' || needs.bot-success.result == 'success')
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Auto-merge PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.BOT_PAT }}
+          script: |
+            const pullRequest = context.payload.pull_request;
+            
+            if (!pullRequest) {
+              console.log('No pull request found in context. Exiting.');
+              return;
+            }
+            
+            const prNumber = pullRequest.number;
+            
+            try {
+              // Get the latest pull request data to check status
+              const { data: pr } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+              
+              // Check if the PR is mergeable
+              if (pr.mergeable === false) {
+                console.log(`PR #${prNumber} is not mergeable. It may have conflicts.`);
+                return;
+              }
+              
+              // Get the status of required checks
+              const { data: checks } = await github.rest.checks.listForRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: pr.head.sha
+              });
+              
+              // Check if any required check failed
+              const failedChecks = checks.check_runs.filter(check => 
+                check.conclusion !== 'success' && 
+                check.conclusion !== 'skipped' &&
+                check.conclusion !== null
+              );
+              
+              if (failedChecks.length > 0) {
+                console.log(`PR #${prNumber} has failed checks: ${failedChecks.map(c => c.name).join(', ')}`);
+                return;
+              }
+              
+              console.log(`All checks passed for PR #${prNumber}, enabling auto-merge`);
+              
+              // Enable auto-merge with merge method 'squash'
+              await github.rest.pulls.updateBranch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+              
+              // Merge the PR
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                merge_method: 'squash',
+                commit_title: `${pr.title} (#${prNumber})`,
+                commit_message: pr.body || ''
+              });
+              
+              console.log(`Successfully merged PR #${prNumber}`);
+            } catch (error) {
+              console.error(`Error auto-merging PR #${prNumber}:`, error);
+              core.setFailed(`Failed to auto-merge PR: ${error.message}`);
+            }

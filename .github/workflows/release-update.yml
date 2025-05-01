@@ -205,26 +205,3 @@ jobs:
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GH_TOKEN: ${{ secrets.BOT_PAT }}
-
-      - name: Add PR Information to Summary
-        run: |
-          echo "# Release Update PR Created" >> $GITHUB_STEP_SUMMARY
-          echo "💡 **Pull Request #${PR_NUMBER}** has been created for version v${VERSION}." >> $GITHUB_STEP_SUMMARY
-          echo "\n📝 **Title:** ${PR_TITLE:-Feat: Update release notes for v${VERSION}}" >> $GITHUB_STEP_SUMMARY
-          echo "\n🔗 **Link:** ${PR_URL}" >> $GITHUB_STEP_SUMMARY
-          echo "\n## Next Steps" >> $GITHUB_STEP_SUMMARY
-          echo "1. ✅ Review the changes" >> $GITHUB_STEP_SUMMARY
-          echo "2. ✅ Approve the PR manually (GitHub Actions cannot approve its own PRs)" >> $GITHUB_STEP_SUMMARY
-          echo "3. ✅ Merge the PR once approved" >> $GITHUB_STEP_SUMMARY
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
-          GH_TOKEN: ${{ secrets.BOT_PAT }}
-
-      - name: Add PR Comment
-        continue-on-error: true
-        run: |
-          # Add a comment to the PR explaining next steps
-          gh pr comment "$PR_NUMBER" --body "## 🚀 Release Notes Update\n\nThis PR was automatically created by the GitHub Actions Bot.\n\n### Next Steps\n- ✅ Review the changes\n- ✅ Approve the PR\n- ✅ Merge the PR once approved\n\n*Note: GitHub Actions cannot approve or auto-merge its own PRs. Please review and merge manually.*"
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
-          GH_TOKEN: ${{ secrets.BOT_PAT }}
