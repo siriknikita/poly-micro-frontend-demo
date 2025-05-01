@@ -7,19 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Quick job to quickly succeed for bot PRs
   check-actor:
     name: Check PR Author
     runs-on: ubuntu-latest
     outputs:
-      is_bot: ${{ contains(fromJson('["github-actions[bot]", "dependabot[bot]", "renovate[bot]"]'), github.actor) }}
-    steps:
-      - name: Determine if PR author is a bot
-        id: bot-check
-        run: |
-          echo "PR author: ${{ github.actor }}"
-          echo "Is bot PR: ${{ contains(fromJson('["github-actions[bot]", "dependabot[bot]", "renovate[bot]"]'), github.actor) }}"
-      
+      is_bot: ${{ github.actor == 'github-actions[bot]' }} # Simplified check
+
   # Main validation job
   validate:
     name: Validate PR
@@ -29,11 +22,10 @@ jobs:
     permissions:
       statuses: write
       checks: write
-    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      
+        uses: actions/checkout@v3
+
       - name: Setup Node.js version
         uses: actions/setup-node@v1
         with:
@@ -41,15 +33,13 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-      
+
       - name: Lint check (errors only)
         run: npm run lint:errors
-        # This will fail only on errors, not warnings
-      
+
       - name: Run tests
         run: npm test -- --run
-        # This will run all tests once and exit, not in watch mode
-        
+
   # Job that always succeeds for bot PRs to satisfy required checks
   bot-success:
     name: Auto-approve Bot PR
@@ -59,7 +49,6 @@ jobs:
     permissions:
       statuses: write
       checks: write
-    
     steps:
       - name: Mark bot PR as validated
-        run: echo "Bot PR detected, skipping validation. PR from ${{ github.actor }}"
+        run: echo "Bot PR detected, marking as successful."
