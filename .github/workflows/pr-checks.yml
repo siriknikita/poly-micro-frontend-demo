@@ -2,13 +2,23 @@ name: PR Checks
 
 on:
   pull_request:
-    branches: [ main ]
-  # Allow manual triggering
-  workflow_dispatch:
+    branches:
+      - main
+    types: [opened, reopened, synchronize] # Be explicit about the events
+
+  workflow_dispatch: # Keep manual trigger for debugging
 
 jobs:
+  log-trigger:
+    name: Log Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log Pull Request Event
+        run: echo "Pull request event triggered for PR #${{ github.event.pull_request.number }} with action ${{ github.event.action }}"
+
   check-actor:
     name: Check PR Author
+    needs: log-trigger # Ensure this runs after the log
     runs-on: ubuntu-latest
     outputs:
       is_bot: ${{ steps.set.outputs.is_bot }}
