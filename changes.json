@@ -1,6 +1,6 @@
 [
   {
     "type": "feature",
-    "description": "Add error handling for PR branch updates in GitHub Actions workflow"
+    "description": "Feat: Update release notes for v1.8.1 (#35)"
   }
 ]
