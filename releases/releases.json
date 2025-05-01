@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.28",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.28 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "improvement",
+          "description": "improve PR workflow with better status checks and documentation"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",
