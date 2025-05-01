@@ -22,6 +22,7 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for commit messages
           token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
+          persist-credentials: true  # <-- This is important for git push to work
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
