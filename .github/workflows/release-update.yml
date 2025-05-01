@@ -168,9 +168,26 @@ jobs:
           --title "$PR_TITLE" \
           --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions.")
           
-          # Extract PR number and URL from the output
+          # Extract PR number from the URL
+          # gh CLI outputs something like "https://github.com/owner/repo/pull/123"
           PR_URL=$PR_OUTPUT
-          PR_NUMBER=$(echo $PR_URL | sed -E 's|.*/([0-9]+)$|\1|')
+          PR_NUMBER=$(echo $PR_URL | grep -o -E '[0-9]+$' || echo "")
+          
+          # If extraction failed, try to get it from the repo directly
+          if [ -z "$PR_NUMBER" ]; then
+            echo "Could not extract PR number from URL, fetching from open PRs..."
+            # First, try with a simpler approach that works with older gh cli versions
+            PR_LIST=$(gh pr list --head release-update-v${VERSION})
+            PR_NUMBER=$(echo "$PR_LIST" | awk '{print $1}' | head -n 1)
+            
+            # If that fails, try directly checking the GitHub API
+            if [ -z "$PR_NUMBER" ]; then
+              echo "Still no PR number. Getting from GitHub API using curl..."
+              PR_NUMBER=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?head=${GITHUB_REPOSITORY_OWNER}:release-update-v${VERSION}&state=open" \
+                | grep -o '"number":[^,]*' | head -n 1 | cut -d':' -f2)
+            fi
+          fi
           
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
           echo "Created PR #${PR_NUMBER}: $PR_URL"
