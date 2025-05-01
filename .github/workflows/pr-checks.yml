@@ -26,6 +26,9 @@ jobs:
     needs: check-actor
     runs-on: ubuntu-latest
     if: needs.check-actor.outputs.is_bot != 'true'
+    permissions:
+      statuses: write
+      checks: write
     
     steps:
       - name: Checkout code
@@ -53,6 +56,9 @@ jobs:
     needs: check-actor
     runs-on: ubuntu-latest
     if: needs.check-actor.outputs.is_bot == 'true'
+    permissions:
+      statuses: write
+      checks: write
     
     steps:
       - name: Mark bot PR as validated
