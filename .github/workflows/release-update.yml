@@ -121,29 +121,16 @@ jobs:
       
       - name: Install GitHub CLI via Snap
         run: sudo snap install gh
-
+      
       - name: Authenticate GitHub CLI
         run: |
-          # Create a dedicated config directory within the runner's home
-          mkdir -p /home/runner/gh_config
-          
           # Set the GH_CONFIG_DIR environment variable
           export GH_CONFIG_DIR=/home/runner/gh_config
+          mkdir -p "$GH_CONFIG_DIR"
           
-          # Authenticate using GitHub token stored in secrets
-          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config # Ensure it's also in the env for subsequent gh commands
-
-      - name: Install GitHub CLI via Snap
-        run: sudo snap install gh
-
-      - name: Authenticate GitHub CLI
-        run: |
-          # Create a dedicated config directory within the runner's home
-          mkdir -p /home/runner/gh_config
-          export GH_CONFIG_DIR=/home/runner/gh_config
-          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          # Attempt to use the token with gh api to trigger authentication
+          echo "Attempting authentication with gh api..."
+          gh api --method GET "user" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
 
