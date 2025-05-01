@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.25",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.25 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "fix",
+          "description": "Fix PR number extraction and auto-merge workflow in GitHub Actions"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",

@@ -1,0 +1,6 @@
+[
+  {
+    "type": "fix",
+    "description": "Fix PR number extraction and auto-merge workflow in GitHub Actions"
+  }
+]
