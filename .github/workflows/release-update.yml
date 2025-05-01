@@ -106,20 +106,79 @@ jobs:
       
       - name: Update release file
         run: |
+          # Ensure VERSION is set from the environment
+          # We use the VERSION that was set in the 'Extract version from tag' step
           echo "Using VERSION=$VERSION"
+          
+          # Create title based on version
           TITLE="Version $VERSION Release"
+          
+          # Create description
           DESCRIPTION="This release includes new features, improvements, and bug fixes."
+          
+          # Update the release file
           node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
-  
-      - name: Configure Git for Direct Push
+      
+      - name: Install GitHub CLI via Snap
+        run: sudo snap install gh
+
+      - name: Authenticate GitHub CLI
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-  
-      - name: Commit and Push to Main
+          # Create a dedicated config directory within the runner's home
+          mkdir -p /home/runner/gh_config
+          
+          # Set the GH_CONFIG_DIR environment variable
+          export GH_CONFIG_DIR=/home/runner/gh_config
+          
+          # Authenticate using GitHub token stored in secrets
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config # Ensure it's also in the env for subsequent gh commands
+
+      - name: Install GitHub CLI via Snap
+        run: sudo snap install gh
+
+      - name: Authenticate GitHub CLI
         run: |
-          git checkout main
-          git add releases/releases.json changes.json # Adjust paths if needed
-          git commit -m "Feat: Update release notes for v${{ github.ref_name }}"
-          git push origin main
-  
+          # Create a dedicated config directory within the runner's home
+          mkdir -p /home/runner/gh_config
+          export GH_CONFIG_DIR=/home/runner/gh_config
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
+
+      - name: Create Pull Request using GitHub CLI
+        run: |
+          gh pr create \
+          --base main \
+          --head "release-update-${{ github.ref_name }}" \
+          --title "Feat: Update release notes for ${{ github.ref_name }}" \
+          --body "This PR updates the release notes for version ${{ github.ref_name }}.\n\nAutomated PR created by GitHub Actions."
+        id: create_pr
+
+      - name: Wait for status checks
+        run: |
+          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
+          echo "Created PR #${PR_NUMBER}"
+          
+          for i in {1..10}; do
+            gh pr checks $PR_NUMBER && break
+            sleep 30
+          done
+
+      - name: Enable Pull Request Auto-Merge
+        if: steps.create_pr.outputs.pull-request-operation == 'created'
+        run: |
+          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
+          echo "Created PR #${PR_NUMBER}"
+          
+          # Wait for checks to pass before merging
+          sleep 60 # Give time for PR checks to start
+          
+          # Enable auto-merge for the PR
+          gh pr merge --auto --merge "$PR_NUMBER"
+          
+          # Approve the PR
+          gh pr review "$PR_NUMBER" --approve
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
