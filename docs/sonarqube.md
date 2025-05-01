@@ -190,6 +190,18 @@ The Quality Gate is a set of conditions that determines whether your code meets 
    - Verify the path to coverage report is correct
    - Ensure tests are generating coverage reports properly
 
+## SonarQube Analysis Results
+
+This section showcases the results of our SonarQube code quality analysis, highlighting the project's adherence to best practices and code quality standards.
+
+### Overview Dashboard
+
+![SonarQube Dashboard Overview](./assets/sonarqube/dashboard-overview.jpg)
+
+### Overall Code Quality
+
+![Overall Code Quality](./assets/sonarqube/overall-code-quality.jpg)
+
 ## References
 
 - [SonarQube Documentation](https://docs.sonarqube.org/latest/)
