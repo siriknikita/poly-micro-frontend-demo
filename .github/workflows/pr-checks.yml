@@ -59,4 +59,21 @@ jobs:
       checks: write
     steps:
       - name: Mark bot PR as validated
-        run: echo "Bot PR detected, marking as successful."
+        run: |
+          echo "Bot PR detected, reporting success for Validate PR."
+          echo "::set-output name=check_name::Validate PR"
+          echo "::set-output name=status::success"
+          echo "::set-output name=conclusion::success"
+      - name: Report status
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { check_name, status, conclusion } = core.outputs;
+            await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head_sha: context.payload.pull_request.head.sha,
+              name: check_name,
+              status: status,
+              conclusion: conclusion,
+            });
