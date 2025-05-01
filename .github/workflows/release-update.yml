@@ -3,7 +3,7 @@ name: Update Release Notes
 on:
   push:
     tags:
-      - 'v*'  # Run workflow when a tag starting with 'v' is pushed (e.g., v1.3.0)
+      - 'v*' # Run workflow when a tag starting with 'v' is pushed (e.g., v1.3.0)
 
 jobs:
   update-release:
@@ -20,24 +20,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for commit messages
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token for authentication
-          persist-credentials: true  # <-- This is important for git push to work
+          fetch-depth: 0 # Fetch all history for commit messages
+          token: ${{ secrets.GITHUB_TOKEN }} # Use the GitHub token for initial checkout
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Extract version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-      
+
       - name: Generate changes from commit messages
         run: |
           # Get all commits since the last tag
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-          
+
           if [ -z "$PREVIOUS_TAG" ]; then
             # If no previous tag, get all commits
             COMMITS=$(git log --pretty=format:"%s" | grep -v "Merge")
@@ -45,10 +44,10 @@ jobs:
             # Get commits between the previous tag and the current tag
             COMMITS=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"%s" | grep -v "Merge")
           fi
-          
+
           # Extract changes based on commit types
           echo "[" > changes.json
-          
+
           # Process feature commits
           FEATURES=$(echo "$COMMITS" | grep -i "^feat" || echo "")
           if [ ! -z "$FEATURES" ]; then
@@ -60,7 +59,7 @@ jobs:
               echo "  }," >> changes.json
             done <<< "$FEATURES"
           fi
-          
+
           # Process improvement commits
           IMPROVEMENTS=$(echo "$COMMITS" | grep -i "^improve\|^refactor\|^perf" || echo "")
           if [ ! -z "$IMPROVEMENTS" ]; then
@@ -72,7 +71,7 @@ jobs:
               echo "  }," >> changes.json
             done <<< "$IMPROVEMENTS"
           fi
-          
+
           # Process fix commits
           FIXES=$(echo "$COMMITS" | grep -i "^fix" || echo "")
           if [ ! -z "$FIXES" ]; then
@@ -84,7 +83,7 @@ jobs:
               echo "  }," >> changes.json
             done <<< "$FIXES"
           fi
-          
+
           # Process breaking change commits
           BREAKING=$(echo "$COMMITS" | grep -i "BREAKING CHANGE" || echo "")
           if [ ! -z "$BREAKING" ]; then
@@ -96,15 +95,15 @@ jobs:
               echo "  }," >> changes.json
             done <<< "$BREAKING"
           fi
-          
+
           # Remove trailing comma if exists
           sed -i '$ s/,$//' changes.json
-          
+
           echo "]" >> changes.json
-          
+
           # Show generated changes
           cat changes.json
-      
+
       - name: Update release file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -112,118 +111,101 @@ jobs:
           # Ensure VERSION is set from the environment
           # We use the VERSION that was set in the 'Extract version from tag' step
           echo "Using VERSION=$VERSION"
-          
+
           # Create title based on version
           TITLE="Version $VERSION Release"
-          
+
           # Create description
           DESCRIPTION="This release includes new features, improvements, and bug fixes."
-          
+
           # Update the release file
           node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
-          
-          # Create a new branch
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git checkout -b release-update-v${VERSION}
 
+      - name: Configure Git with PAT
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin "https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}.git"
+
+      - name: Create Branch and Commit
+        run: |
+          BRANCH_NAME="release-update-v${VERSION}"
+          git checkout -b "$BRANCH_NAME"
           git add .
           git commit -m "Feat: Update release notes for v${VERSION}"
-          
-          # Set remote URL with token for authentication
-          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git remote set-url origin "$REPO_URL"
-          
-          # Push the branch to remote
-          git push --set-upstream origin release-update-v${VERSION}
-      
-      - name: Set up GitHub CLI
-        run: |
-          # GitHub CLI is pre-installed on GitHub-hosted runners
-          # Output the version for debugging
-          gh --version
-          # Make sure the directory exists
-          mkdir -p "$GH_CONFIG_DIR"
-          
-          # Authenticate GitHub CLI using environment variable
-          # This is more reliable than using echo
-          gh auth setup-git
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Note on authentication
-        run: echo "Authentication is now handled in the Set up GitHub CLI step"
+          git push origin "$BRANCH_NAME"
 
       - name: Create Pull Request using GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
           # Ensure GitHub CLI is authenticated
           export GH_CONFIG_DIR=/home/runner/gh_config
-          
+
           PR_TITLE="Feat: Update release notes for v${VERSION}"
-          
+
           # Create PR and capture the output
           PR_OUTPUT=$(gh pr create \
-          --base main \
-          --head release-update-v${VERSION} \
-          --title "$PR_TITLE" \
-          --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions.")
-          
+            --base main \
+            --head "release-update-v${VERSION}" \
+            --title "$PR_TITLE" \
+            --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions Bot.")
+
           # Extract PR number from the URL
           # gh CLI outputs something like "https://github.com/owner/repo/pull/123"
           PR_URL=$PR_OUTPUT
           PR_NUMBER=$(echo $PR_URL | grep -o -E '[0-9]+$' || echo "")
-          
+
           # If extraction failed, try to get it from the repo directly
           if [ -z "$PR_NUMBER" ]; then
             echo "Could not extract PR number from URL, fetching from open PRs..."
             # First, try with a simpler approach that works with older gh cli versions
-            PR_LIST=$(gh pr list --head release-update-v${VERSION})
+            PR_LIST=$(gh pr list --head "release-update-v${VERSION}")
             PR_NUMBER=$(echo "$PR_LIST" | awk '{print $1}' | head -n 1)
-            
+
             # If that fails, try directly checking the GitHub API
             if [ -z "$PR_NUMBER" ]; then
               echo "Still no PR number. Getting from GitHub API using curl..."
-              PR_NUMBER=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?head=${GITHUB_REPOSITORY_OWNER}:release-update-v${VERSION}&state=open" \
+              PR_NUMBER=$(curl -s -H "Authorization: token ${{ secrets.BOT_PAT }}" \
+                "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:release-update-v${VERSION}&state=open" \
                 | grep -o '"number":[^,]*' | head -n 1 | cut -d':' -f2)
             fi
           fi
-          
+
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
           echo "Created PR #${PR_NUMBER}: $PR_URL"
         id: create_pr
-        env:
-          GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GH_CONFIG_DIR: /home/runner/gh_config
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Keep this for API calls if needed
 
       - name: Wait for status checks
         run: |
           echo "Checking status of PR #${PR_NUMBER}"
-          
+
           for i in {1..10}; do
-            gh pr checks $PR_NUMBER && break
+            gh pr checks "$PR_NUMBER" && break
             sleep 30
           done
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
 
       - name: Wait for Checks
         run: |
           echo "Waiting for checks on PR #${PR_NUMBER}"
-          
+
           # Wait for checks to pass
           sleep 60 # Give time for PR checks to start
-          
+
           # Check PR status
           gh pr checks "$PR_NUMBER" || echo "Some checks may still be running"
-          
+
           echo "::notice ::PR #${PR_NUMBER} is ready for review. Note: GitHub Actions cannot approve its own PR."
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+
       - name: Add PR Information to Summary
         run: |
           echo "# Release Update PR Created" >> $GITHUB_STEP_SUMMARY
@@ -236,13 +218,13 @@ jobs:
           echo "3. ✅ Merge the PR once approved" >> $GITHUB_STEP_SUMMARY
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
+
       - name: Add PR Comment
         continue-on-error: true
         run: |
           # Add a comment to the PR explaining next steps
-          gh pr comment "$PR_NUMBER" --body "## 🚀 Release Notes Update\n\nThis PR was automatically created by the GitHub Actions workflow.\n\n### Next Steps\n- ✅ Review the changes\n- ✅ Approve the PR\n- ✅ Merge the PR once approved\n\n*Note: GitHub Actions cannot approve or auto-merge its own PRs. Please review and merge manually.*"
+          gh pr comment "$PR_NUMBER" --body "## 🚀 Release Notes Update\n\nThis PR was automatically created by the GitHub Actions Bot.\n\n### Next Steps\n- ✅ Review the changes\n- ✅ Approve the PR\n- ✅ Merge the PR once approved\n\n*Note: GitHub Actions cannot approve or auto-merge its own PRs. Please review and merge manually.*"
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
