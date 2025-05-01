@@ -208,18 +208,32 @@ jobs:
           GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable Pull Request Auto-Merge
+      - name: Approve Pull Request
         run: |
-          echo "Enabling auto-merge for PR #${PR_NUMBER}"
+          echo "Approving PR #${PR_NUMBER}"
           
-          # Wait for checks to pass before merging
+          # Wait for checks to pass before attempting merge
           sleep 60 # Give time for PR checks to start
           
-          # Enable auto-merge for the PR
-          gh pr merge --auto --merge "$PR_NUMBER"
-          
-          # Approve the PR
+          # Approve the PR first
           gh pr review "$PR_NUMBER" --approve
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Try Pull Request Auto-Merge
+        continue-on-error: true
+        run: |
+          echo "Attempting to enable auto-merge for PR #${PR_NUMBER} (will continue if this fails)"
+          
+          # First check if auto-merge is available for this repository
+          if gh repo view "${GITHUB_REPOSITORY}" --json mergeCommitAllowed | grep -q 'true'; then
+            echo "Repository allows merge commits, attempting auto-merge"
+            gh pr merge --auto --merge "$PR_NUMBER" || echo "Auto-merge failed but continuing workflow"
+          else
+            echo "Repository does not have auto-merge enabled. Pull request will need to be merged manually."
+            echo "::warning ::Auto-merge is not enabled for this repository. Please merge PR #${PR_NUMBER} manually."
+          fi
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
