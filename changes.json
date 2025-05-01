@@ -1,0 +1,6 @@
+[
+  {
+    "type": "feature",
+    "description": "Switch from GITHUB_TOKEN to BOT_PAT for Git operations and PR creation"
+  }
+]

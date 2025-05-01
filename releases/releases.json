@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.7.38",
+      "releaseDate": "2025-05-01",
+      "title": "Version 1.7.38 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Switch from GITHUB_TOKEN to BOT_PAT for Git operations and PR creation"
+        }
+      ]
+    },
+    {
       "version": "1.7.0",
       "releaseDate": "2025-05-01",
       "title": "Version 1.7.0 Release",
