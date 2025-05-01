@@ -127,9 +127,9 @@ jobs:
           # Ensure the config directory exists and set correct permissions
           sudo mkdir -p /home/runner/.config/gh
           sudo chown -R $USER:$USER /home/runner/.config
-
-          # Authenticate using GitHub token
-          echo "***" | gh auth login --with-token
+          
+          # Authenticate using GitHub token stored in secrets
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
 
       - name: Create Pull Request
         id: create_pr
