@@ -208,32 +208,40 @@ jobs:
           GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Approve Pull Request
+      - name: Wait for Checks
         run: |
-          echo "Approving PR #${PR_NUMBER}"
+          echo "Waiting for checks on PR #${PR_NUMBER}"
           
-          # Wait for checks to pass before attempting merge
+          # Wait for checks to pass
           sleep 60 # Give time for PR checks to start
           
-          # Approve the PR first
-          gh pr review "$PR_NUMBER" --approve
+          # Check PR status
+          gh pr checks "$PR_NUMBER" || echo "Some checks may still be running"
+          
+          echo "::notice ::PR #${PR_NUMBER} is ready for review. Note: GitHub Actions cannot approve its own PR."
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Try Pull Request Auto-Merge
+      - name: Add PR Information to Summary
+        run: |
+          echo "# Release Update PR Created" >> $GITHUB_STEP_SUMMARY
+          echo "💡 **Pull Request #${PR_NUMBER}** has been created for version v${VERSION}." >> $GITHUB_STEP_SUMMARY
+          echo "\n📝 **Title:** ${PR_TITLE:-Feat: Update release notes for v${VERSION}}" >> $GITHUB_STEP_SUMMARY
+          echo "\n🔗 **Link:** ${PR_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "\n## Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. ✅ Review the changes" >> $GITHUB_STEP_SUMMARY
+          echo "2. ✅ Approve the PR manually (GitHub Actions cannot approve its own PRs)" >> $GITHUB_STEP_SUMMARY
+          echo "3. ✅ Merge the PR once approved" >> $GITHUB_STEP_SUMMARY
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Add PR Comment
         continue-on-error: true
         run: |
-          echo "Attempting to enable auto-merge for PR #${PR_NUMBER} (will continue if this fails)"
-          
-          # First check if auto-merge is available for this repository
-          if gh repo view "${GITHUB_REPOSITORY}" --json mergeCommitAllowed | grep -q 'true'; then
-            echo "Repository allows merge commits, attempting auto-merge"
-            gh pr merge --auto --merge "$PR_NUMBER" || echo "Auto-merge failed but continuing workflow"
-          else
-            echo "Repository does not have auto-merge enabled. Pull request will need to be merged manually."
-            echo "::warning ::Auto-merge is not enabled for this repository. Please merge PR #${PR_NUMBER} manually."
-          fi
+          # Add a comment to the PR explaining next steps
+          gh pr comment "$PR_NUMBER" --body "## 🚀 Release Notes Update\n\nThis PR was automatically created by the GitHub Actions workflow.\n\n### Next Steps\n- ✅ Review the changes\n- ✅ Approve the PR\n- ✅ Merge the PR once approved\n\n*Note: GitHub Actions cannot approve or auto-merge its own PRs. Please review and merge manually.*"
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
