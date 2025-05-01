@@ -74,6 +74,7 @@ A comprehensive user guide is available to help you understand and use the appli
 For developers, we provide detailed implementation documentation:
 
 - [Service Filters Implementation](./implementation/service-filters-implementation.md) - Technical details of the service filtering system
+- [Architecture Patterns](./architecture/patterns.md) - Detailed documentation of design patterns and architectural approaches used in the project
 
 ## Getting Started
 
