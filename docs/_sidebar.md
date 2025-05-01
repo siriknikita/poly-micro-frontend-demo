@@ -7,3 +7,4 @@
 * [Core Components](/components/core.md)
 * [Import Guide](/components/import-guide.md)
 * [GitHub Pages Documentation](/github-pages.md)
+* [SonarQube & SonarScanner](/sonarqube.md)
