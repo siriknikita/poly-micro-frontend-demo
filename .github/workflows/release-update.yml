@@ -124,14 +124,16 @@ jobs:
 
       - name: Authenticate GitHub CLI
         run: |
-          # Ensure the config directory for gh exists
-          mkdir -p /home/runner/.config/gh
+          # Create a dedicated config directory within the runner's home
+          mkdir -p /home/runner/gh_config
           
-          # Grant write permissions to the runner user for the gh config directory
-          chmod -R u+w /home/runner/.config/gh
+          # Set the GH_CONFIG_DIR environment variable
+          export GH_CONFIG_DIR=/home/runner/gh_config
           
           # Authenticate using GitHub token stored in secrets
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+        env:
+          GH_CONFIG_DIR: /home/runner/gh_config # Ensure it's also in the env for subsequent gh commands
 
       - name: Create Pull Request
         id: create_pr
