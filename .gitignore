@@ -137,3 +137,6 @@ playwright-report
 
 # Windsurf rules
 .windsurfrules
+
+# SonarQube
+.scannerwork

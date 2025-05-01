@@ -49,6 +49,7 @@ Detailed documentation for each feature can be found in the `docs/` directory:
 - [User Guide](./docs/user-guide.md)
 - [Component Documentation](./docs/components/)
 - [Implementation Details](./docs/implementation/)
+- [SonarQube Setup](./SONARQUBE.md)
 
 You can also access the documentation online using the following [link](https://siriknikita.github.io/poly-micro-frontend-demo/#/)!
 
