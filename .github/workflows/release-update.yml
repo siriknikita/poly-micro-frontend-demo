@@ -12,6 +12,10 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
+      statuses: write
+      checks: write
+      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -161,8 +165,14 @@ jobs:
           PR_NUMBER=$(echo '${{ steps.create_pr.outputs.pull-request-number }}')
           echo "Created PR #${PR_NUMBER}"
           
+          # Wait for checks to pass before merging
+          sleep 120 # Give time for PR checks to start
+          
           # Enable auto-merge for the PR
           gh pr merge --auto --merge "$PR_NUMBER"
+          
+          # Approve the PR
+          gh pr review "$PR_NUMBER" --approve
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ env.VERSION }}
