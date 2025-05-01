@@ -2,7 +2,6 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useAuth } from '@/components/auth/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { User } from '@/db/db';
 import { db } from '@/db/db';
 
 // Mock the react-router-dom useNavigate hook
@@ -111,7 +110,7 @@ describe('useAuth', () => {
     };
     
     // Mock db.users.where().equals().first() to return our test user
-    vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce(testUser as User);
+    vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce(testUser);
 
     const { result } = renderHook(() => useAuth());
 
@@ -147,7 +146,7 @@ describe('useAuth', () => {
       password: 'correctpassword', // Different from what we'll try to login with
       email: 'test@example.com',
       businessName: 'Test Business'
-    } as User);
+    });
 
     const { result } = renderHook(() => useAuth());
 
@@ -187,7 +186,7 @@ describe('useAuth', () => {
       password: 'password123',
       email: 'test@example.com',
       businessName: 'Test Business'
-    } as User);
+    });
 
     const { result } = renderHook(() => useAuth());
 
