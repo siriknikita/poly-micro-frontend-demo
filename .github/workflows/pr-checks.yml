@@ -150,12 +150,24 @@ jobs:
               
               console.log(`All checks passed for PR #${prNumber}, enabling auto-merge`);
               
-              // Enable auto-merge with merge method 'squash'
-              await github.rest.pulls.updateBranch({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber
-              });
+              // Try to update branch only if needed (will safely skip if not applicable)
+              try {
+                console.log(`Attempting to update branch for PR #${prNumber}...`);
+                await github.rest.pulls.updateBranch({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber
+                });
+                console.log(`Successfully updated branch for PR #${prNumber}`);
+              } catch (updateError) {
+                // If update fails because there are no new commits, that's fine - continue with merge
+                if (updateError.status === 422) {
+                  console.log(`No new commits to update for PR #${prNumber}, continuing with merge`);
+                } else {
+                  // For other errors, we should still log but continue with the merge attempt
+                  console.log(`Warning: Could not update branch for PR #${prNumber}: ${updateError.message}`);
+                }
+              }
               
               // Merge the PR
               await github.rest.pulls.merge({
