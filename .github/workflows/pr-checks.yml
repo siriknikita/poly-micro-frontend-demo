@@ -13,29 +13,12 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js version
+        uses: actions/setup-node@v1
         with:
-          node-version: '20'
-      
-      - name: Check for lock file
-        id: check-lock
-        run: |
-          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ] || [ -f yarn.lock ]; then
-            echo "has_lock=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_lock=false" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Install dependencies (with lock)
-        if: steps.check-lock.outputs.has_lock == 'true'
-        run: npm ci
-      
-      - name: Install dependencies (without lock)
-        if: steps.check-lock.outputs.has_lock != 'true'
-        run: npm install
+          node-version: '18.x'
       
       - name: Lint check (errors only)
         run: npm run lint:errors
