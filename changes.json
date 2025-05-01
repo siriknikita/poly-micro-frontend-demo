@@ -1,0 +1,6 @@
+[
+  {
+    "type": "feature",
+    "description": "Add error handling for PR branch updates in GitHub Actions workflow"
+  }
+]
