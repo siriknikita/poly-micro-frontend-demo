@@ -1,0 +1,6 @@
+[
+  {
+    "type": "fix",
+    "description": "bot check logic in PR workflow with explicit shell script comparison"
+  }
+]
