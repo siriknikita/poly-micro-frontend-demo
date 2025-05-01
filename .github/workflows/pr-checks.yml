@@ -10,6 +10,9 @@ jobs:
   validate:
     name: Validate PR
     runs-on: ubuntu-latest
+    # Skip validation if the PR is from any of the common automation bots
+    if: |
+      !contains(fromJSON('["github-actions[bot]", "dependabot[bot]", "renovate[bot]"]'), github.actor)
     
     steps:
       - name: Checkout code
