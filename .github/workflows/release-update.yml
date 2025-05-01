@@ -121,7 +121,10 @@ jobs:
       
       - name: Install GitHub CLI
         run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          # Download and add the GPG key
+          curl -fsSL https://cli.github.com/packages/githubcli-archive.key | sudo tee /etc/apt/trusted.gpg.d/githubcli.asc > /dev/null
+          
+          # Add the GitHub CLI repository
           sudo apt-add-repository https://cli.github.com/packages
           sudo apt update
           sudo apt install gh -y
