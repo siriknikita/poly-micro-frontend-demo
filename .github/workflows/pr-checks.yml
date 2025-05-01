@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Log Pull Request Event
-        run: echo "Pull request event triggered for PR #${{ github.event.pull_request.number }} with action ${{ github.event.action }}"
+        run: echo "Pull request event triggered for PR \#${{ github.event.pull_request.number }} with action ${{ github.event.action }}"
 
   check-actor:
     name: Check PR Author
