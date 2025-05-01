@@ -162,11 +162,18 @@ jobs:
           
           PR_TITLE="Feat: Update release notes for v${VERSION}"
           
-          gh pr create \
+          # Create PR and capture the PR number
+          PR_URL=$(gh pr create \
           --base main \
           --head release-update-v${VERSION} \
           --title "$PR_TITLE" \
-          --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions."
+          --body "This PR updates the release notes for version v${VERSION}.\n\nAutomated PR created by GitHub Actions." \
+          --json number,url -q '.url')
+          
+          # Extract PR number from URL
+          PR_NUMBER=$(echo $PR_URL | grep -o '[0-9]*$')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          echo "Created PR #${PR_NUMBER}: $PR_URL"
         id: create_pr
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
@@ -174,8 +181,7 @@ jobs:
 
       - name: Wait for status checks
         run: |
-          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
-          echo "Created PR #${PR_NUMBER}"
+          echo "Checking status of PR #${PR_NUMBER}"
           
           for i in {1..10}; do
             gh pr checks $PR_NUMBER && break
@@ -186,10 +192,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable Pull Request Auto-Merge
-        if: steps.create_pr.outputs.pull-request-operation == 'created'
         run: |
-          PR_NUMBER=${{ steps.create_pr.outputs.pull-request-number }}
-          echo "Created PR #${PR_NUMBER}"
+          echo "Enabling auto-merge for PR #${PR_NUMBER}"
           
           # Wait for checks to pass before merging
           sleep 60 # Give time for PR checks to start
