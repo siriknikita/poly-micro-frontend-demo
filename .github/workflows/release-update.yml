@@ -127,8 +127,8 @@ jobs:
           # Ensure the config directory for gh exists
           mkdir -p /home/runner/.config/gh
           
-          # Set ownership of the gh config directory to the runner user
-          chown -R $(whoami):$(whoami) /home/runner/.config/gh
+          # Grant write permissions to the runner user for the gh config directory
+          chmod -R u+w /home/runner/.config/gh
           
           # Authenticate using GitHub token stored in secrets
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
