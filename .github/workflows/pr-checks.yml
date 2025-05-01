@@ -11,7 +11,15 @@ jobs:
     name: Check PR Author
     runs-on: ubuntu-latest
     outputs:
-      is_bot: ${{ github.actor == 'github-actions[bot]' }} # Simplified check
+      is_bot: ${{ steps.set.outputs.is_bot }}
+    steps:
+      - id: set
+        run: |
+          if [ "${{ github.actor }}" = "github-actions[bot]" ]; then
+            echo "is_bot=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_bot=false" >> "$GITHUB_OUTPUT"
+          fi
 
   # Main validation job
   validate:
