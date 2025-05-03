@@ -71,20 +71,26 @@ jobs:
                 markdown: {
                   renderer: {
                     code(code, lang) {
-                      if (lang === "mermaid") {
+                      if (lang === "mermaid" && window.mermaid) {
                         const svgName = `mermaid-svg-${svgCounter++}`;
                         const MERMAID_CONTAINER_ID = `${svgName}-container`;
                         // Asynchronously render Mermaid diagram
-                        mermaid.render(svgName, code).then(({ svg }) => {
+                        window.mermaid.render(svgName, code).then(({ svg }) => {
                           const containerElement = document.querySelector(`#${MERMAID_CONTAINER_ID}`);
                           if (containerElement) {
                             containerElement.innerHTML = svg;
                           } else {
                             console.error(`Error: #${MERMAID_CONTAINER_ID} not found`);
                           }
+                        }).catch(err => {
+                          console.error("Mermaid rendering error:", err);
+                          return `<pre>Error rendering Mermaid diagram: ${err.message}</pre>`;
                         });
                         // Return a placeholder div for the diagram
                         return `<div class="mermaid" id="${MERMAID_CONTAINER_ID}"></div>`;
+                      } else if (lang === "mermaid") {
+                        // Mermaid not loaded yet, display raw code
+                        return `<pre>Mermaid library not loaded. Please refresh the page.</pre>`;
                       }
                       return this.origin.code.apply(this, arguments);
                     },
@@ -94,10 +100,11 @@ jobs:
             </script>
             <!-- Docsify core script -->
             <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-            <!-- Mermaid library -->
-            <script type="module">
-              import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-              mermaid.initialize({
+            <!-- Mermaid library (UMD version) -->
+            <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+            <script>
+              // Initialize Mermaid after the library is loaded
+              window.mermaid.initialize({
                 startOnLoad: false, // We control rendering manually
                 theme: "default",
                 securityLevel: "loose", // Allows HTML labels and interactivity
