@@ -6,5 +6,8 @@
 * [Shared Components](/components/shared.md)
 * [Core Components](/components/core.md)
 * [Import Guide](/components/import-guide.md)
+* Architecture
+  * [Design Patterns](/architecture/patterns.md)
+  * [User Behavior Diagrams](/architecture/user-behavior-diagrams.md)
 * [GitHub Pages Documentation](/github-pages.md)
 * [SonarQube & SonarScanner](/sonarqube.md)
