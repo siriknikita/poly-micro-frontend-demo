@@ -140,3 +140,6 @@ playwright-report
 
 # SonarQube
 .scannerwork
+
+# Build
+build
