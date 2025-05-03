@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "version": "1.8.4",
+      "releaseDate": "2025-05-03",
+      "title": "Version 1.8.4 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add Mermaid.js support for diagram rendering in documentation"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.8.3 (#37)"
+        }
+      ]
+    },
+    {
       "version": "1.8.3",
       "releaseDate": "2025-05-03",
       "title": "Version 1.8.3 Release",

@@ -1,6 +1,10 @@
 [
   {
     "type": "feature",
-    "description": "Feat: Update release notes for v1.8.2 (#36)"
+    "description": "Add Mermaid.js support for diagram rendering in documentation"
+  },
+  {
+    "type": "feature",
+    "description": "Feat: Update release notes for v1.8.3 (#37)"
   }
 ]
