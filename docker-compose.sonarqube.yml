@@ -29,7 +29,6 @@ services:
       - sonarqube
     volumes:
       - .:/usr/src
-      - ./coverage:/usr/src/coverage
     networks:
       - sonarqube-network
     environment:

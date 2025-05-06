@@ -38,6 +38,10 @@ fi
 
 # Run SonarScanner
 echo "Running SonarScanner analysis..."
+# Note: Tests with coverage should be run outside the container
+# The coverage directory is mounted as a volume, which causes conflicts
+echo "Looking for coverage reports..."
+
 sonar-scanner \
   -Dsonar.projectKey=poly-micro-frontend \
   -Dsonar.projectName="Poly Micro Frontend" \
@@ -48,6 +52,7 @@ sonar-scanner \
   -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \
   -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
   -Dsonar.exclusions=**/node_modules/**,**/*.test.tsx,**/*.test.ts,**/e2e/**,**/coverage/**,**/dist/** \
+  -Dsonar.typescript.tsconfigPath=tsconfig.sonar.json \
   -Dsonar.host.url="${SONAR_HOST_URL}" \
   -Dsonar.login="${SONAR_LOGIN}" \
   -Dsonar.password="${SONAR_PASSWORD}"
