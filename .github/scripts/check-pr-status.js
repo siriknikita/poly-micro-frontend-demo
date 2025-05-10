@@ -14,7 +14,7 @@
  *   --wait-seconds  Optional. Seconds to wait between attempts (default: 30)
  */
 
-import { execSync } from 'child_process';
+const { execSync } = require('child_process');
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {

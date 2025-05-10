@@ -15,8 +15,7 @@
  *   --base        Optional. The base branch to create PR against (default: main)
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
+const { execSync } = require('child_process');
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {

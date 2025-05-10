@@ -15,8 +15,8 @@
  *   --output        Optional. The output file path (default: changes.json)
  */
 
-import { execSync } from 'child_process';
-import fs from 'fs';
+const { execSync } = require('child_process');
+const fs = require('fs');
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {

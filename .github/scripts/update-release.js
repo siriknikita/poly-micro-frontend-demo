@@ -17,9 +17,9 @@
  *   --file         Path to the releases.json file (default: ../releases/releases.json)
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
+const { fileURLToPath } = require('url');
 
 // Parse command line arguments
 const args = process.argv.slice(2).reduce((acc, arg) => {
