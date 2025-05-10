@@ -1,10 +1,10 @@
 [
   {
     "type": "feature",
-    "description": "Add Mermaid.js support for diagram rendering in documentation"
+    "description": "Feat: Project structure cleanup (#44)"
   },
   {
     "type": "feature",
-    "description": "Feat: Update release notes for v1.8.3 (#37)"
+    "description": "Feat: Update release notes for v1.8.9 (#43)"
   }
 ]
