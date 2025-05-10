@@ -1,10 +1,10 @@
 import React from 'react';
-import { LogOut, Boxes } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { ProjectSelector } from '../shared/selectors/ProjectSelector';
 import { ThemeToggle } from './ThemeToggle';
+import { Logo } from '../shared/Logo';
 import { Project } from '@/types';
 import { mockProjects } from '@/data/mockData';
-import { LANDING_PAGE_URL } from '@/config';
 
 interface TopBarProps {
   darkMode: boolean;
@@ -26,15 +26,7 @@ export const TopBar: React.FC<TopBarProps> = ({
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
-            <a 
-              href={LANDING_PAGE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative group"
-            >
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-0 group-hover:opacity-75 transition duration-500"></div>
-              <Boxes className="relative w-12 h-12 text-blue-400 transform group-hover:scale-110 transition duration-500" />
-            </a>
+            <Logo />
             <div className="w-64">
               <ProjectSelector
                 projects={mockProjects}
