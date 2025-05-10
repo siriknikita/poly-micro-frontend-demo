@@ -82,7 +82,7 @@ async function run() {
       owner,
       repo,
       pull_number: prNumber,
-      merge_method: 'squash',
+      merge_method: 'merge',
       commit_title: `${pr.title} (#${prNumber})`,
       commit_message: pr.body || ''
     });
