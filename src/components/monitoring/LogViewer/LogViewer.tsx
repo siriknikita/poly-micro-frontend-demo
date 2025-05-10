@@ -1,5 +1,4 @@
 import React, { memo, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { usePagination } from '@hooks/index';
@@ -8,6 +7,7 @@ import {
   DEFAULT_ITEMS_PER_PAGE,
   LOGS_TABLE_HEADERS,
 } from '@constants';
+import { getStatusVariant } from '../shared/statusUtils';
 import { TablePagination } from './TablePagination';
 import { ServiceSelector, SeveritySelector, RowsPerPageSelector } from '../shared';
 import StatusBadge from '../shared/StatusBadge';
@@ -31,7 +31,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
   onSeverityChange,
   services,
 }) => {
-  const navigate = useNavigate();
   
   // Filter logs based on selected service and severity
   const filteredLogs = useMemo(() => {
@@ -42,16 +41,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
     });
   }, [logs, selectedService, selectedSeverity]);
   
-  // Handle navigation to testing section
-  const handleContinueToTesting = () => {
-    // Store the next step in sessionStorage
-    sessionStorage.setItem('forceTestingTab', 'true');
-    sessionStorage.setItem('pendingGuidanceStep', '6'); // OnboardingStep.AUTOMATED_TESTING = 6
-    
-    // Navigate to testing section
-    navigate('/testing');
-  };
-
   const {
     currentPage,
     totalPages,
@@ -82,13 +71,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           <div className="text-sm text-gray-500 dark:text-gray-400">
             {filteredLogs.length} {filteredLogs.length === 1 ? 'entry' : 'entries'}
           </div>
-          <button
-            onClick={handleContinueToTesting}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-            aria-label="Continue to Testing"
-          >
-            Continue to Testing →
-          </button>
         </div>
       </div>
 
@@ -136,9 +118,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <StatusBadge 
                     status={log.severity} 
-                    variant={log.severity.toLowerCase().includes('error') ? 'error' : 
-                            log.severity.toLowerCase().includes('warn') ? 'warning' : 
-                            log.severity.toLowerCase().includes('info') ? 'info' : 'success'} 
+                    variant={getStatusVariant(log.severity)}
                   />
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">

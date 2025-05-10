@@ -25,11 +25,12 @@ export const CLASSES_BY_SEVERITY = {
   INFO: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
 }
 
+// Text-only color classes for severity levels - used in dropdown
 export const TEXT_COLORS_BY_SEVERITY = {
-  ERROR: 'text-red-600 dark:text-red-400',
-  WARN: 'text-yellow-600 dark:text-yellow-400',
-  DEBUG: 'text-gray-600 dark:text-gray-400',
-  INFO: 'text-green-600 dark:text-green-400',
+  ERROR: 'text-red-800 dark:text-red-300',
+  WARN: 'text-yellow-800 dark:text-yellow-300',
+  DEBUG: 'text-gray-800 dark:text-gray-300',
+  INFO: 'text-green-800 dark:text-green-300',
   All: 'text-gray-700 dark:text-gray-200'
 }
 
