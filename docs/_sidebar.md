@@ -10,4 +10,7 @@
   * [Design Patterns](/architecture/patterns.md)
   * [User Behavior Diagrams](/architecture/user-behavior-diagrams.md)
 * [GitHub Pages Documentation](/github-pages.md)
-* [SonarQube & SonarScanner](/sonarqube.md)
+* [For Developers](/for-developers/README.md)
+  * [Release Management](/for-developers/README-RELEASE-MANAGEMENT.md)
+  * [SonarQube Setup](/for-developers/SONARQUBE.md)
+  * [Testing Strategy](/for-developers/TESTING.md)
