@@ -38,7 +38,7 @@ if (!args.version || !args.title) {
 
 // Set default values
 const description = args.description || `Release ${args.version}`;
-const changesFile = args.changes || 'changes.json';
+const changesFile = args.changes || path.join(__dirname, '../../releases/changes.json');
 // Get the directory name in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

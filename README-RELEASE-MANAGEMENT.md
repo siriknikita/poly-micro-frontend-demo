@@ -102,8 +102,8 @@ chmod +x .github/scripts/update-release.js
 You can also specify a JSON file containing the changes:
 
 ```bash
-# Create a changes.json file with your release changes
-./.github/scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --changes=./changes.json
+# Create a changes.json file in the releases directory with your release changes
+./.github/scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --changes=./releases/changes.json
 ```
 
 ### Option 3: GitHub Repository Integration
