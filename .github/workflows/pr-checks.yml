@@ -9,34 +9,9 @@ on:
   workflow_dispatch: # Keep manual trigger for debugging
 
 jobs:
-  log-trigger:
-    name: Log Trigger
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log Pull Request Event
-        run: echo "Pull request event triggered for PR \#${{ github.event.pull_request.number }} with action ${{ github.event.action }}"
-
-  check-actor:
-    name: Check PR Author
-    needs: log-trigger # Ensure this runs after the log
-    runs-on: ubuntu-latest
-    outputs:
-      is_bot: ${{ steps.set.outputs.is_bot }}
-    steps:
-      - id: set
-        run: |
-          if [ "${{ github.actor }}" = "github-actions[bot]" ]; then
-            echo "is_bot=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "is_bot=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  # Main validation job
   validate:
     name: Validate PR
-    needs: check-actor
     runs-on: ubuntu-latest
-    if: needs.check-actor.outputs.is_bot != 'true'
     permissions:
       statuses: write
       checks: write
@@ -61,7 +36,7 @@ jobs:
   # Auto-merge PR when checks pass
   auto-merge:
     name: Auto-merge PR
-    needs: [validate]
+    needs: validate
     runs-on: ubuntu-latest
     # Run if the validation job succeeded
     if: |
