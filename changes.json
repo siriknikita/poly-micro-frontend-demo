@@ -1,6 +1,10 @@
 [
   {
     "type": "feature",
-    "description": "Feat: Update release notes for v1.8.7 (#41)"
+    "description": "Add PR status check with fallback for missing PR number"
+  },
+  {
+    "type": "feature",
+    "description": "Feat: Update release notes for v1.8.8 (#42)"
   }
 ]
