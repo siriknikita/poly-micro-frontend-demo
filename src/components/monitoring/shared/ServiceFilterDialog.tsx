@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { Service } from '@/types';
 import { FilterCondition, FilterGroup, FilterOperator, FilterField } from '../hooks/useServiceFilters';
+import { Dropdown } from '@/components/shared/Dropdown';
 
 interface ServiceFilterDialogProps {
   isOpen: boolean;
@@ -10,6 +11,42 @@ interface ServiceFilterDialogProps {
   services: Service[];
   initialFilterGroup?: FilterGroup;
 }
+
+// Helper functions for color classes based on status and health values
+const getStatusColorClass = (status: string): string => {
+  switch (status.toLowerCase()) {
+    case 'online':
+    case 'active':
+    case 'running':
+      return 'text-green-600 dark:text-green-400';
+    case 'offline':
+    case 'inactive':
+    case 'stopped':
+      return 'text-red-600 dark:text-red-400';
+    case 'warning':
+    case 'degraded':
+      return 'text-yellow-600 dark:text-yellow-400';
+    default:
+      return 'text-gray-600 dark:text-gray-400';
+  }
+};
+
+const getHealthColorClass = (health: string): string => {
+  switch (health.toLowerCase()) {
+    case 'healthy':
+    case 'good':
+      return 'text-green-600 dark:text-green-400';
+    case 'unhealthy':
+    case 'bad':
+    case 'critical':
+      return 'text-red-600 dark:text-red-400';
+    case 'warning':
+    case 'degraded':
+      return 'text-yellow-600 dark:text-yellow-400';
+    default:
+      return 'text-gray-600 dark:text-gray-400';
+  }
+};
 
 export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   isOpen,
@@ -112,50 +149,97 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Filter Operator
           </label>
-          <select
-            value={operator}
-            onChange={(e) => setOperator(e.target.value as FilterOperator)}
-            className="w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          >
-            <option value="AND">AND (All conditions must match)</option>
-            <option value="OR">OR (Any condition can match)</option>
-            <option value="NOT">NOT (None of the conditions should match)</option>
-          </select>
+          <Dropdown
+            buttonLabel="Select Operator"
+            selectedOption={operator}
+            className="w-full"
+            buttonClassName="w-full justify-between"
+            testId="filter-operator-dropdown"
+            sections={[
+              {
+                options: [
+                  {
+                    id: 'AND',
+                    label: 'AND (All conditions must match)',
+                    colorClass: 'text-indigo-600 dark:text-indigo-400'
+                  },
+                  {
+                    id: 'OR',
+                    label: 'OR (Any condition can match)',
+                    colorClass: 'text-green-600 dark:text-green-400'
+                  },
+                  {
+                    id: 'NOT',
+                    label: 'NOT (None of the conditions should match)',
+                    colorClass: 'text-red-600 dark:text-red-400'
+                  }
+                ],
+                onSelect: (id) => setOperator(id as FilterOperator)
+              }
+            ]}
+          />
         </div>
 
         <div className="space-y-3 mb-4">
           {conditions.map((condition, index) => (
             <div key={index} className="flex items-center space-x-2">
-              <select
-                value={condition.field}
-                onChange={(e) => updateCondition(index, 'field', e.target.value as FilterField)}
-                className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-              >
-                <option value="status">Status</option>
-                <option value="health">Health</option>
-              </select>
+              <Dropdown
+                buttonLabel="Field"
+                selectedOption={condition.field}
+                className="w-40"
+                buttonClassName="w-full justify-between"
+                testId={`field-dropdown-${index}`}
+                sections={[
+                  {
+                    options: [
+                      {
+                        id: 'status',
+                        label: 'Status',
+                        colorClass: 'text-blue-600 dark:text-blue-400'
+                      },
+                      {
+                        id: 'health',
+                        label: 'Health',
+                        colorClass: 'text-purple-600 dark:text-purple-400'
+                      }
+                    ],
+                    onSelect: (id) => updateCondition(index, 'field', id as FilterField)
+                  }
+                ]}
+              />
               
-              <select
-                value={condition.value}
-                onChange={(e) => updateCondition(index, 'value', e.target.value)}
-                className="flex-1 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-              >
-                <option value="">Select a value</option>
-                {condition.field === 'status' ? (
-                  statusOptions.map(status => (
-                    <option key={status} value={status}>{status}</option>
-                  ))
-                ) : (
-                  healthOptions.map(health => (
-                    <option key={health} value={health}>{health}</option>
-                  ))
-                )}
-              </select>
+              <Dropdown
+                buttonLabel="Select a value"
+                selectedOption={condition.value}
+                className="flex-1"
+                buttonClassName="w-full justify-between"
+                testId={`value-dropdown-${index}`}
+                sections={[
+                  {
+                    options: [
+                      { id: '', label: 'Select a value', disabled: true },
+                      ...(condition.field === 'status' 
+                        ? statusOptions.map(status => ({
+                            id: status,
+                            label: status,
+                            colorClass: getStatusColorClass(status)
+                          }))
+                        : healthOptions.map(health => ({
+                            id: health,
+                            label: health,
+                            colorClass: getHealthColorClass(health)
+                          }))
+                      )
+                    ],
+                    onSelect: (id) => updateCondition(index, 'value', id)
+                  }
+                ]}
+              />
               
               <button
                 onClick={() => removeCondition(index)}
                 disabled={conditions.length <= 1}
-                className={`p-1 rounded-md ${
+                className={`p-2 rounded-md ${
                   conditions.length <= 1
                     ? 'text-gray-400 cursor-not-allowed'
                     : 'text-red-500 hover:bg-red-100 dark:hover:bg-red-900'
