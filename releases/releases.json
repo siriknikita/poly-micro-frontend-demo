@@ -1,6 +1,30 @@
 {
   "releases": [
     {
+      "version": "1.9.1",
+      "releaseDate": "2025-05-10",
+      "title": "Version 1.9.1 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Change PR merge method from squash to merge"
+        },
+        {
+          "type": "feature",
+          "description": "Refactor UI components to use new Dropdown component for selectors and pagination"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.9.0 (#45)"
+        },
+        {
+          "type": "fix",
+          "description": "Refactor status handling and remove testing navigation in monitoring components"
+        }
+      ]
+    },
+    {
       "version": "1.9.0",
       "releaseDate": "2025-05-10",
       "title": "Version 1.9.0 Release",
