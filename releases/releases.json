@@ -1,6 +1,18 @@
 {
   "releases": [
     {
+      "version": "1.9.2",
+      "releaseDate": "2025-05-10",
+      "title": "Version 1.9.2 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "improvement",
+          "description": "improve type safety in LogViewer and add block scope to statusUtils"
+        }
+      ]
+    },
+    {
       "version": "1.9.0",
       "releaseDate": "2025-05-10",
       "title": "Version 1.9.0 Release",
