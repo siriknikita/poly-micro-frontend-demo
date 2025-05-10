@@ -124,8 +124,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
                       : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   } ${
                     option.id === selectedOption
-                      ? 'bg-indigo-50 dark:bg-indigo-900/20 font-medium'
-                      : ''
+                      ? 'bg-indigo-50 dark:bg-indigo-900/20 font-medium text-gray-800 dark:text-gray-100'
+                      : 'text-gray-700 dark:text-gray-200'
                   } flex justify-between w-full px-4 py-2 text-sm leading-5 text-left`}
                   role="menuitem"
                   tabIndex={option.disabled ? -1 : 0}
