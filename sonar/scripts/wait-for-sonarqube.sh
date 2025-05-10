@@ -36,20 +36,22 @@ else
   echo "Project already exists in SonarQube."
 fi
 
-# Run SonarScanner
+# Prepare TypeScript configuration for SonarQube scan
+echo "Preparing TypeScript configuration for SonarQube scan..."
+/usr/src/sonar/scripts/prepare-tsconfig-for-sonar.sh
+
+# Run SonarScanner using our custom properties file
 echo "Running SonarScanner analysis..."
+
+# Run sonar-scanner with the custom properties file
 sonar-scanner \
-  -Dsonar.projectKey=poly-micro-frontend \
-  -Dsonar.projectName="Poly Micro Frontend" \
-  -Dsonar.projectVersion=1.0 \
-  -Dsonar.sources=src \
-  -Dsonar.tests=src/__tests__ \
-  -Dsonar.test.inclusions=**/*.test.tsx,**/*.test.ts \
-  -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info \
-  -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-  -Dsonar.exclusions=**/node_modules/**,**/*.test.tsx,**/*.test.ts,**/e2e/**,**/coverage/**,**/dist/** \
+  -Dproject.settings=/usr/src/sonar/config/sonar-scanner.properties \
   -Dsonar.host.url="${SONAR_HOST_URL}" \
   -Dsonar.login="${SONAR_LOGIN}" \
   -Dsonar.password="${SONAR_PASSWORD}"
+
+# Restore original TypeScript configuration
+echo "Restoring original TypeScript configuration..."
+/usr/src/sonar/scripts/restore-tsconfig-after-sonar.sh
 
 echo "SonarQube analysis completed!"

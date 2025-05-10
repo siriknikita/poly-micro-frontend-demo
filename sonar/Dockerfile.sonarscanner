@@ -22,8 +22,11 @@ RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-s
 ENV PATH="${SONAR_SCANNER_HOME}/bin:${PATH}"
 
 # Create a wait script directly in the image
-COPY scripts/sonar/wait-for-sonarqube.sh /wait-for-sonarqube.sh
+COPY sonar/scripts/wait-for-sonarqube.sh /wait-for-sonarqube.sh
 RUN chmod +x /wait-for-sonarqube.sh
+
+# Install sonarqube-scanner npm package
+RUN npm install -g sonarqube-scanner@3.0.0
 
 # Set working directory to the mounted volume
 WORKDIR /usr/src
