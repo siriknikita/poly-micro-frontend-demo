@@ -32,29 +32,101 @@ jest.mock('../../../../../../../src/components/monitoring/LogViewer/TablePaginat
   )
 }));
 
-jest.mock('../../../../../../../src/components/monitoring/shared/ServiceSelector', () => ({
-  ServiceSelector: ({ selectedService, services, onServiceSelect }: { selectedService: string; services: Service[]; onServiceSelect: (service: string) => void }) => (
-    <select 
-      data-testid="service-selector"
-      value={selectedService}
-      onChange={(e) => onServiceSelect(e.target.value)}
-    >
-      <option value="All">All Services</option>
-      {services.map((service: Service) => (
-        <option key={service.id} value={service.name}>{service.name}</option>
-      ))}
-    </select>
-  )
-}));
+// Mock the shared components
+jest.mock('@/components/monitoring/shared', () => {
+  // Create simple mock components that directly call the handlers
+  const ServiceSelector = ({ selectedService, onServiceSelect }: { selectedService: string; services?: Service[]; onServiceSelect: (service: string) => void }) => (
+    <div data-testid="service-selector">
+      <div data-testid="service-display">{selectedService || 'All Services'}</div>
+      <div className="dropdown-menu">
+        <button 
+          data-testid="dropdown-option-service1" 
+          onClick={() => onServiceSelect('service1')}
+        >
+          Service 1
+        </button>
+        <button 
+          data-testid="dropdown-option-All" 
+          onClick={() => onServiceSelect('All')}
+        >
+          All Services
+        </button>
+      </div>
+    </div>
+  );
 
-jest.mock('../../../../../../../src/components/monitoring/shared/StatusBadge', () => ({
-  __esModule: true,
-  default: ({ status, variant }: { status: string; variant: string }) => (
-    <span data-testid={`status-badge-${status}`} className={variant}>
-      {status}
-    </span>
-  )
-}));
+  const SeveritySelector = ({ selectedSeverity, onSeverityChange }: { selectedSeverity: string; onSeverityChange: (severity: string) => void }) => (
+    <div data-testid="severity-selector">
+      <div data-testid="severity-display">{selectedSeverity || 'All Severities'}</div>
+      <div className="dropdown-menu">
+        <button 
+          data-testid="dropdown-option-ERROR" 
+          onClick={() => onSeverityChange('ERROR')}
+        >
+          ERROR
+        </button>
+        <button 
+          data-testid="dropdown-option-INFO" 
+          onClick={() => onSeverityChange('INFO')}
+        >
+          INFO
+        </button>
+        <button 
+          data-testid="dropdown-option-WARN" 
+          onClick={() => onSeverityChange('WARN')}
+        >
+          WARN
+        </button>
+        <button 
+          data-testid="dropdown-option-All" 
+          onClick={() => onSeverityChange('All')}
+        >
+          All Severities
+        </button>
+      </div>
+    </div>
+  );
+
+  const RowsPerPageSelector = ({ itemsPerPage, onItemsPerPageChange }: { itemsPerPage: number; onItemsPerPageChange: any }) => {
+    // Create a function that directly calls the handler with the right value
+    const handleChange = (value: number) => {
+      onItemsPerPageChange({ target: { value } });
+    };
+    
+    return (
+      <div data-testid="rows-per-page-selector">
+        <div data-testid="rows-per-page-selector-display">{itemsPerPage} per page</div>
+        <div className="dropdown-menu">
+          <button 
+            data-testid="dropdown-option-10" 
+            onClick={() => handleChange(10)}
+          >
+            10 per page
+          </button>
+          <button 
+            data-testid="dropdown-option-25" 
+            onClick={() => handleChange(25)}
+          >
+            25 per page
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return {
+    ServiceSelector,
+    SeveritySelector,
+    RowsPerPageSelector,
+    StatusBadge: ({ status, variant }: { status: string; variant: string }) => (
+      <span data-testid={`status-badge-${status}`} className={variant}>
+        {status}
+      </span>
+    )
+  };
+});
+
+// StatusBadge is now mocked in the shared components mock above
 
 // Define mock pagination return value outside the describe block
 const mockPaginationReturn = {
@@ -137,8 +209,9 @@ describe('LogViewer', () => {
       />
     );
     
-    const serviceSelector = screen.getByTestId('service-selector');
-    fireEvent.change(serviceSelector, { target: { value: 'service1' } });
+    // Click the button that selects Service 1
+    const serviceButton = screen.getByTestId('dropdown-option-service1');
+    fireEvent.click(serviceButton);
     
     expect(mockOnServiceChange).toHaveBeenCalledWith('service1');
   });
@@ -157,8 +230,9 @@ describe('LogViewer', () => {
       />
     );
     
-    const severitySelector = screen.getByLabelText('Select severity level');
-    fireEvent.change(severitySelector, { target: { value: 'ERROR' } });
+    // Click the button that selects ERROR severity
+    const severityButton = screen.getByTestId('dropdown-option-ERROR');
+    fireEvent.click(severityButton);
     
     expect(mockOnSeverityChange).toHaveBeenCalledWith('ERROR');
   });
@@ -176,11 +250,12 @@ describe('LogViewer', () => {
     );
     
     // Verify that the items per page selector is rendered
-    const itemsPerPageSelector = screen.getByLabelText('Select items per page');
-    expect(itemsPerPageSelector).toBeInTheDocument();
+    const rowsPerPageSelector = screen.getByTestId('rows-per-page-selector');
+    expect(rowsPerPageSelector).toBeInTheDocument();
     
-    // Verify that the selector has options
-    expect(screen.getByText('10 per page')).toBeInTheDocument();
+    // Instead of checking for the display element, let's check if the dropdown options are available
+    const rowsOption = screen.getByTestId('dropdown-option-10');
+    expect(rowsOption).toHaveTextContent('10 per page');
   });
 
   it('should display table headers', () => {

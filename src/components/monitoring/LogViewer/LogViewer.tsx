@@ -1,5 +1,4 @@
 import React, { memo, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { usePagination } from '@hooks/index';
@@ -7,11 +6,10 @@ import { Log, Service } from '@/types';
 import {
   DEFAULT_ITEMS_PER_PAGE,
   LOGS_TABLE_HEADERS,
-  ROWS_PER_PAGE_OPTIONS,
-  SEVERITY_LEVELS,
 } from '@constants';
+import { getStatusVariant } from '../shared/statusUtils';
 import { TablePagination } from './TablePagination';
-import { ServiceSelector } from '../shared';
+import { ServiceSelector, SeveritySelector, RowsPerPageSelector } from '../shared';
 import StatusBadge from '../shared/StatusBadge';
 import { GuidanceTooltip } from '@/components/guidance';
 import { OnboardingStep } from '@/context/GuidanceContext';
@@ -33,7 +31,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
   onSeverityChange,
   services,
 }) => {
-  const navigate = useNavigate();
   
   // Filter logs based on selected service and severity
   const filteredLogs = useMemo(() => {
@@ -44,16 +41,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
     });
   }, [logs, selectedService, selectedSeverity]);
   
-  // Handle navigation to testing section
-  const handleContinueToTesting = () => {
-    // Store the next step in sessionStorage
-    sessionStorage.setItem('forceTestingTab', 'true');
-    sessionStorage.setItem('pendingGuidanceStep', '6'); // OnboardingStep.AUTOMATED_TESTING = 6
-    
-    // Navigate to testing section
-    navigate('/testing');
-  };
-
   const {
     currentPage,
     totalPages,
@@ -84,13 +71,6 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           <div className="text-sm text-gray-500 dark:text-gray-400">
             {filteredLogs.length} {filteredLogs.length === 1 ? 'entry' : 'entries'}
           </div>
-          <button
-            onClick={handleContinueToTesting}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-            aria-label="Continue to Testing"
-          >
-            Continue to Testing →
-          </button>
         </div>
       </div>
 
@@ -103,29 +83,15 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           showAllOption={true}
         />
         
-        <select
-          value={selectedSeverity}
-          onChange={(e) => onSeverityChange(e.target.value)}
-          className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          aria-label="Select severity level"
-        >
-          <option value="All">All Severities</option>
-          {SEVERITY_LEVELS.map((severity, index) => (
-            <option key={index} value={severity} data-testid={`severity-option-${severity}`}>{severity}</option>
-          ))}
-        </select>
+        <SeveritySelector
+          selectedSeverity={selectedSeverity}
+          onSeverityChange={onSeverityChange}
+        />
         
-        <select
-          value={itemsPerPage}
-          onChange={handleItemsPerPageChange}
-          className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          aria-label="Select items per page"
-          data-testid="items-per-page-select"
-        >
-          {ROWS_PER_PAGE_OPTIONS.map((option, index) => (
-            <option key={index} value={option} data-testid={`rows-per-page-option-${option}`}>{option} per page</option>
-          ))}
-        </select>
+        <RowsPerPageSelector
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
 
       {/* Logs Table */}
@@ -152,9 +118,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <StatusBadge 
                     status={log.severity} 
-                    variant={log.severity.toLowerCase().includes('error') ? 'error' : 
-                            log.severity.toLowerCase().includes('warn') ? 'warning' : 
-                            log.severity.toLowerCase().includes('info') ? 'info' : 'success'} 
+                    variant={getStatusVariant(log.severity)}
                   />
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">

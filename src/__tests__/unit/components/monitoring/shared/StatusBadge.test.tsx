@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import StatusBadge from '@/components/monitoring/shared/StatusBadge';
-import { variantClasses } from '@/components/monitoring/shared/statusUtils';
+import { CLASSES_BY_SEVERITY } from '@/helpers/constants';
 
 describe('StatusBadge', () => {
   it('should render the status text', () => {
@@ -8,23 +8,23 @@ describe('StatusBadge', () => {
     expect(screen.getByText('Online')).toBeInTheDocument();
   });
 
-  it('should use info variant by default', () => {
-    render(<StatusBadge status="Unknown" />);
-    const badge = screen.getByText('Unknown');
+  it('should use correct styling for known severity levels', () => {
+    render(<StatusBadge status="INFO" />);
+    const badge = screen.getByText('INFO');
     
-    // Check that the info variant classes are applied
-    const infoClasses = variantClasses.info.split(' ');
+    // Check that the INFO severity classes are applied
+    const infoClasses = CLASSES_BY_SEVERITY.INFO.split(' ');
     infoClasses.forEach(className => {
       expect(badge).toHaveClass(className);
     });
   });
 
-  it('should apply the specified variant classes', () => {
-    render(<StatusBadge status="Critical" variant="error" />);
-    const badge = screen.getByText('Critical');
+  it('should apply the correct severity classes', () => {
+    render(<StatusBadge status="ERROR" />);
+    const badge = screen.getByText('ERROR');
     
-    // Check that the error variant classes are applied
-    const errorClasses = variantClasses.error.split(' ');
+    // Check that the ERROR severity classes are applied
+    const errorClasses = CLASSES_BY_SEVERITY.ERROR.split(' ');
     errorClasses.forEach(className => {
       expect(badge).toHaveClass(className);
     });
@@ -39,7 +39,7 @@ describe('StatusBadge', () => {
   });
 
   it('should apply base classes to all badges', () => {
-    render(<StatusBadge status="Success" variant="success" />);
+    render(<StatusBadge status="Success" />);
     const badge = screen.getByText('Success');
     
     const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
@@ -50,21 +50,21 @@ describe('StatusBadge', () => {
     });
   });
 
-  it('should apply all variant types correctly', () => {
-    const { rerender } = render(<StatusBadge status="Success" variant="success" />);
-    let badge = screen.getByText('Success');
-    expect(badge).toHaveClass(...variantClasses.success.split(' '));
+  it('should apply all severity types correctly', () => {
+    const { rerender } = render(<StatusBadge status="DEBUG" />);
+    let badge = screen.getByText('DEBUG');
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.DEBUG.split(' '));
     
-    rerender(<StatusBadge status="Warning" variant="warning" />);
-    badge = screen.getByText('Warning');
-    expect(badge).toHaveClass(...variantClasses.warning.split(' '));
+    rerender(<StatusBadge status="WARN" />);
+    badge = screen.getByText('WARN');
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.WARN.split(' '));
     
-    rerender(<StatusBadge status="Error" variant="error" />);
-    badge = screen.getByText('Error');
-    expect(badge).toHaveClass(...variantClasses.error.split(' '));
+    rerender(<StatusBadge status="ERROR" />);
+    badge = screen.getByText('ERROR');
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.ERROR.split(' '));
     
-    rerender(<StatusBadge status="Info" variant="info" />);
-    badge = screen.getByText('Info');
-    expect(badge).toHaveClass(...variantClasses.info.split(' '));
+    rerender(<StatusBadge status="INFO" />);
+    badge = screen.getByText('INFO');
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.INFO.split(' '));
   });
 });

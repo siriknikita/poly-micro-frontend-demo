@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ServiceSelector } from '@/components/monitoring/shared/ServiceSelector';
 import { Service } from '@/types';
 
@@ -24,7 +25,10 @@ describe('ServiceSelector', () => {
       />
     );
     
-    expect(screen.getByText('Select a service')).toBeInTheDocument();
+    // Get the button that shows the dropdown label
+    const dropdownButton = screen.getByRole('button', { name: /select a service/i });
+    expect(dropdownButton).toBeInTheDocument();
+    expect(within(dropdownButton).getByText('Select a service')).toBeInTheDocument();
   });
 
   it('should render with custom label', () => {
@@ -38,10 +42,13 @@ describe('ServiceSelector', () => {
       />
     );
     
-    expect(screen.getByText(customLabel)).toBeInTheDocument();
+    // Get the button that shows the dropdown label
+    const dropdownButton = screen.getByRole('button', { name: new RegExp(customLabel, 'i') });
+    expect(dropdownButton).toBeInTheDocument();
+    expect(within(dropdownButton).getByText(customLabel)).toBeInTheDocument();
   });
 
-  it('should render all provided services as options', () => {
+  it('should render all provided services as options', async () => {
     render(
       <ServiceSelector
         selectedService={null}
@@ -50,12 +57,17 @@ describe('ServiceSelector', () => {
       />
     );
     
+    // Open the dropdown
+    const dropdownButton = screen.getByRole('button');
+    await userEvent.click(dropdownButton);
+    
+    // Check if all services are in the dropdown
     mockServices.forEach(service => {
       expect(screen.getByText(service.name)).toBeInTheDocument();
     });
   });
 
-  it('should show "All Services" option when showAllOption is true', () => {
+  it('should show "All Services" option when showAllOption is true', async () => {
     render(
       <ServiceSelector
         selectedService={null}
@@ -65,10 +77,14 @@ describe('ServiceSelector', () => {
       />
     );
     
+    // Open the dropdown
+    const dropdownButton = screen.getByRole('button');
+    await userEvent.click(dropdownButton);
+    
     expect(screen.getByText('All Services')).toBeInTheDocument();
   });
 
-  it('should not show "All Services" option when showAllOption is false', () => {
+  it('should not show "All Services" option when showAllOption is false', async () => {
     render(
       <ServiceSelector
         selectedService={null}
@@ -77,6 +93,10 @@ describe('ServiceSelector', () => {
         showAllOption={false}
       />
     );
+    
+    // Open the dropdown
+    const dropdownButton = screen.getByRole('button');
+    await userEvent.click(dropdownButton);
     
     expect(screen.queryByText('All Services')).not.toBeInTheDocument();
   });
@@ -90,11 +110,12 @@ describe('ServiceSelector', () => {
       />
     );
     
-    const selectElement = screen.getByRole('combobox');
-    expect(selectElement).toHaveValue('Service 2');
+    // The dropdown button should show the selected service
+    const dropdownButton = screen.getByRole('button');
+    expect(within(dropdownButton).getByText('Service 2')).toBeInTheDocument();
   });
 
-  it('should call onServiceSelect with the selected service name', () => {
+  it('should call onServiceSelect with the selected service name', async () => {
     render(
       <ServiceSelector
         selectedService={null}
@@ -103,8 +124,13 @@ describe('ServiceSelector', () => {
       />
     );
     
-    const selectElement = screen.getByRole('combobox');
-    fireEvent.change(selectElement, { target: { value: 'Service 3' } });
+    // Open the dropdown
+    const dropdownButton = screen.getByRole('button');
+    await userEvent.click(dropdownButton);
+    
+    // Click on a service option
+    const serviceOption = screen.getByText('Service 3');
+    await userEvent.click(serviceOption);
     
     expect(mockOnServiceSelect).toHaveBeenCalledWith('Service 3');
   });
@@ -120,11 +146,12 @@ describe('ServiceSelector', () => {
       />
     );
     
-    const selectElement = screen.getByRole('combobox');
-    expect(selectElement).toHaveClass(customClass);
+    // The dropdown container should have the custom class
+    const dropdownContainer = screen.getByTestId('service-selector');
+    expect(dropdownContainer).toHaveClass(customClass);
   });
 
-  it('should handle empty services array', () => {
+  it('should handle empty services array', async () => {
     render(
       <ServiceSelector
         selectedService={null}
@@ -133,8 +160,16 @@ describe('ServiceSelector', () => {
       />
     );
     
-    // Should just render the default option
-    expect(screen.getByText('Select a service')).toBeInTheDocument();
-    expect(screen.getAllByRole('option').length).toBe(1);
+    // Should just render the default option in the button
+    const dropdownButton = screen.getByRole('button');
+    expect(within(dropdownButton).getByText('Select a service')).toBeInTheDocument();
+    
+    // Open the dropdown
+    await userEvent.click(dropdownButton);
+    
+    // Should only have the placeholder option
+    const menuItems = screen.getAllByRole('menuitem');
+    expect(menuItems.length).toBe(1);
+    expect(within(menuItems[0]).getByText('Select a service')).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
-import React, { memo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { memo, useMemo } from 'react';
+import { Dropdown, DropdownSectionProps } from '@/components/shared/Dropdown';
 
 interface TablePaginationProps {
   className?: string;
@@ -41,6 +41,26 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
   
   const pageNumbers = getPageNumbers();
   const buttonClasses = "flex items-center justify-center px-3 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded disabled:opacity-50 hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors";
+
+  // Create page options for dropdown
+  const pageOptions = useMemo(() => {
+    const options = [];
+    for (let i = 1; i <= totalPages; i++) {
+      options.push({
+        id: i.toString(),
+        label: `Page ${i}`
+      });
+    }
+    return options;
+  }, [totalPages]);
+
+  // Create dropdown sections
+  const dropdownSections: DropdownSectionProps[] = useMemo(() => [
+    {
+      options: pageOptions,
+      onSelect: (id) => handlePageChange(parseInt(id))
+    }
+  ], [pageOptions, handlePageChange]);
   
   return (
     <div className={`flex items-center space-x-2 ${className}`} data-testid="table-pagination">
@@ -49,9 +69,20 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
         disabled={currentPage === 1}
         className={buttonClasses}
         aria-label="Previous page"
-        data-testId="previous-page"
+        data-testid="previous-page"
       >
-        <ChevronLeft className="h-5 w-5" data-testId="chevron-left" />
+        <svg 
+          className="h-5 w-5" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          data-testid="chevron-left"
+        >
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
       </button>
       
       {showPageNumbers && pageNumbers.map(number => (
@@ -64,10 +95,14 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
         </button>
       ))}
       
-      {!showPageNumbers && (
-        <span className="text-gray-900 dark:text-gray-100 px-2">
-          Page {currentPage} of {totalPages}
-        </span>
+      {!showPageNumbers && totalPages > 0 && (
+        <Dropdown
+          buttonLabel={`Page ${currentPage} of ${totalPages}`}
+          selectedOption={currentPage.toString()}
+          sections={dropdownSections}
+          className="mx-2"
+          testId="page-selector"
+        />
       )}
       
       <button
@@ -75,9 +110,20 @@ export const TablePagination: React.FC<TablePaginationProps> = memo(({
         disabled={currentPage === totalPages || totalPages === 0}
         className={buttonClasses}
         aria-label="Next page"
-        data-testId="next-page"
+        data-testid="next-page"
       >
-        <ChevronRight className="h-5 w-5" data-testId="chevron-right" />
+        <svg 
+          className="h-5 w-5" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+          data-testid="chevron-right"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
       </button>
     </div>
   );

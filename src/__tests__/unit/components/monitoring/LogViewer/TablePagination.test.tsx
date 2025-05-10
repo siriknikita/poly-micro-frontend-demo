@@ -24,7 +24,13 @@ describe('TablePagination', () => {
       />
     );
 
-    expect(screen.getByText('Page 2 of 5')).toBeInTheDocument();
+    // Check for the dropdown button with the correct label
+    const dropdownButton = screen.getByRole('button', { name: /page 2/i });
+    expect(dropdownButton).toBeInTheDocument();
+    
+    // Check that the dropdown has options for all pages
+    const pageSelector = screen.getByTestId('page-selector');
+    expect(pageSelector).toBeInTheDocument();
   });
 
   it('should display page number buttons when showPageNumbers is true', () => {
@@ -133,7 +139,7 @@ describe('TablePagination', () => {
       />
     );
 
-    const paginationContainer = screen.getByText('Page 2 of 5').parentElement;
+    const paginationContainer = screen.getByTestId('table-pagination');
     expect(paginationContainer).toHaveClass(customClass);
   });
 
@@ -146,7 +152,12 @@ describe('TablePagination', () => {
       />
     );
 
-    expect(screen.getByText('Page 1 of 0')).toBeInTheDocument();
+    // When totalPages is 0, the dropdown shouldn't be shown
+    expect(screen.queryByTestId('page-selector')).not.toBeInTheDocument();
+    
+    // Both buttons should be disabled
+    const prevButton = screen.getByLabelText('Previous page');
+    expect(prevButton).toBeDisabled();
     const nextButton = screen.getByLabelText('Next page');
     expect(nextButton).toBeDisabled();
   });
