@@ -2,6 +2,10 @@
 
 This documentation provides detailed information about the SonarQube and SonarScanner integration in the Poly Micro Manager frontend application.
 
+## Recent Update
+
+Unfortunately, the SonarQube and SonarScanner integration has been removed from the project. This was done because currently it does not support TypeScript v5 integration (since year 2023). No further updates will be made to this documentation.
+
 ## Overview
 
 [SonarQube](https://www.sonarqube.org/) is an open-source platform for continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities. Our setup runs SonarQube and SonarScanner in Docker containers, making it easy to analyze code quality without installing additional software on your local machine.

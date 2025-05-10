@@ -138,8 +138,8 @@ playwright-report
 # Windsurf rules
 .windsurfrules
 
-# SonarQube
-.scannerwork
-
 # Build
 build
+
+# Todo
+Todo.md

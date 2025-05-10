@@ -28,7 +28,7 @@ const args = process.argv.slice(2).reduce((acc, arg) => {
 }, {});
 
 // Set default values
-const outputFile = args.output || 'changes.json';
+const outputFile = args.output || 'releases/changes.json';
 
 // Helper function to execute shell commands
 function executeCommand(command) {

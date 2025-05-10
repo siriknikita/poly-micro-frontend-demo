@@ -55,7 +55,7 @@ jobs:
           DESCRIPTION="This release includes new features, improvements, and bug fixes."
 
           # Update the release file
-          node .github/scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
+          node .github/scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./releases/changes.json
 
       - name: Configure Git with PAT
         run: |
