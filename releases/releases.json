@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "version": "1.9.0",
+      "releaseDate": "2025-05-10",
+      "title": "Version 1.9.0 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Feat: Project structure cleanup (#44)"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.8.9 (#43)"
+        }
+      ]
+    },
+    {
       "version": "1.8.9",
       "releaseDate": "2025-05-10",
       "title": "Version 1.8.9 Release",
