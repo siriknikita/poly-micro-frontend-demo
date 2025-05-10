@@ -32,20 +32,6 @@ To generate coverage reports:
 npm run test:coverage
 ```
 
-## Running E2E Tests
-
-To run all E2E tests:
-
-```bash
-npm run test:e2e
-```
-
-To run a specific E2E test:
-
-```bash
-npx playwright test e2e/basic.spec.ts
-```
-
 ## Setting Up the Development Environment
 
 1. Install dependencies:
