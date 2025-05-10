@@ -21,7 +21,7 @@ export const getStatusVariant = (status: string): BadgeVariant => {
       return 'error';   // Maps to ERROR (red)
     case 'INFO':
       return 'info';    // Maps to INFO (green)
-    default:
+    default: {
       // For service statuses and other cases
       const statusLower = status.toLowerCase();
       if (['running', 'healthy', 'active', 'online'].includes(statusLower)) {
@@ -32,5 +32,6 @@ export const getStatusVariant = (status: string): BadgeVariant => {
         return 'error';
       }
       return 'info';
+    }
   }
 };

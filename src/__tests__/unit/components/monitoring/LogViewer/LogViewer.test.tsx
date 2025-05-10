@@ -87,7 +87,7 @@ jest.mock('@/components/monitoring/shared', () => {
     </div>
   );
 
-  const RowsPerPageSelector = ({ itemsPerPage, onItemsPerPageChange }: { itemsPerPage: number; onItemsPerPageChange: any }) => {
+  const RowsPerPageSelector = ({ itemsPerPage, onItemsPerPageChange }: { itemsPerPage: number; onItemsPerPageChange: (event: { target: { value: number } }) => void }) => {
     // Create a function that directly calls the handler with the right value
     const handleChange = (value: number) => {
       onItemsPerPageChange({ target: { value } });
