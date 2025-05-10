@@ -51,6 +51,17 @@ src/
 └── vite-env.d.ts          # Vite environment types
 ```
 
+## For Developers
+
+We provide specialized documentation for developers working on the Poly Micro Manager project:
+
+- [Running Tests](./for-developers/RUN_TESTS.md) - Instructions for running unit and integration tests
+- [Release Management](./for-developers/README-RELEASE-MANAGEMENT.md) - Documentation for the automatic release management system
+- [SonarQube Setup](./for-developers/SONARQUBE.md) - Guide for setting up SonarQube and SonarScanner for code quality analysis
+- [Testing Strategy](./for-developers/TESTING.md) - Comprehensive overview of the testing strategy and approach
+
+For more detailed information, visit the [For Developers](./for-developers/README.md) section.
+
 ## Feature Documentation
 
 Detailed documentation for each feature can be found in the following sections:
