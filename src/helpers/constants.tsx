@@ -25,6 +25,14 @@ export const CLASSES_BY_SEVERITY = {
   INFO: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
 }
 
+export const TEXT_COLORS_BY_SEVERITY = {
+  ERROR: 'text-red-600 dark:text-red-400',
+  WARN: 'text-yellow-600 dark:text-yellow-400',
+  DEBUG: 'text-gray-600 dark:text-gray-400',
+  INFO: 'text-green-600 dark:text-green-400',
+  All: 'text-gray-700 dark:text-gray-200'
+}
+
 export const SEVERITY_LEVELS = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];

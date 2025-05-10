@@ -5,6 +5,7 @@ export interface DropdownOption {
   id: string;
   label: string;
   disabled?: boolean;
+  colorClass?: string;
 }
 
 export interface DropdownSectionProps {
@@ -27,6 +28,7 @@ export interface DropdownProps {
   menuClassName?: string;
   placement?: 'left' | 'right';
   testId?: string;
+  colorMap?: Record<string, string>;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -39,18 +41,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
   menuClassName = '',
   placement = 'right',
   testId = 'dropdown',
+  colorMap,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Find the selected option label
-  const getSelectedLabel = () => {
+  // Find the selected option label and color class
+  const getSelectedOption = () => {
     for (const section of sections) {
       const option = section.options.find(opt => opt.id === selectedOption);
-      if (option) return option.label;
+      if (option) {
+        return {
+          label: option.label,
+          colorClass: option.colorClass || (colorMap && colorMap[option.id])
+        };
+      }
     }
-    return buttonLabel;
+    return { label: buttonLabel, colorClass: undefined };
   };
+  
+  const selectedOptionData = getSelectedOption();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -75,7 +85,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span>{getSelectedLabel()}</span>
+        <span className={selectedOptionData.colorClass}>{selectedOptionData.label}</span>
         <ChevronDown className="w-4 h-4 ml-2" />
       </button>
 
@@ -114,8 +124,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
                       : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   } ${
                     option.id === selectedOption
-                      ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium'
-                      : 'text-gray-700 dark:text-gray-200'
+                      ? 'bg-indigo-50 dark:bg-indigo-900/20 font-medium'
+                      : ''
                   } flex justify-between w-full px-4 py-2 text-sm leading-5 text-left`}
                   role="menuitem"
                   tabIndex={option.disabled ? -1 : 0}
@@ -123,7 +133,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                   data-testid={`dropdown-option-${option.id}`}
                   aria-selected={option.id === selectedOption}
                 >
-                  <span>{option.label}</span>
+                  <span className={option.colorClass || (colorMap && colorMap[option.id])}>{option.label}</span>
                   {option.id === selectedOption && (
                     <svg className="h-4 w-4 text-indigo-500 dark:text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
