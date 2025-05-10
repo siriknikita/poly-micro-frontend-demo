@@ -1,6 +1,22 @@
 {
   "releases": [
     {
+      "version": "1.8.9",
+      "releaseDate": "2025-05-10",
+      "title": "Version 1.8.9 Release",
+      "description": "This release includes new features, improvements, and bug fixes.",
+      "changes": [
+        {
+          "type": "feature",
+          "description": "Add PR status check with fallback for missing PR number"
+        },
+        {
+          "type": "feature",
+          "description": "Feat: Update release notes for v1.8.8 (#42)"
+        }
+      ]
+    },
+    {
       "version": "1.8.8",
       "releaseDate": "2025-05-10",
       "title": "Version 1.8.8 Release",
