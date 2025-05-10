@@ -139,7 +139,7 @@ playwright-report
 .windsurfrules
 
 # SonarQube
-.scannerwork/*
+.scannerwork/
 
 # Build
 build
