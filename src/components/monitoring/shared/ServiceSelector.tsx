@@ -1,5 +1,6 @@
 import React from 'react';
 import { Service } from '@/types';
+import { Dropdown, DropdownOption, DropdownSectionProps } from '@/components/shared/Dropdown';
 
 interface ServiceSelectorProps {
   selectedService: string | null;
@@ -18,25 +19,41 @@ export const ServiceSelector: React.FC<ServiceSelectorProps> = ({
   label = 'Select a service',
   showAllOption = false
 }) => {
-  const baseClasses = 'rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400';
+  // Transform services to dropdown options
+  const serviceOptions: DropdownOption[] = services.map(service => ({
+    id: service.name,
+    label: service.name
+  }));
+  
+  // Add placeholder option
+  const placeholderOptions: DropdownOption[] = [
+    { id: '', label }
+  ];
+  
+  // Add 'All Services' option if needed
+  if (showAllOption) {
+    placeholderOptions.push({ id: 'All', label: 'All Services' });
+  }
+  
+  // Create sections for the dropdown
+  const sections: DropdownSectionProps[] = [
+    {
+      options: placeholderOptions,
+      onSelect: onServiceSelect
+    },
+    {
+      options: serviceOptions,
+      onSelect: onServiceSelect
+    }
+  ];
   
   return (
-    <select
-      value={selectedService || ''}
-      onChange={(e) => onServiceSelect(e.target.value)}
-      className={`${baseClasses} ${className}`}
-      aria-label={label}
-      data-testid="service-selector"
-    >
-      <option value="">{label}</option>
-      {showAllOption && (
-        <option value="All">All Services</option>
-      )}
-      {services.map((service) => (
-        <option key={service.name} value={service.name}>
-          {service.name}
-        </option>
-      ))}
-    </select>
+    <Dropdown
+      buttonLabel={label}
+      selectedOption={selectedService || ''}
+      sections={sections}
+      className={className}
+      testId="service-selector"
+    />
   );
 };

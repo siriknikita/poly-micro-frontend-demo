@@ -7,11 +7,9 @@ import { Log, Service } from '@/types';
 import {
   DEFAULT_ITEMS_PER_PAGE,
   LOGS_TABLE_HEADERS,
-  ROWS_PER_PAGE_OPTIONS,
-  SEVERITY_LEVELS,
 } from '@constants';
 import { TablePagination } from './TablePagination';
-import { ServiceSelector } from '../shared';
+import { ServiceSelector, SeveritySelector, RowsPerPageSelector } from '../shared';
 import StatusBadge from '../shared/StatusBadge';
 import { GuidanceTooltip } from '@/components/guidance';
 import { OnboardingStep } from '@/context/GuidanceContext';
@@ -103,29 +101,15 @@ export const LogViewer: React.FC<LogViewerProps> = memo(({
           showAllOption={true}
         />
         
-        <select
-          value={selectedSeverity}
-          onChange={(e) => onSeverityChange(e.target.value)}
-          className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          aria-label="Select severity level"
-        >
-          <option value="All">All Severities</option>
-          {SEVERITY_LEVELS.map((severity, index) => (
-            <option key={index} value={severity} data-testid={`severity-option-${severity}`}>{severity}</option>
-          ))}
-        </select>
+        <SeveritySelector
+          selectedSeverity={selectedSeverity}
+          onSeverityChange={onSeverityChange}
+        />
         
-        <select
-          value={itemsPerPage}
-          onChange={handleItemsPerPageChange}
-          className="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          aria-label="Select items per page"
-          data-testid="items-per-page-select"
-        >
-          {ROWS_PER_PAGE_OPTIONS.map((option, index) => (
-            <option key={index} value={option} data-testid={`rows-per-page-option-${option}`}>{option} per page</option>
-          ))}
-        </select>
+        <RowsPerPageSelector
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
 
       {/* Logs Table */}
