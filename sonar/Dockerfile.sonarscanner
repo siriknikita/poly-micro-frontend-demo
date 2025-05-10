@@ -22,7 +22,7 @@ RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-s
 ENV PATH="${SONAR_SCANNER_HOME}/bin:${PATH}"
 
 # Create a wait script directly in the image
-COPY scripts/wait-for-sonarqube.sh /wait-for-sonarqube.sh
+COPY scripts/sonar/wait-for-sonarqube.sh /wait-for-sonarqube.sh
 RUN chmod +x /wait-for-sonarqube.sh
 
 # Set working directory to the mounted volume

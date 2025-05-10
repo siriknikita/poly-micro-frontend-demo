@@ -2,7 +2,7 @@
 
 set -e
 
-echo "Waiting for SonarQube to be ready..."
+echo "Waiting for SonarQube (poly-micro-sonarqube) to be ready..."
 # Wait for SonarQube to be up and running
 MAX_RETRIES=30
 RETRY=0
