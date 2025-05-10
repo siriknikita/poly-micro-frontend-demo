@@ -1,5 +1,5 @@
 // React is used implicitly in JSX
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { ServiceFilterDialog } from '@/components/monitoring/shared/ServiceFilterDialog';
 import { Service } from '@/types';
 import { FilterGroup } from '@/components/monitoring/hooks/useServiceFilters';
@@ -7,7 +7,8 @@ import { FilterGroup } from '@/components/monitoring/hooks/useServiceFilters';
 // Mock Lucide React icons
 jest.mock('lucide-react', () => ({
   Plus: () => <span data-testid="plus-icon">+</span>,
-  X: () => <span data-testid="x-icon">X</span>
+  X: () => <span data-testid="x-icon">X</span>,
+  ChevronDown: () => <span data-testid="chevron-down-icon">▼</span>
 }));
 
 describe('ServiceFilterDialog', () => {
@@ -54,12 +55,18 @@ describe('ServiceFilterDialog', () => {
     expect(screen.getByText('Add Filter')).toBeInTheDocument();
     
     // Check operator dropdown
-    const operatorSelect = screen.getByText('AND (All conditions must match)');
-    expect(operatorSelect).toBeInTheDocument();
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    const operatorButton = within(operatorDropdown).getByRole('button');
+    expect(operatorButton).toHaveTextContent('AND (All conditions must match)');
     
     // Check field and value selects
-    expect(screen.getByText('Status')).toBeInTheDocument();
-    expect(screen.getByText('Select a value')).toBeInTheDocument();
+    const fieldDropdown = screen.getByTestId('field-dropdown-0');
+    const fieldButton = within(fieldDropdown).getByRole('button');
+    expect(fieldButton).toHaveTextContent('Status');
+    
+    const valueDropdown = screen.getByTestId('value-dropdown-0');
+    const valueButton = within(valueDropdown).getByRole('button');
+    expect(valueButton).toHaveTextContent('Select a value');
     
     // Check buttons
     expect(screen.getByText('Add condition')).toBeInTheDocument();
@@ -88,11 +95,19 @@ describe('ServiceFilterDialog', () => {
     expect(screen.getByText('Edit Filter')).toBeInTheDocument();
     
     // Check that values are pre-selected
-    expect(screen.getByText('NOT (None of the conditions should match)')).toBeInTheDocument();
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    const operatorButton = within(operatorDropdown).getByRole('button');
+    expect(operatorButton).toHaveTextContent('NOT (None of the conditions should match)');
     
     // Check that the field is pre-selected
-    const fieldSelects = screen.getAllByRole('combobox');
-    expect(fieldSelects[1]).toHaveValue('health');
+    const fieldDropdown = screen.getByTestId('field-dropdown-0');
+    const fieldButton = within(fieldDropdown).getByRole('button');
+    expect(fieldButton).toHaveTextContent('Health');
+    
+    // Check that the value is pre-selected
+    const valueDropdown = screen.getByTestId('value-dropdown-0');
+    const valueButton = within(valueDropdown).getByRole('button');
+    expect(valueButton).toHaveTextContent('Error');
   });
 
   it('should close when X button is clicked', () => {
@@ -118,14 +133,14 @@ describe('ServiceFilterDialog', () => {
       />
     );
 
-    // Initially should have one condition
-    expect(screen.getAllByText('Status')).toHaveLength(1);
+    // Initially should have one field dropdown
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(1);
     
     // Click add condition button
     fireEvent.click(screen.getByText('Add condition'));
     
-    // Should now have two conditions
-    expect(screen.getAllByText('Status')).toHaveLength(2);
+    // Should now have two field dropdowns
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(2);
   });
 
   it('should remove a condition when remove button is clicked', () => {
@@ -139,16 +154,17 @@ describe('ServiceFilterDialog', () => {
 
     // Add a second condition
     fireEvent.click(screen.getByText('Add condition'));
-    expect(screen.getAllByText('Status')).toHaveLength(2);
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(2);
     
     // Get all remove buttons by aria-label
-    const removeButtons = screen.getAllByRole('button', { name: /remove condition/i });
+    const removeButtons = screen.getAllByLabelText('Remove condition');
+    expect(removeButtons).toHaveLength(2);
     
     // Click the second remove button
     fireEvent.click(removeButtons[1]);
     
     // Should now have one condition again
-    expect(screen.getAllByText('Status')).toHaveLength(1);
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(1);
   });
 
   it('should not remove the last condition', () => {
@@ -161,13 +177,16 @@ describe('ServiceFilterDialog', () => {
     );
 
     // Get the remove button by aria-label
-    const removeButton = screen.getByRole('button', { name: /remove condition/i });
+    const removeButton = screen.getByLabelText('Remove condition');
     
-    // Try to remove the only condition
+    // Button should be disabled
+    expect(removeButton).toBeDisabled();
+    
+    // Click the button anyway
     fireEvent.click(removeButton);
     
     // Should still have one condition
-    expect(screen.getAllByText('Status')).toHaveLength(1);
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(1);
   });
 
   it('should update operator when changed', () => {
@@ -179,16 +198,20 @@ describe('ServiceFilterDialog', () => {
       />
     );
 
-    // Get the operator select
-    const operatorSelect = screen.getAllByRole('combobox')[0];
+    // Get the operator dropdown
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
     
     // Change to OR
-    fireEvent.change(operatorSelect, { target: { value: 'OR' } });
-    expect(screen.getByText('OR (Any condition can match)')).toBeInTheDocument();
+    fireEvent.click(within(operatorDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-OR'));
+    const operatorButtonAfterOR = within(operatorDropdown).getByRole('button');
+    expect(operatorButtonAfterOR).toHaveTextContent('OR (Any condition can match)');
     
     // Change to NOT
-    fireEvent.change(operatorSelect, { target: { value: 'NOT' } });
-    expect(screen.getByText('NOT (None of the conditions should match)')).toBeInTheDocument();
+    fireEvent.click(within(operatorDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-NOT'));
+    const operatorButtonAfterNOT = within(operatorDropdown).getByRole('button');
+    expect(operatorButtonAfterNOT).toHaveTextContent('NOT (None of the conditions should match)');
   });
 
   it('should update field and value when changed', () => {
@@ -200,15 +223,15 @@ describe('ServiceFilterDialog', () => {
       />
     );
 
-    // Get the field and value selects
-    const fieldSelect = screen.getAllByRole('combobox')[1];
-    const valueSelect = screen.getAllByRole('combobox')[2];
+    // Open the field dropdown and select 'Health'
+    const fieldDropdownButton = screen.getByTestId('field-dropdown-0');
+    fireEvent.click(within(fieldDropdownButton).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-health'));
     
-    // Change field to health
-    fireEvent.change(fieldSelect, { target: { value: 'health' } });
-    
-    // Change value to Healthy
-    fireEvent.change(valueSelect, { target: { value: 'Healthy' } });
+    // Open the value dropdown and select 'Healthy'
+    const valueDropdownButton = screen.getByTestId('value-dropdown-0');
+    fireEvent.click(within(valueDropdownButton).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-Healthy'));
     
     // Apply the filter
     fireEvent.click(screen.getByText('Apply Filter'));
@@ -232,12 +255,14 @@ describe('ServiceFilterDialog', () => {
     );
 
     // Change operator to NOT
-    const operatorSelect = screen.getAllByRole('combobox')[0];
-    fireEvent.change(operatorSelect, { target: { value: 'NOT' } });
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    fireEvent.click(within(operatorDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-NOT'));
     
     // Change field to health
-    const fieldSelect = screen.getAllByRole('combobox')[1];
-    fireEvent.change(fieldSelect, { target: { value: 'health' } });
+    const fieldDropdown = screen.getByTestId('field-dropdown-0');
+    fireEvent.click(within(fieldDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-health'));
     
     // Add another condition
     fireEvent.click(screen.getByText('Add condition'));
@@ -246,8 +271,10 @@ describe('ServiceFilterDialog', () => {
     fireEvent.click(screen.getByText('Reset'));
     
     // Should reset to default values
-    expect(screen.getByText('AND (All conditions must match)')).toBeInTheDocument();
-    expect(screen.getAllByText('Status')).toHaveLength(1);
+    const resetOperatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    const resetOperatorButton = within(resetOperatorDropdown).getByRole('button');
+    expect(resetOperatorButton).toHaveTextContent('AND (All conditions must match)');
+    expect(screen.getAllByTestId(/field-dropdown-\d+/)).toHaveLength(1);
   });
 
   it('should reset to initial values when editing and Reset is clicked', () => {
@@ -268,14 +295,17 @@ describe('ServiceFilterDialog', () => {
     );
 
     // Change operator to AND
-    const operatorSelect = screen.getAllByRole('combobox')[0];
-    fireEvent.change(operatorSelect, { target: { value: 'AND' } });
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    fireEvent.click(within(operatorDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-AND'));
     
     // Click reset button
     fireEvent.click(screen.getByText('Reset'));
     
     // Should reset to initial values
-    expect(screen.getByText('NOT (None of the conditions should match)')).toBeInTheDocument();
+    const resetOperatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    const resetOperatorButton = within(resetOperatorDropdown).getByRole('button');
+    expect(resetOperatorButton).toHaveTextContent('NOT (None of the conditions should match)');
   });
 
   it('should apply filter when Apply Filter button is clicked', () => {
@@ -287,15 +317,17 @@ describe('ServiceFilterDialog', () => {
       />
     );
 
-    // Set up a filter
-    const operatorSelect = screen.getAllByRole('combobox')[0];
-    fireEvent.change(operatorSelect, { target: { value: 'OR' } });
+    // Change operator to OR
+    const operatorDropdown = screen.getByTestId('filter-operator-dropdown');
+    fireEvent.click(within(operatorDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-OR'));
     
-    const fieldSelect = screen.getAllByRole('combobox')[1];
-    fireEvent.change(fieldSelect, { target: { value: 'status' } });
+    // Field is already 'status' by default, so we don't need to change it
     
-    const valueSelect = screen.getAllByRole('combobox')[2];
-    fireEvent.change(valueSelect, { target: { value: 'Online' } });
+    // Select 'Online' from the value dropdown
+    const valueDropdown = screen.getByTestId('value-dropdown-0');
+    fireEvent.click(within(valueDropdown).getByRole('button'));
+    fireEvent.click(screen.getByTestId('dropdown-option-Online'));
     
     // Apply the filter
     fireEvent.click(screen.getByText('Apply Filter'));

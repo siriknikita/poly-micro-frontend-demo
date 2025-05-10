@@ -39,3 +39,27 @@ export const SEVERITY_LEVELS = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
 export const DEFAULT_ITEMS_PER_PAGE = 10;
+
+// Service status badge styling
+export const SERVICE_STATUS_CLASSES = {
+  // Success states
+  'Running': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  'Healthy': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  'Active': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  'Online': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  
+  // Warning states
+  'Warning': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  'Degraded': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  'Unstable': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  
+  // Error states
+  'Error': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  'Critical': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  'Down': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  'Offline': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  'Failed': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  
+  // Info/default state
+  'Unknown': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+};
