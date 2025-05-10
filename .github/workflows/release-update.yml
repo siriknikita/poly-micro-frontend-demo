@@ -89,7 +89,14 @@ jobs:
       - name: Wait for status checks
         run: |
           # Use the check-pr-status.js script to check PR status
-          node .github/scripts/check-pr-status.js --pr=${PR_NUMBER} --max-attempts=10 --wait-seconds=30
+          PR_NUMBER=$(cat .github/pr_number.txt 2>/dev/null || echo "")
+          echo "Checking PR status for PR #$PR_NUMBER"
+          
+          if [ -n "$PR_NUMBER" ]; then
+            node .github/scripts/check-pr-status.js --pr=$PR_NUMBER --max-attempts=10 --wait-seconds=30
+          else
+            echo "No PR number found. Skipping status check."
+          fi
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GH_TOKEN: ${{ secrets.BOT_PAT }}
