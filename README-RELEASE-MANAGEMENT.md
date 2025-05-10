@@ -89,21 +89,21 @@ The project includes a GitHub Actions workflow at `.github/workflows/release-upd
 
 ### Option 2: Manual Script
 
-You can also manually update releases using the script at `scripts/update-release.js`:
+You can also manually update releases using the script at `.github/scripts/update-release.js`:
 
 ```bash
 # Make the script executable (if not already)
-chmod +x scripts/update-release.js
+chmod +x .github/scripts/update-release.js
 
 # Run the script with required parameters
-./scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --description="This update includes new features and improvements"
+./.github/scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --description="This update includes new features and improvements"
 ```
 
 You can also specify a JSON file containing the changes:
 
 ```bash
 # Create a changes.json file with your release changes
-./scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --changes=./changes.json
+./.github/scripts/update-release.js --version=1.3.0 --title="May 2025 Update" --changes=./changes.json
 ```
 
 ### Option 3: GitHub Repository Integration
