@@ -95,6 +95,12 @@ if (prNumber) {
   console.log(`PR Number: ${prNumber}`);
   // Output PR number to be captured by GitHub Actions
   console.log(`::set-output name=pr_number::${prNumber}`);
+  // Also write to a file for more reliable access
+  const fs = require('fs');
+  const path = require('path');
+  const prFilePath = path.join(__dirname, '../pr_number.txt');
+  fs.writeFileSync(prFilePath, prNumber);
+  console.log(`PR number written to ${prFilePath}`);
 } else {
   console.error('Failed to extract PR number');
   process.exit(1);

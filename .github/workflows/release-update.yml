@@ -55,7 +55,7 @@ jobs:
           DESCRIPTION="This release includes new features, improvements, and bug fixes."
 
           # Update the release file
-          node .github/scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=../../releases/changes.json
+          node .github/scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
 
       - name: Configure Git with PAT
         run: |
@@ -81,8 +81,9 @@ jobs:
           node .github/scripts/create-release-pr.js --version=${VERSION}
           
           # Extract PR number from script output
-          PR_NUMBER=$(echo "$GITHUB_OUTPUT" | grep 'pr_number=' | cut -d'=' -f2)
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+          # Store the PR number in the environment variable
+          PR_NUMBER=$(cat .github/pr_number.txt 2>/dev/null || echo "")
+          echo "PR created with number: $PR_NUMBER"
 
 
       - name: Wait for status checks
