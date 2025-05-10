@@ -9,34 +9,9 @@ on:
   workflow_dispatch: # Keep manual trigger for debugging
 
 jobs:
-  log-trigger:
-    name: Log Trigger
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log Pull Request Event
-        run: echo "Pull request event triggered for PR \#${{ github.event.pull_request.number }} with action ${{ github.event.action }}"
-
-  check-actor:
-    name: Check PR Author
-    needs: log-trigger # Ensure this runs after the log
-    runs-on: ubuntu-latest
-    outputs:
-      is_bot: ${{ steps.set.outputs.is_bot }}
-    steps:
-      - id: set
-        run: |
-          if [ "${{ github.actor }}" = "github-actions[bot]" ]; then
-            echo "is_bot=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "is_bot=false" >> "$GITHUB_OUTPUT"
-          fi
-
-  # Main validation job
   validate:
     name: Validate PR
-    needs: check-actor
     runs-on: ubuntu-latest
-    if: needs.check-actor.outputs.is_bot != 'true'
     permissions:
       statuses: write
       checks: write
@@ -58,129 +33,38 @@ jobs:
       - name: Run tests
         run: npm test -- --run
 
-  # Job that always succeeds for bot PRs to satisfy required checks
-  bot-success:
-    name: Auto-approve Bot PR
-    needs: check-actor
-    runs-on: ubuntu-latest
-    if: needs.check-actor.outputs.is_bot == 'true'
-    permissions:
-      statuses: write
-      checks: write
-    steps:
-      - name: Mark bot PR as validated
-        run: |
-          echo "Bot PR detected, reporting success for Validate PR."
-          echo "::set-output name=check_name::Validate PR"
-          echo "::set-output name=status::success"
-          echo "::set-output name=conclusion::success"
-      - name: Report status
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const { check_name, status, conclusion } = core.outputs;
-            await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha: context.payload.pull_request.head.sha,
-              name: check_name,
-              status: status,
-              conclusion: conclusion,
-            });
-
   # Auto-merge PR when checks pass
   auto-merge:
     name: Auto-merge PR
-    needs: [validate, bot-success]
+    needs: validate
     runs-on: ubuntu-latest
-    # Run if either the validation job succeeded or the bot auto-approval succeeded
+    # Run if the validation job succeeded
     if: |
       always() && 
-      (needs.validate.result == 'success' || needs.bot-success.result == 'success')
+      needs.validate.result == 'success'
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Auto-merge PR
-        uses: actions/github-script@v6
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          github-token: ${{ secrets.BOT_PAT }}
-          script: |
-            const pullRequest = context.payload.pull_request;
-            
-            if (!pullRequest) {
-              console.log('No pull request found in context. Exiting.');
-              return;
-            }
-            
-            const prNumber = pullRequest.number;
-            
-            try {
-              // Get the latest pull request data to check status
-              const { data: pr } = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber
-              });
-              
-              // Check if the PR is mergeable
-              if (pr.mergeable === false) {
-                console.log(`PR #${prNumber} is not mergeable. It may have conflicts.`);
-                return;
-              }
-              
-              // Get the status of required checks
-              const { data: checks } = await github.rest.checks.listForRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: pr.head.sha
-              });
-              
-              // Check if any required check failed
-              const failedChecks = checks.check_runs.filter(check => 
-                check.conclusion !== 'success' && 
-                check.conclusion !== 'skipped' &&
-                check.conclusion !== null
-              );
-              
-              if (failedChecks.length > 0) {
-                console.log(`PR #${prNumber} has failed checks: ${failedChecks.map(c => c.name).join(', ')}`);
-                return;
-              }
-              
-              console.log(`All checks passed for PR #${prNumber}, enabling auto-merge`);
-              
-              // Try to update branch only if needed (will safely skip if not applicable)
-              try {
-                console.log(`Attempting to update branch for PR #${prNumber}...`);
-                await github.rest.pulls.updateBranch({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: prNumber
-                });
-                console.log(`Successfully updated branch for PR #${prNumber}`);
-              } catch (updateError) {
-                // If update fails because there are no new commits, that's fine - continue with merge
-                if (updateError.status === 422) {
-                  console.log(`No new commits to update for PR #${prNumber}, continuing with merge`);
-                } else {
-                  // For other errors, we should still log but continue with the merge attempt
-                  console.log(`Warning: Could not update branch for PR #${prNumber}: ${updateError.message}`);
-                }
-              }
-              
-              // Merge the PR
-              await github.rest.pulls.merge({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                merge_method: 'squash',
-                commit_title: `${pr.title} (#${prNumber})`,
-                commit_message: pr.body || ''
-              });
-              
-              console.log(`Successfully merged PR #${prNumber}`);
-            } catch (error) {
-              console.error(`Error auto-merging PR #${prNumber}:`, error);
-              core.setFailed(`Failed to auto-merge PR: ${error.message}`);
-            }
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Install script dependencies
+        run: |
+          cd .github/scripts
+          npm install
+          cd ../..
+
+      - name: Auto-merge PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
+        run: |
+          # Execute the auto-merge script directly with Node.js
+          node .github/scripts/auto-merge-pr.js

@@ -39,9 +39,9 @@ jobs:
       - name: Build with Docsify
         run: |
           # Make the build script executable
-          chmod +x ./scripts/build-docs.sh
+          chmod +x .github/scripts/build-docs.sh
           # Run the build script
-          ./scripts/build-docs.sh
+          .github/scripts/build-docs.sh
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
