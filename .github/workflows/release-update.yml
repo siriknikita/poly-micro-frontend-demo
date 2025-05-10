@@ -35,7 +35,7 @@ jobs:
       - name: Generate changes from commit messages
         run: |
           # Use the parse-commits.js script to generate changes.json
-          node scripts/parse-commits.js
+          node .github/scripts/parse-commits.js
           
           # Show generated changes
           cat changes.json
@@ -55,7 +55,7 @@ jobs:
           DESCRIPTION="This release includes new features, improvements, and bug fixes."
 
           # Update the release file
-          node scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
+          node .github/scripts/update-release.js --version=$VERSION --title="$TITLE" --description="$DESCRIPTION" --changes=./changes.json
 
       - name: Configure Git with PAT
         run: |
@@ -78,7 +78,7 @@ jobs:
           GH_CONFIG_DIR: /home/runner/gh_config
         run: |
           # Use the create-release-pr.js script to create PR and get PR number
-          node scripts/create-release-pr.js --version=${VERSION}
+          node .github/scripts/create-release-pr.js --version=${VERSION}
           
           # Extract PR number from script output
           PR_NUMBER=$(echo "$GITHUB_OUTPUT" | grep 'pr_number=' | cut -d'=' -f2)
@@ -88,7 +88,7 @@ jobs:
       - name: Wait for status checks
         run: |
           # Use the check-pr-status.js script to check PR status
-          node scripts/check-pr-status.js --pr=${PR_NUMBER} --max-attempts=10 --wait-seconds=30
+          node .github/scripts/check-pr-status.js --pr=${PR_NUMBER} --max-attempts=10 --wait-seconds=30
         env:
           GH_CONFIG_DIR: /home/runner/gh_config
           GH_TOKEN: ${{ secrets.BOT_PAT }}

@@ -43,7 +43,7 @@ const changesFile = args.changes || 'changes.json';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const releasesFile = args.file || path.join(__dirname, '../releases/releases.json');
+const releasesFile = args.file || path.join(__dirname, '../../releases/releases.json');
 
 // Get current date in YYYY-MM-DD format
 const today = new Date().toISOString().split('T')[0];
