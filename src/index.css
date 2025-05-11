@@ -11,7 +11,9 @@
 }
 
 /* Fix for double scrolling issue */
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   overflow: hidden;
 }

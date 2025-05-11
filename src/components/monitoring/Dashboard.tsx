@@ -98,8 +98,12 @@ export function Dashboard() {
           onLogout={handleLogout}
         />
 
-        <main className={`flex-1 ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'overflow-auto' : 'overflow-hidden'}`}>
-          <div className={`${mainPageRenderClassName} ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'pb-8' : ''}`}>
+        <main
+          className={`flex-1 ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'overflow-auto' : 'overflow-hidden'}`}
+        >
+          <div
+            className={`${mainPageRenderClassName} ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'pb-8' : ''}`}
+          >
             {activeTab === 'help' ? (
               <HelpPage />
             ) : selectedProject ? (
