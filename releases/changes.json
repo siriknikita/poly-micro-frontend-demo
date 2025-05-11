@@ -1,6 +1,18 @@
 [
   {
     "type": "feature",
+    "description": "Add prettier config and format all files with consistent code style"
+  },
+  {
+    "type": "feature",
+    "description": "Feat: Add Help Page Section (#55)"
+  },
+  {
+    "type": "feature",
+    "description": "Feat: Update release notes for v1.10.0"
+  },
+  {
+    "type": "feature",
     "description": "Add initial Help Center with FAQ sections and question submission form"
   },
   {
