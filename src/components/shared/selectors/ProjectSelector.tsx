@@ -3,6 +3,7 @@ import { FolderOpen } from 'lucide-react';
 import { Project } from '@/types';
 import { GuidanceTooltip } from '@/components/guidance';
 import { OnboardingStep } from '@/context/GuidanceContext';
+import { Dropdown, DropdownSectionProps } from '../Dropdown';
 
 interface ProjectSelectorProps {
   projects: Project[];
@@ -15,6 +16,24 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   selectedProject,
   onSelectProject,
 }) => {
+  // Convert projects to dropdown options format
+  const projectOptions = projects.map((project) => ({
+    id: project.id,
+    label: project.name,
+    disabled: false,
+  }));
+
+  // Create dropdown sections
+  const sections: DropdownSectionProps[] = [
+    {
+      options: projectOptions,
+      onSelect: (id: string) => {
+        const project = projects.find((p) => p.id === id);
+        if (project) onSelectProject(project);
+      },
+    },
+  ];
+
   return (
     <GuidanceTooltip
       step={OnboardingStep.PROJECT_SELECTION}
@@ -23,23 +42,17 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
       position="bottom"
       className="relative project-selector"
     >
-      <select
-        value={selectedProject?.id || ''}
-        onChange={(e) => {
-          const project = projects.find((p) => p.id === e.target.value);
-          if (project) onSelectProject(project);
-        }}
-        className="appearance-none w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-        data-testid="selected-project"
-      >
-        <option value="">Select a project</option>
-        {projects.map((project) => (
-          <option key={project.id} value={project.id}>
-            {project.name}
-          </option>
-        ))}
-      </select>
-      <FolderOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+      <div className="relative">
+        <FolderOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+        <Dropdown
+          buttonLabel={selectedProject?.name || 'Select a project'}
+          selectedOption={selectedProject?.id}
+          sections={sections}
+          className="w-full"
+          buttonClassName="pl-10 pr-4 py-2"
+          testId="selected-project"
+        />
+      </div>
     </GuidanceTooltip>
   );
 };

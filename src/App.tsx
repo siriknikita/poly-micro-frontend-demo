@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RegisterForm, LoginForm } from './components/auth';
-import { Dashboard } from './components/monitoring/Dashboard';
 import { ProjectProvider } from './context/ProjectContext';
 import { ToastProvider } from './context/ToastContext';
 import { ReleaseProvider } from './context/ReleaseContext';
@@ -12,6 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
 import autoSyncReleases from './utils/releaseSync';
 import { useAuth } from './components/auth/hooks/useAuth';
+import { AppLayout } from './components';
 
 function App() {
   // Auto-sync releases when the app starts
@@ -51,11 +51,11 @@ function AppContent() {
             <Routes>
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/login" element={<LoginForm />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/monitoring" element={<Dashboard />} />
-              <Route path="/cicd" element={<Dashboard />} />
-              <Route path="/testing" element={<Dashboard />} />
-              <Route path="/help" element={<Dashboard />} />
+              <Route path="/dashboard" element={<AppLayout />} />
+              <Route path="/monitoring" element={<AppLayout />} />
+              <Route path="/cicd" element={<AppLayout />} />
+              <Route path="/testing" element={<AppLayout />} />
+              <Route path="/help" element={<AppLayout />} />
               <Route path="/" element={<Navigate to="/login" replace />} />
             </Routes>
             <ToastContainer />
