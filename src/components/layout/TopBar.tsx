@@ -36,10 +36,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <ThemeToggle
-              darkMode={darkMode}
-              onToggle={() => setDarkMode(!darkMode)}
-            />
+            <ThemeToggle darkMode={darkMode} onToggle={() => setDarkMode(!darkMode)} />
             <button
               onClick={onLogout}
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600"

@@ -41,7 +41,7 @@ export class AppDatabase extends Dexie {
     this.version(3).stores({
       users: '++id, username, email, hasCompletedOnboarding',
       releases: '++id, version, releaseDate, isLatest',
-      userAcknowledgments: '++id, userId, releaseId'
+      userAcknowledgments: '++id, userId, releaseId',
     });
   }
 }

@@ -13,7 +13,7 @@ interface UseResizablePanelOptions {
 export const useResizablePanel = ({
   initialWidth = CHAT_PANEL.DEFAULT_WIDTH,
   minWidth = CHAT_PANEL.MIN_WIDTH,
-  maxWidth = CHAT_PANEL.MAX_WIDTH
+  maxWidth = CHAT_PANEL.MAX_WIDTH,
 }: UseResizablePanelOptions = {}) => {
   const [width, setWidth] = useState(initialWidth);
   const [isDragging, setIsDragging] = useState(false);
@@ -26,12 +26,15 @@ export const useResizablePanel = ({
   }, []);
 
   // Handle mouse movement during drag
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (isDragging) {
-      const newWidth = window.innerWidth - e.clientX;
-      setWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
-    }
-  }, [isDragging, minWidth, maxWidth]);
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (isDragging) {
+        const newWidth = window.innerWidth - e.clientX;
+        setWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+      }
+    },
+    [isDragging, minWidth, maxWidth],
+  );
 
   // Handle mouse up to stop dragging
   const handleMouseUp = useCallback(() => {
@@ -61,6 +64,6 @@ export const useResizablePanel = ({
     width,
     isDragging,
     setIsDragging,
-    startResize
+    startResize,
   };
 };

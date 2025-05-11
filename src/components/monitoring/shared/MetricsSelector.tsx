@@ -27,50 +27,48 @@ interface MetricsSelectorProps {
  * Follows Single Responsibility Principle by delegating specific UI parts to child components
  * and logic to custom hooks
  */
-export const MetricsSelector: React.FC<MetricsSelectorProps> = memo(({ 
-  metrics,
-  onMetricsChange,
-  className = ''
-}) => {
-  const {
-    isOpen,
-    searchTerm,
-    filteredMetrics,
-    selectedCount,
-    dropdownRef,
-    searchInputRef,
-    toggleDropdown,
-    toggleMetric,
-    handleSearchChange,
-    handleKeyDown
-  } = useMetricsDropdown({ metrics, onMetricsChange });
+export const MetricsSelector: React.FC<MetricsSelectorProps> = memo(
+  ({ metrics, onMetricsChange, className = '' }) => {
+    const {
+      isOpen,
+      searchTerm,
+      filteredMetrics,
+      selectedCount,
+      dropdownRef,
+      searchInputRef,
+      toggleDropdown,
+      toggleMetric,
+      handleSearchChange,
+      handleKeyDown,
+    } = useMetricsDropdown({ metrics, onMetricsChange });
 
-  return (
-    <div className={`relative ${className}`} ref={dropdownRef}>
-      <MetricsToggleButton 
-        selectedCount={selectedCount} 
-        onClick={toggleDropdown} 
-        isOpen={isOpen} 
-      />
+    return (
+      <div className={`relative ${className}`} ref={dropdownRef}>
+        <MetricsToggleButton
+          selectedCount={selectedCount}
+          onClick={toggleDropdown}
+          isOpen={isOpen}
+        />
 
-      {isOpen && (
-        <div className="absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <MetricsSearch 
-            searchTerm={searchTerm} 
-            onChange={handleSearchChange} 
-            onKeyDown={(e) => handleKeyDown(e)} 
-            inputRef={searchInputRef} 
-          />
+        {isOpen && (
+          <div className="absolute z-10 w-64 mt-1 bg-white rounded-md shadow-lg dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <MetricsSearch
+              searchTerm={searchTerm}
+              onChange={handleSearchChange}
+              onKeyDown={(e) => handleKeyDown(e)}
+              inputRef={searchInputRef}
+            />
 
-          <MetricsList 
-            metrics={filteredMetrics} 
-            onToggleMetric={toggleMetric} 
-            onKeyDown={handleKeyDown} 
-          />
-        </div>
-      )}
-    </div>
-  );
-});
+            <MetricsList
+              metrics={filteredMetrics}
+              onToggleMetric={toggleMetric}
+              onKeyDown={handleKeyDown}
+            />
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 
 MetricsSelector.displayName = 'MetricsSelector';

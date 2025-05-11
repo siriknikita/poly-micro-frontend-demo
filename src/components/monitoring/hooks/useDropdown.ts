@@ -30,7 +30,7 @@ export const useDropdown = ({ onOpen, onClose }: UseDropdownProps = {}) => {
   const toggleDropdown = () => {
     const newState = !isOpen;
     setIsOpen(newState);
-    
+
     if (newState) {
       onOpen?.();
     } else {
@@ -47,6 +47,6 @@ export const useDropdown = ({ onOpen, onClose }: UseDropdownProps = {}) => {
     isOpen,
     dropdownRef,
     toggleDropdown,
-    closeDropdown
+    closeDropdown,
   };
 };

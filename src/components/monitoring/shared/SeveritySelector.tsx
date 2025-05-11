@@ -13,32 +13,32 @@ export const SeveritySelector: React.FC<SeveritySelectorProps> = ({
   selectedSeverity,
   onSeverityChange,
   className = '',
-  label = 'All Severities'
+  label = 'All Severities',
 }) => {
   // Transform severity levels to dropdown options
-  const severityOptions: DropdownOption[] = SEVERITY_LEVELS.map(severity => ({
+  const severityOptions: DropdownOption[] = SEVERITY_LEVELS.map((severity) => ({
     id: severity,
     label: severity,
-    colorClass: TEXT_COLORS_BY_SEVERITY[severity as keyof typeof TEXT_COLORS_BY_SEVERITY]
+    colorClass: TEXT_COLORS_BY_SEVERITY[severity as keyof typeof TEXT_COLORS_BY_SEVERITY],
   }));
-  
+
   // Add 'All' option
   const allOption: DropdownOption[] = [
-    { id: 'All', label: 'All Severities', colorClass: TEXT_COLORS_BY_SEVERITY.All }
+    { id: 'All', label: 'All Severities', colorClass: TEXT_COLORS_BY_SEVERITY.All },
   ];
-  
+
   // Create sections for the dropdown
   const sections: DropdownSectionProps[] = [
     {
       options: allOption,
-      onSelect: onSeverityChange
+      onSelect: onSeverityChange,
     },
     {
       options: severityOptions,
-      onSelect: onSeverityChange
-    }
+      onSelect: onSeverityChange,
+    },
   ];
-  
+
   return (
     <Dropdown
       buttonLabel={label}

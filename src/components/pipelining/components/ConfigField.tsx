@@ -16,12 +16,7 @@ interface ConfigFieldProps {
   onChange: (name: string, value: string | number | boolean | string[]) => void;
 }
 
-export const ConfigField = memo(({
-  name,
-  schema,
-  value,
-  onChange
-}: ConfigFieldProps) => {
+export const ConfigField = memo(({ name, schema, value, onChange }: ConfigFieldProps) => {
   const handleChange = (newValue: string | number | boolean | string[]) => {
     onChange(name, newValue);
   };

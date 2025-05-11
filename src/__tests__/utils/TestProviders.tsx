@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { AppRouter } from '@/components/shared/AppRouter';
 import { ProjectProvider } from '@/context/ProjectContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { ToastContainer } from 'react-toastify';
@@ -20,11 +20,11 @@ function AllProviders({ children }: ProvidersProps): JSX.Element {
     email: 'test@example.com',
     businessName: 'Test Business',
     password: 'password123',
-    hasCompletedOnboarding: true
+    hasCompletedOnboarding: true,
   };
-  
+
   return (
-    <BrowserRouter>
+    <AppRouter>
       <ProjectProvider>
         <ToastProvider>
           <GuidanceProvider currentUser={mockUser}>
@@ -33,7 +33,7 @@ function AllProviders({ children }: ProvidersProps): JSX.Element {
           </GuidanceProvider>
         </ToastProvider>
       </ProjectProvider>
-    </BrowserRouter>
+    </AppRouter>
   );
 }
 

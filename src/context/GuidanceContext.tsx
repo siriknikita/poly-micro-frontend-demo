@@ -38,7 +38,7 @@ export enum OnboardingStep {
   EXPAND_ALL_TESTS = 7,
   RUN_ALL_TESTS = 8,
   TEST_ASSISTANT = 9,
-  COMPLETION = 10
+  COMPLETION = 10,
 }
 
 export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, currentUser }) => {
@@ -54,16 +54,16 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       if (currentUser && currentUser.id) {
         const isFirstTimeUser = currentUser.hasCompletedOnboarding === undefined;
         setIsOnboarding(isFirstTimeUser);
-        
+
         // If user is in first-time onboarding, we'll store this information
         if (isFirstTimeUser) {
           localStorage.setItem('onboardingInProgress', 'true');
         }
-        
+
         // Check URL parameters for guidance navigation
         const urlParams = new URLSearchParams(window.location.search);
         const stepParam = urlParams.get('step');
-        
+
         if (stepParam) {
           console.log('Found step parameter in URL:', stepParam);
           const stepNumber = parseInt(stepParam, 10);
@@ -72,7 +72,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
             setCurrentStep(stepNumber);
             setIsGuidanceVisible(true);
             setIsOnboarding(true);
-            
+
             // Clear the URL parameters without page reload
             const newUrl = window.location.pathname;
             window.history.replaceState({}, document.title, newUrl);
@@ -99,7 +99,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
     };
 
     checkOnboardingStatus();
-    
+
     // Clean up onboarding status when component unmounts
     return () => {
       if (!currentUser?.hasCompletedOnboarding) {
@@ -109,7 +109,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       }
     };
   }, [currentUser]);
-  
+
   // Ensure user authentication is preserved during navigation
   useEffect(() => {
     // This effect ensures that the current user is always preserved in localStorage
@@ -139,34 +139,34 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
 
   const nextStep = useCallback(() => {
     const newStep = Math.min(currentStep + 1, TOTAL_GUIDANCE_STEPS - 1);
-    
+
     // Always store guidance state in localStorage to ensure it persists
     localStorage.setItem('guidanceCurrentStep', String(newStep));
     localStorage.setItem('guidanceVisible', 'true');
     localStorage.setItem('onboardingInProgress', 'true');
-    
+
     // Handle special cases for different steps
     switch (currentStep) {
       case OnboardingStep.LOGS:
         if (newStep === OnboardingStep.AUTOMATED_TESTING) {
           // Update the current step first
           setCurrentStep(newStep);
-          
+
           // Set flag to force testing tab on next render
           sessionStorage.setItem('forceTestingTab', 'true');
           sessionStorage.setItem('pendingGuidanceStep', String(newStep));
-          
+
           // Force the guidance to be visible
           setIsGuidanceVisible(true);
-          
+
           console.log(`Navigating to testing tab with step ${newStep}`);
-          
+
           // Navigate to testing tab
           navigate('/testing', { replace: true });
           return; // Return early to prevent the immediate step change
         }
         break;
-        
+
       case OnboardingStep.MICROSERVICES:
         if (newStep === OnboardingStep.LOGS) {
           // Set flag to scroll to bottom of page before showing logs tooltip
@@ -175,7 +175,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
           return;
         }
         break;
-        
+
       case OnboardingStep.AUTOMATED_TESTING:
         if (newStep === OnboardingStep.EXPAND_ALL_TESTS) {
           // When moving to the expand all tests step, we want to highlight the expand button
@@ -183,7 +183,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
           return;
         }
         break;
-        
+
       case OnboardingStep.EXPAND_ALL_TESTS:
         if (newStep === OnboardingStep.RUN_ALL_TESTS) {
           // When moving to the run all tests step, we want to highlight the run all button
@@ -191,7 +191,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
           return;
         }
         break;
-        
+
       case OnboardingStep.RUN_ALL_TESTS:
         if (newStep === OnboardingStep.TEST_ASSISTANT) {
           // When moving to the test assistant step, we want to highlight the test assistant button
@@ -200,7 +200,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
         }
         break;
     }
-    
+
     // If we didn't return early from any of the special cases, update the step
     setCurrentStep(newStep);
   }, [currentStep, navigate]);
@@ -220,7 +220,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       try {
         // Update user in database to mark onboarding as completed
         await db.users.update(currentUser.id, { hasCompletedOnboarding: true });
-        
+
         // Update in localStorage
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
@@ -228,16 +228,16 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
           user.hasCompletedOnboarding = true;
           localStorage.setItem('currentUser', JSON.stringify(user));
         }
-        
+
         // Remove all guidance-related flags and storage
         localStorage.removeItem('onboardingInProgress');
         localStorage.removeItem('guidanceCurrentStep');
         localStorage.removeItem('guidanceVisible');
         sessionStorage.removeItem('forceTestingTab');
         sessionStorage.removeItem('pendingGuidanceStep');
-        
+
         console.log('Guidance completed successfully');
-        
+
         // Update state to hide guidance
         setIsGuidanceVisible(false);
         setIsOnboarding(false);
@@ -252,9 +252,9 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       localStorage.removeItem('guidanceVisible');
       sessionStorage.removeItem('forceTestingTab');
       sessionStorage.removeItem('pendingGuidanceStep');
-      
+
       console.log('Guidance completed (without user)');
-      
+
       // Update state to hide guidance
       setIsGuidanceVisible(false);
       setIsOnboarding(false);
@@ -268,35 +268,38 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       // Scroll to bottom of page to show logs
       window.scrollTo({
         top: document.body.scrollHeight,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
       setNeedsScroll(false);
     }
   }, [needsScroll, currentStep]);
-  
+
   // Restore guidance state from localStorage if needed
   useEffect(() => {
     const storedStep = localStorage.getItem('guidanceCurrentStep');
     const storedVisible = localStorage.getItem('guidanceVisible');
     const forceTestingTab = sessionStorage.getItem('forceTestingTab');
     const pendingStep = sessionStorage.getItem('pendingGuidanceStep');
-    
+
     // Special handling for testing tab
     if (window.location.pathname === '/testing') {
       console.log('On testing tab, checking guidance state...');
-      
+
       // If we have a pending step or force flag, prioritize that
       if (forceTestingTab === 'true' || pendingStep) {
-        const stepToUse = pendingStep ? parseInt(pendingStep, 10) : 
-                         (storedStep ? parseInt(storedStep, 10) : OnboardingStep.AUTOMATED_TESTING);
-        
+        const stepToUse = pendingStep
+          ? parseInt(pendingStep, 10)
+          : storedStep
+            ? parseInt(storedStep, 10)
+            : OnboardingStep.AUTOMATED_TESTING;
+
         console.log(`Force showing guidance for testing tab with step ${stepToUse}`);
-        
+
         // Force guidance to be visible with the appropriate step
         setCurrentStep(stepToUse);
         setIsGuidanceVisible(true);
         setIsOnboarding(true);
-        
+
         // Clear the flags to prevent infinite loops
         sessionStorage.removeItem('forceTestingTab');
         sessionStorage.removeItem('pendingGuidanceStep');
@@ -325,30 +328,36 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
   }, [isGuidanceVisible]);
 
   // Helper function to check if a component should show a tooltip for the current step
-  const shouldShowTooltipForStep = useCallback((step: number) => {
-    // Check both the current state and localStorage as a fallback
-    const isVisible = isGuidanceVisible || localStorage.getItem('guidanceVisible') === 'true';
-    const currentStepValue = currentStep;
-    const storedStep = localStorage.getItem('guidanceCurrentStep');
-    const storedStepValue = storedStep ? parseInt(storedStep, 10) : -1;
-    
-    // Special case for testing tab steps
-    if (window.location.pathname === '/testing' && 
-        (step === OnboardingStep.AUTOMATED_TESTING || 
-         step === OnboardingStep.EXPAND_ALL_TESTS || 
-         step === OnboardingStep.RUN_ALL_TESTS || 
-         step === OnboardingStep.TEST_ASSISTANT)) {
-      
-      // If we're on the testing page and the step is one of the testing-related steps,
-      // be more lenient about showing the tooltip
-      console.log(`Checking if should show tooltip for step ${step}, current: ${currentStepValue}, stored: ${storedStepValue}`);
-      
-      return isVisible && (currentStepValue === step || storedStepValue === step);
-    }
-    
-    // Normal case - strict equality check
-    return isVisible && currentStepValue === step;
-  }, [isGuidanceVisible, currentStep]);
+  const shouldShowTooltipForStep = useCallback(
+    (step: number) => {
+      // Check both the current state and localStorage as a fallback
+      const isVisible = isGuidanceVisible || localStorage.getItem('guidanceVisible') === 'true';
+      const currentStepValue = currentStep;
+      const storedStep = localStorage.getItem('guidanceCurrentStep');
+      const storedStepValue = storedStep ? parseInt(storedStep, 10) : -1;
+
+      // Special case for testing tab steps
+      if (
+        window.location.pathname === '/testing' &&
+        (step === OnboardingStep.AUTOMATED_TESTING ||
+          step === OnboardingStep.EXPAND_ALL_TESTS ||
+          step === OnboardingStep.RUN_ALL_TESTS ||
+          step === OnboardingStep.TEST_ASSISTANT)
+      ) {
+        // If we're on the testing page and the step is one of the testing-related steps,
+        // be more lenient about showing the tooltip
+        console.log(
+          `Checking if should show tooltip for step ${step}, current: ${currentStepValue}, stored: ${storedStepValue}`,
+        );
+
+        return isVisible && (currentStepValue === step || storedStepValue === step);
+      }
+
+      // Normal case - strict equality check
+      return isVisible && currentStepValue === step;
+    },
+    [isGuidanceVisible, currentStep],
+  );
 
   return (
     <GuidanceContext.Provider
@@ -369,7 +378,6 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
       {children}
     </GuidanceContext.Provider>
   );
-  
 };
 
 export const useGuidance = (): GuidanceContextType => {

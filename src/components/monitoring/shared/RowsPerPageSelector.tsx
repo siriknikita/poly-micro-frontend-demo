@@ -11,32 +11,32 @@ interface RowsPerPageSelectorProps {
 export const RowsPerPageSelector: React.FC<RowsPerPageSelectorProps> = ({
   itemsPerPage,
   onItemsPerPageChange,
-  className = ''
+  className = '',
 }) => {
   // Transform rows per page options to dropdown options
-  const rowsOptions: DropdownOption[] = ROWS_PER_PAGE_OPTIONS.map(option => ({
+  const rowsOptions: DropdownOption[] = ROWS_PER_PAGE_OPTIONS.map((option) => ({
     id: option.toString(),
-    label: `${option} per page`
+    label: `${option} per page`,
   }));
-  
+
   // Handle selection
   const handleSelect = (id: string) => {
     // Create a synthetic event to match the expected interface
     const syntheticEvent = {
-      target: { value: parseInt(id) }
+      target: { value: parseInt(id) },
     } as unknown as React.ChangeEvent<HTMLSelectElement>;
-    
+
     onItemsPerPageChange(syntheticEvent);
   };
-  
+
   // Create sections for the dropdown
   const sections: DropdownSectionProps[] = [
     {
       options: rowsOptions,
-      onSelect: handleSelect
-    }
+      onSelect: handleSelect,
+    },
   ];
-  
+
   return (
     <Dropdown
       buttonLabel="Rows per page"

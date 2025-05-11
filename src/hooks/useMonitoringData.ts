@@ -12,9 +12,10 @@ export default function useMonitoringData() {
   const [selectedProjectId, setSelectedProjectId] = useState<string>('1');
 
   const filteredLogs = useMemo(() => {
-    return logs.filter(log =>
-      (selectedLogService === 'All' || log.service === selectedLogService) &&
-      (selectedSeverity === 'All' || log.severity === selectedSeverity)
+    return logs.filter(
+      (log) =>
+        (selectedLogService === 'All' || log.service === selectedLogService) &&
+        (selectedSeverity === 'All' || log.severity === selectedSeverity),
     );
   }, [logs, selectedLogService, selectedSeverity]);
 
@@ -29,6 +30,6 @@ export default function useMonitoringData() {
     selectedSeverity,
     setSelectedSeverity,
     selectedProjectId,
-    setSelectedProjectId
+    setSelectedProjectId,
   };
-};
+}

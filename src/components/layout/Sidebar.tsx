@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Activity, 
-  GitBranch, 
-  TestTube2, 
-  ChevronLeft, 
+import {
+  LayoutDashboard,
+  Activity,
+  GitBranch,
+  TestTube2,
+  ChevronLeft,
   ChevronRight,
   Settings,
   User,
   HelpCircle,
-  BookOpen
+  BookOpen,
 } from 'lucide-react';
 import { Tab } from '@/types';
 import { useGuidance, OnboardingStep } from '@/context/GuidanceContext';
@@ -41,7 +41,7 @@ const tabs: Tab[] = [
     id: 'help',
     name: 'Help',
     icon: HelpCircle,
-  }
+  },
 ];
 
 interface SidebarProps {
@@ -84,7 +84,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
   }, []);
 
   return (
-    <div className={`sticky top-0 h-screen flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}>
+    <div
+      className={`sticky top-0 h-screen flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}
+    >
       <div className="p-2 border-b border-gray-200 dark:border-gray-700 h-16">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -148,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
                 <Settings className="h-5 w-5" />
                 <span>Settings</span>
               </button>
-              <button 
+              <button
                 onClick={() => {
                   setShowUserMenu(false);
                   showGuidance();

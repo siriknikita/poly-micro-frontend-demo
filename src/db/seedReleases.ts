@@ -15,47 +15,49 @@ export const seedReleaseData = async () => {
       version: '1.2.0',
       releaseDate: new Date('2025-04-25'),
       title: 'April 2025 Update',
-      description: 'This update brings several new features and improvements to the Poly Micro Manager.',
+      description:
+        'This update brings several new features and improvements to the Poly Micro Manager.',
       isLatest: 1,
       changes: [
         {
           type: 'feature',
-          description: 'Added new microservice testing capabilities with improved UI'
+          description: 'Added new microservice testing capabilities with improved UI',
         },
         {
           type: 'feature',
-          description: 'Introduced automatic release management system'
+          description: 'Introduced automatic release management system',
         },
         {
           type: 'improvement',
-          description: 'Enhanced dashboard performance and responsiveness'
+          description: 'Enhanced dashboard performance and responsiveness',
         },
         {
           type: 'fix',
-          description: 'Fixed authentication issues when logging in with certain email providers'
-        }
-      ]
+          description: 'Fixed authentication issues when logging in with certain email providers',
+        },
+      ],
     },
     {
       version: '1.1.0',
       releaseDate: new Date('2025-03-15'),
       title: 'March 2025 Update',
-      description: 'This update focuses on improving the monitoring capabilities and fixing several bugs.',
+      description:
+        'This update focuses on improving the monitoring capabilities and fixing several bugs.',
       isLatest: 0,
       changes: [
         {
           type: 'feature',
-          description: 'Added real-time monitoring dashboard'
+          description: 'Added real-time monitoring dashboard',
         },
         {
           type: 'improvement',
-          description: 'Optimized microservice discovery process'
+          description: 'Optimized microservice discovery process',
         },
         {
           type: 'fix',
-          description: 'Fixed issue with project selection in the dashboard'
-        }
-      ]
+          description: 'Fixed issue with project selection in the dashboard',
+        },
+      ],
     },
     {
       version: '1.0.0',
@@ -66,18 +68,18 @@ export const seedReleaseData = async () => {
       changes: [
         {
           type: 'feature',
-          description: 'Core microservice management functionality'
+          description: 'Core microservice management functionality',
         },
         {
           type: 'feature',
-          description: 'Basic authentication and user management'
+          description: 'Basic authentication and user management',
         },
         {
           type: 'feature',
-          description: 'Project configuration and setup'
-        }
-      ]
-    }
+          description: 'Project configuration and setup',
+        },
+      ],
+    },
   ];
 
   // Add releases to the database

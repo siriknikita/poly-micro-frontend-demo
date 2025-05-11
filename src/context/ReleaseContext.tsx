@@ -18,28 +18,33 @@ const ReleaseContext = createContext<ReleaseContextType | undefined>(undefined);
 export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
   const [hasUnacknowledgedRelease, setHasUnacknowledgedRelease] = useState(false);
-  
-  const latestRelease = useLiveQuery(async () => {
-    return await db.releases.where('isLatest').equals(1).first() || null;
-  }, [], null);
 
-  const allReleases = useLiveQuery(async () => {
-    return await db.releases.orderBy('releaseDate').reverse().toArray();
-  }) || [];
+  const latestRelease = useLiveQuery(
+    async () => {
+      return (await db.releases.where('isLatest').equals(1).first()) || null;
+    },
+    [],
+    null,
+  );
+
+  const allReleases =
+    useLiveQuery(async () => {
+      return await db.releases.orderBy('releaseDate').reverse().toArray();
+    }) || [];
 
   const userAcknowledgmentsQuery = useLiveQuery(async () => {
     // In a real app, you'd get the current user ID from auth context
     const currentUserId = await getCurrentUserId();
     if (!currentUserId) return [];
-    
-    return await db.userAcknowledgments
-      .where('userId')
-      .equals(currentUserId)
-      .toArray();
+
+    return await db.userAcknowledgments.where('userId').equals(currentUserId).toArray();
   });
-  
+
   // Wrap in useMemo to avoid recreating on every render
-  const userAcknowledgments = useMemo(() => userAcknowledgmentsQuery || [], [userAcknowledgmentsQuery]);
+  const userAcknowledgments = useMemo(
+    () => userAcknowledgmentsQuery || [],
+    [userAcknowledgmentsQuery],
+  );
 
   // Helper function to get current user ID
   const getCurrentUserId = async (): Promise<IndexableType | null> => {
@@ -52,16 +57,14 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
   useEffect(() => {
     const checkUnacknowledgedReleases = async () => {
       if (!latestRelease || !latestRelease.id) return;
-      
+
       const currentUserId = await getCurrentUserId();
       if (!currentUserId) return;
 
-      const hasAcknowledged = userAcknowledgments.some(
-        ack => ack.releaseId === latestRelease.id
-      );
+      const hasAcknowledged = userAcknowledgments.some((ack) => ack.releaseId === latestRelease.id);
 
       setHasUnacknowledgedRelease(!hasAcknowledged);
-      
+
       // Auto-open the modal if there's an unacknowledged release
       if (!hasAcknowledged) {
         setIsReleaseModalOpen(true);
@@ -77,7 +80,7 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
     await db.userAcknowledgments.add({
       userId,
       releaseId: latestRelease.id,
-      acknowledgedAt: new Date()
+      acknowledgedAt: new Date(),
     });
 
     setHasUnacknowledgedRelease(false);
@@ -96,7 +99,7 @@ export const ReleaseProvider: React.FC<{ children: ReactNode }> = ({ children })
         acknowledgeRelease,
         openReleaseModal,
         closeReleaseModal,
-        allReleases
+        allReleases,
       }}
     >
       {children}

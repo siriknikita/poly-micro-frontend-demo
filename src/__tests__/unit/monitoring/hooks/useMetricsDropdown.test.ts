@@ -7,7 +7,7 @@ describe('useMetricsDropdown Hook', () => {
   const mockMetrics: Metric[] = [
     { id: 'load', name: 'CPU Load %', selected: true },
     { id: 'memory', name: 'Memory Usage %', selected: true },
-    { id: 'threads', name: 'Active Threads', selected: false }
+    { id: 'threads', name: 'Active Threads', selected: false },
   ];
 
   const mockOnMetricsChange = vi.fn();
@@ -21,10 +21,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should initialize with correct state', () => {
-    const { result } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { result } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     expect(result.current.isOpen).toBe(false);
     expect(result.current.searchTerm).toBe('');
@@ -33,10 +35,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should toggle dropdown open/closed', () => {
-    const { result } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { result } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     // Initially closed
     expect(result.current.isOpen).toBe(false);
@@ -55,10 +59,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should filter metrics based on search term', () => {
-    const { result } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { result } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     // Initially all metrics are shown
     expect(result.current.filteredMetrics.length).toBe(3);
@@ -91,10 +97,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should toggle metric selection', () => {
-    const { result } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { result } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     // Initially 2 metrics are selected
     expect(result.current.selectedCount).toBe(2);
@@ -117,10 +125,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should handle keyboard events', () => {
-    const { result } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { result } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     // Open dropdown
     act(() => {
@@ -164,10 +174,12 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should add and remove event listeners', () => {
-    const { unmount } = renderHook(() => useMetricsDropdown({
-      metrics: mockMetrics,
-      onMetricsChange: mockOnMetricsChange
-    }));
+    const { unmount } = renderHook(() =>
+      useMetricsDropdown({
+        metrics: mockMetrics,
+        onMetricsChange: mockOnMetricsChange,
+      }),
+    );
 
     // Should add click outside listener
     expect(mockAddEventListener).toHaveBeenCalledWith('mousedown', expect.any(Function));
@@ -180,10 +192,9 @@ describe('useMetricsDropdown Hook', () => {
   });
 
   it('should update metrics when props change', () => {
-    const { result, rerender } = renderHook(
-      (props) => useMetricsDropdown(props),
-      { initialProps: { metrics: mockMetrics, onMetricsChange: mockOnMetricsChange } }
-    );
+    const { result, rerender } = renderHook((props) => useMetricsDropdown(props), {
+      initialProps: { metrics: mockMetrics, onMetricsChange: mockOnMetricsChange },
+    });
 
     // Initially 2 metrics are selected
     expect(result.current.selectedCount).toBe(2);
@@ -192,7 +203,7 @@ describe('useMetricsDropdown Hook', () => {
     const updatedMetrics = [
       { id: 'load', name: 'CPU Load %', selected: false },
       { id: 'memory', name: 'Memory Usage %', selected: false },
-      { id: 'threads', name: 'Active Threads', selected: true }
+      { id: 'threads', name: 'Active Threads', selected: true },
     ];
 
     rerender({ metrics: updatedMetrics, onMetricsChange: mockOnMetricsChange });

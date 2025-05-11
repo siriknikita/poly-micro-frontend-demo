@@ -6,29 +6,34 @@ import { ConfigField, IconButton } from './components';
 
 interface BlockConfigModalProps {
   block: BlockInstance;
-  onSave: (instanceId: string, config: Record<string, string | number | boolean | string[]>) => void;
+  onSave: (
+    instanceId: string,
+    config: Record<string, string | number | boolean | string[]>,
+  ) => void;
   onClose: () => void;
 }
 
-export const BlockConfigModal = memo<BlockConfigModalProps>(({
-  block,
-  onSave,
-  onClose
-}) => {
-  const [config, setConfig] = useState<Record<string, string | number | boolean | string[]>>(block.config || {});
-  
+export const BlockConfigModal = memo<BlockConfigModalProps>(({ block, onSave, onClose }) => {
+  const [config, setConfig] = useState<Record<string, string | number | boolean | string[]>>(
+    block.config || {},
+  );
+
   // Handle field change
-  const handleFieldChange = useCallback((key: string, value: string | number | boolean | string[]) => {
-    setConfig(prev => ({ ...prev, [key]: value }));
-  }, []);
+  const handleFieldChange = useCallback(
+    (key: string, value: string | number | boolean | string[]) => {
+      setConfig((prev) => ({ ...prev, [key]: value }));
+    },
+    [],
+  );
 
   // Handle form submission
-  const handleSubmit = useCallback((e: FormEvent) => {
-    e.preventDefault();
-    onSave(block.instanceId, config);
-  }, [block.instanceId, config, onSave]);
-
-
+  const handleSubmit = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      onSave(block.instanceId, config);
+    },
+    [block.instanceId, config, onSave],
+  );
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

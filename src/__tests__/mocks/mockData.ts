@@ -11,7 +11,7 @@ export const mockMicroservices: TestItem[] = [
     status: 'online',
     version: '1.2.0',
     lastDeployed: '2025-04-01T10:30:00Z',
-    type: 'microservice'
+    type: 'microservice',
   },
   {
     id: 'ms2',
@@ -20,7 +20,7 @@ export const mockMicroservices: TestItem[] = [
     status: 'online',
     version: '1.1.5',
     lastDeployed: '2025-04-05T14:20:00Z',
-    type: 'microservice'
+    type: 'microservice',
   },
   {
     id: 'ms3',
@@ -29,7 +29,7 @@ export const mockMicroservices: TestItem[] = [
     status: 'offline',
     version: '1.0.8',
     lastDeployed: '2025-03-28T09:15:00Z',
-    type: 'microservice'
+    type: 'microservice',
   },
   {
     id: 'ms4',
@@ -38,7 +38,7 @@ export const mockMicroservices: TestItem[] = [
     status: 'online',
     version: '2.0.1',
     lastDeployed: '2025-04-10T11:45:00Z',
-    type: 'microservice'
+    type: 'microservice',
   },
   {
     id: 'ms5',
@@ -47,8 +47,8 @@ export const mockMicroservices: TestItem[] = [
     status: 'online',
     version: '1.3.2',
     lastDeployed: '2025-04-08T16:30:00Z',
-    type: 'microservice'
-  }
+    type: 'microservice',
+  },
 ];
 
 // Mock test items data
@@ -67,8 +67,8 @@ export const mockTestItems: TestItem[] = [
         id: 'test2',
         name: 'Should reject invalid credentials',
         type: 'test-case',
-      }
-    ]
+      },
+    ],
   },
   {
     id: 'func2',
@@ -84,8 +84,8 @@ export const mockTestItems: TestItem[] = [
         id: 'test4',
         name: 'Should reject an expired token',
         type: 'test-case',
-      }
-    ]
+      },
+    ],
   },
   {
     id: 'func3',
@@ -101,9 +101,9 @@ export const mockTestItems: TestItem[] = [
         id: 'test6',
         name: 'Should reject duplicate email',
         type: 'test-case',
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 // Mock test output data
@@ -114,7 +114,7 @@ export const mockTestOutput: TestOutput = {
 ✓ Token generation verified
 ✓ Permissions correctly assigned`,
   coverage: 87,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 };
 
 // Mock test chat messages
@@ -123,7 +123,7 @@ export const mockTestMessages: TestMessage[] = [
     id: 'msg1',
     text: 'Can you create a test for the user login flow?',
     isUser: true,
-    timestamp: new Date(Date.now() - 30000).toISOString()
+    timestamp: new Date(Date.now() - 30000).toISOString(),
   },
   {
     id: 'msg2',
@@ -132,14 +132,14 @@ export const mockTestMessages: TestMessage[] = [
 - Invalid credentials show appropriate error
 - Login button is disabled when fields are empty`,
     isUser: false,
-    timestamp: new Date(Date.now() - 15000).toISOString()
+    timestamp: new Date(Date.now() - 15000).toISOString(),
   },
   {
     id: 'msg3',
     text: 'Can you add a test for the "forgot password" flow too?',
     isUser: true,
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  },
 ];
 
 // Mock user preferences
@@ -152,25 +152,25 @@ export const mockUserPreferences = {
 
 // Mock API responses
 export const mockApiResponses = {
-  getProjects: { 
-    success: true, 
-    data: [] 
+  getProjects: {
+    success: true,
+    data: [],
   },
-  getMicroservices: { 
-    success: true, 
-    data: mockMicroservices 
+  getMicroservices: {
+    success: true,
+    data: mockMicroservices,
   },
-  getTestItems: { 
-    success: true, 
-    data: mockTestItems 
+  getTestItems: {
+    success: true,
+    data: mockTestItems,
   },
-  getTestOutput: { 
-    success: true, 
-    data: mockTestOutput 
+  getTestOutput: {
+    success: true,
+    data: mockTestOutput,
   },
-  error: { 
-    success: false, 
-    error: 'An error occurred', 
-    message: 'Failed to fetch data' 
+  error: {
+    success: false,
+    error: 'An error occurred',
+    message: 'Failed to fetch data',
   },
 };

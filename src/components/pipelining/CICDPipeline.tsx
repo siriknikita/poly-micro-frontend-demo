@@ -14,29 +14,26 @@ interface CICDPipelineProps {
   initialServiceName?: string | null;
 }
 
-export const CICDPipeline = memo<CICDPipelineProps>(({
-  selectedProjectId,
-  initialServiceName
-}) => {
+export const CICDPipeline = memo<CICDPipelineProps>(({ selectedProjectId, initialServiceName }) => {
   // Use our custom hook for service navigation
-  const { 
-    selectedService, 
-    navigateService 
-  } = useServiceNavigation({
+  const { selectedService, navigateService } = useServiceNavigation({
     projectId: selectedProjectId,
     services: mockServices[selectedProjectId],
-    initialServiceName
+    initialServiceName,
   });
-  
+
   // Local state
   const [showGrid, setShowGrid] = useState(true);
   const [toolboxPosition] = useState<'left' | 'right' | 'float'>('left');
   const [isSimulating, setIsSimulating] = useState(false);
 
   // Handle service navigation
-  const handleServiceChange = useCallback((direction: 'up' | 'down') => {
-    navigateService(direction);
-  }, [navigateService]);
+  const handleServiceChange = useCallback(
+    (direction: 'up' | 'down') => {
+      navigateService(direction);
+    },
+    [navigateService],
+  );
 
   // Handle pipeline export
   const handleExport = useCallback(() => {
@@ -69,7 +66,7 @@ export const CICDPipeline = memo<CICDPipelineProps>(({
               <IconButton
                 onClick={() => setShowGrid(!showGrid)}
                 icon={<Grid3X3 className="h-5 w-5" />}
-                variant={showGrid ? "primary" : "outline"}
+                variant={showGrid ? 'primary' : 'outline'}
                 title="Toggle grid"
                 aria-label="Toggle grid visibility"
               />
@@ -81,7 +78,7 @@ export const CICDPipeline = memo<CICDPipelineProps>(({
               onClick={() => setIsSimulating(!isSimulating)}
               icon={<Play className="h-4 w-4" />}
               label={isSimulating ? 'Stop Simulation' : 'Start Simulation'}
-              variant={isSimulating ? "success" : "primary"}
+              variant={isSimulating ? 'success' : 'primary'}
               size="md"
             />
             <IconButton

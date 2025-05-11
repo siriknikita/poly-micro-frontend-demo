@@ -6,7 +6,7 @@ const PATH_TO_TAB = {
   '/dashboard': 'dashboard',
   '/monitoring': 'monitoring',
   '/cicd': 'cicd',
-  '/testing': 'testing'
+  '/testing': 'testing',
 };
 
 /**
@@ -16,7 +16,7 @@ const PATH_TO_TAB = {
 export function useTabNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Check if we need to force the testing tab (for guidance navigation)
   useEffect(() => {
     const forceTestingTab = sessionStorage.getItem('forceTestingTab');
@@ -31,7 +31,7 @@ export function useTabNavigation() {
       navigate('/testing', { replace: true });
     }
   }, [navigate]);
-  
+
   // Determine active tab from URL path
   const [activeTab, setActiveTab] = useState(() => {
     // Check if we need to force the testing tab
@@ -41,10 +41,11 @@ export function useTabNavigation() {
     }
     return PATH_TO_TAB[location.pathname as keyof typeof PATH_TO_TAB] || 'dashboard';
   });
-  
+
   // Update URL when tab changes
   useEffect(() => {
-    const tabPath = Object.entries(PATH_TO_TAB).find(([, tab]) => tab === activeTab)?.[0] || '/dashboard';
+    const tabPath =
+      Object.entries(PATH_TO_TAB).find(([, tab]) => tab === activeTab)?.[0] || '/dashboard';
     if (location.pathname !== tabPath) {
       // Use replace: true to avoid breaking the history stack and preserve auth state
       navigate(tabPath, { replace: true });
@@ -54,6 +55,6 @@ export function useTabNavigation() {
   return {
     activeTab,
     setActiveTab,
-    pathToTab: PATH_TO_TAB
+    pathToTab: PATH_TO_TAB,
   };
 }

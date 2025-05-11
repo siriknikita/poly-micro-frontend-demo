@@ -1,10 +1,12 @@
 # Release Management System
 
-The Poly Micro Manager includes an automatic release management system that notifies users of new releases in a Discord-style format. This document explains how to use and manage the system.
+The Poly Micro Manager includes an automatic release management system that notifies users of new
+releases in a Discord-style format. This document explains how to use and manage the system.
 
 ## Features
 
-- **Automatic Notifications**: Users are automatically notified of new releases they haven't acknowledged
+- **Automatic Notifications**: Users are automatically notified of new releases they haven't
+  acknowledged
 - **Release Notes**: Detailed release notes with version information, changes, and improvements
 - **User Acknowledgment**: Users can acknowledge releases to dismiss notifications
 - **Release History**: Users can view the history of all previous releases
@@ -34,17 +36,17 @@ await createNewRelease(
   [
     {
       type: 'feature',
-      description: 'Added new CI/CD pipeline integration'
+      description: 'Added new CI/CD pipeline integration',
     },
     {
       type: 'improvement',
-      description: 'Enhanced microservice discovery process'
+      description: 'Enhanced microservice discovery process',
     },
     {
       type: 'fix',
-      description: 'Fixed issue with project selection'
-    }
-  ]
+      description: 'Fixed issue with project selection',
+    },
+  ],
 );
 ```
 
@@ -74,12 +76,15 @@ The `releaseManager.ts` utility provides several functions for managing releases
 The release management system integrates with your CI/CD pipeline using Git tags:
 
 1. **Creating Tags**: When you're ready to release a new version, create and push a Git tag:
+
    ```bash
    git tag v1.3.0
    git push origin v1.3.0
    ```
 
-2. **Automatic Workflow**: The GitHub Actions workflow in `.github/workflows/release-update.yml` will:
+2. **Automatic Workflow**: The GitHub Actions workflow in `.github/workflows/release-update.yml`
+   will:
+
    - Trigger when a tag starting with 'v' is pushed
    - Extract the version number from the tag
    - Generate release notes from commit messages
@@ -101,6 +106,7 @@ The system extracts release notes from commit messages based on their prefixes:
 - `BREAKING CHANGE:` → Breaking change
 
 Example commit messages:
+
 ```
 feat: Add new dashboard component
 fix: Resolve authentication issue
@@ -115,15 +121,10 @@ You can also manually create releases using the `createNewRelease` function:
 ```typescript
 import { createNewRelease } from './utils/releaseManager';
 
-await createNewRelease(
-  '1.3.0',
-  'New Release Title',
-  'Description of the release',
-  [
-    { type: 'feature', description: 'New feature description' },
-    { type: 'fix', description: 'Bug fix description' }
-  ]
-);
+await createNewRelease('1.3.0', 'New Release Title', 'Description of the release', [
+  { type: 'feature', description: 'New feature description' },
+  { type: 'fix', description: 'Bug fix description' },
+]);
 ```
 
 ## Database Schema
@@ -137,7 +138,9 @@ The release management system uses the following database tables:
 
 ### Theme Support
 
-The release notification system automatically adapts to the application's theme (light or dark mode). The components use the `useTheme` hook to detect the current theme and apply appropriate styling.
+The release notification system automatically adapts to the application's theme (light or dark
+mode). The components use the `useTheme` hook to detect the current theme and apply appropriate
+styling.
 
 ### Component Customization
 
@@ -149,7 +152,8 @@ The appearance and behavior of the release notification system can be customized
 
 ### Styling
 
-The components use Tailwind CSS for styling. You can customize the appearance by modifying the CSS classes in the component files.
+The components use Tailwind CSS for styling. You can customize the appearance by modifying the CSS
+classes in the component files.
 
 ## Troubleshooting
 
@@ -164,5 +168,6 @@ If releases are not showing up:
 ### Common Issues
 
 - **No releases showing**: Make sure your releases.json file is properly formatted and accessible
-- **Release notification not appearing**: Check if the user has already acknowledged the latest release
+- **Release notification not appearing**: Check if the user has already acknowledged the latest
+  release
 - **Theme not applying correctly**: Ensure the useTheme hook is properly integrated

@@ -2,7 +2,9 @@
 
 ## Overview
 
-The metrics selection functionality allows users to customize which metrics are displayed on monitoring charts. This feature has been refactored to follow SOLID principles with a modular architecture that emphasizes separation of concerns and reusability.
+The metrics selection functionality allows users to customize which metrics are displayed on
+monitoring charts. This feature has been refactored to follow SOLID principles with a modular
+architecture that emphasizes separation of concerns and reusability.
 
 ## Components Structure
 
@@ -24,20 +26,23 @@ src/components/monitoring/
 
 ### MetricsSelector
 
-The main component that integrates all metrics selection functionality. It provides a dropdown interface for selecting which metrics to display on charts.
+The main component that integrates all metrics selection functionality. It provides a dropdown
+interface for selecting which metrics to display on charts.
 
 **Props:**
+
 - `metrics`: Array of metric objects with id, name, and selected properties
 - `onMetricsChange`: Callback function when metrics selection changes
 - `className`: Optional custom CSS class
 
 **Example Usage:**
+
 ```jsx
 <MetricsSelector
   metrics={[
     { id: 'load', name: 'CPU Load %', selected: true },
     { id: 'memory', name: 'Memory Usage %', selected: true },
-    { id: 'threads', name: 'Active Threads', selected: false }
+    { id: 'threads', name: 'Active Threads', selected: false },
   ]}
   onMetricsChange={(selectedIds) => console.log('Selected metrics:', selectedIds)}
   className="custom-metrics-selector"
@@ -49,6 +54,7 @@ The main component that integrates all metrics selection functionality. It provi
 Button component that shows the count of selected metrics and toggles the dropdown visibility.
 
 **Props:**
+
 - `selectedCount`: Number of selected metrics
 - `onClick`: Callback function when button is clicked
 - `isOpen`: Boolean indicating if dropdown is open
@@ -58,6 +64,7 @@ Button component that shows the count of selected metrics and toggles the dropdo
 Search input component for filtering available metrics.
 
 **Props:**
+
 - `searchTerm`: Current search term
 - `onChange`: Callback function when search term changes
 - `onKeyDown`: Callback function for keyboard events
@@ -68,6 +75,7 @@ Search input component for filtering available metrics.
 Component that displays a list of available metrics with toggle functionality.
 
 **Props:**
+
 - `metrics`: Array of filtered metric objects
 - `onToggleMetric`: Callback function when a metric is toggled
 - `onKeyDown`: Callback function for keyboard events
@@ -79,16 +87,19 @@ Component that displays a list of available metrics with toggle functionality.
 This hook manages the state of selected metrics and persists user preferences to localStorage.
 
 **Parameters:**
+
 - `projectId`: Current project ID
 - `serviceName`: Current service name
 - `defaultMetrics`: Array of default metrics with their initial selection state
 
 **Returns:**
+
 - `metrics`: Current metrics array with updated selection state
 - `selectedMetricIds`: Array of selected metric IDs
 - `updateMetricSelection`: Function to update the selected metrics
 
 **Example:**
+
 ```jsx
 const { metrics, selectedMetricIds, updateMetricSelection } = useMetricsSelection({
   projectId: 'project1',
@@ -96,20 +107,23 @@ const { metrics, selectedMetricIds, updateMetricSelection } = useMetricsSelectio
   defaultMetrics: [
     { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
     { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true }
-  ]
+    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true },
+  ],
 });
 ```
 
 ### useMetricsDropdown
 
-This hook manages the dropdown UI state, search functionality, and keyboard navigation for the MetricsSelector component.
+This hook manages the dropdown UI state, search functionality, and keyboard navigation for the
+MetricsSelector component.
 
 **Parameters:**
+
 - `metrics`: Array of metric objects
 - `onMetricsChange`: Callback function when metrics selection changes
 
 **Returns:**
+
 - `isOpen`: Boolean indicating if dropdown is open
 - `searchTerm`: Current search term
 - `filteredMetrics`: Array of metrics filtered by search term
@@ -139,7 +153,8 @@ The metrics selection state is persisted to localStorage using the following str
 }
 ```
 
-This allows the application to remember user preferences for each project and service combination, providing a personalized experience across sessions.
+This allows the application to remember user preferences for each project and service combination,
+providing a personalized experience across sessions.
 
 ## Accessibility Features
 
@@ -152,7 +167,8 @@ The metrics selection components include several accessibility features:
 
 ## Integration with CPUChart
 
-The MetricsSelector component is integrated with the CPUChart component to allow users to customize which metrics are displayed on the chart:
+The MetricsSelector component is integrated with the CPUChart component to allow users to customize
+which metrics are displayed on the chart:
 
 ```jsx
 // Inside CPUChart.tsx
@@ -162,31 +178,28 @@ const { metrics, selectedMetricIds, updateMetricSelection } = useMetricsSelectio
   defaultMetrics: [
     { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
     { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true }
-  ]
+    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true },
+  ],
 });
 
 return (
   <div className="cpu-chart">
-    <ServiceSelector 
-      services={services} 
-      selectedService={selectedService} 
-      onServiceSelect={onServiceSelect} 
+    <ServiceSelector
+      services={services}
+      selectedService={selectedService}
+      onServiceSelect={onServiceSelect}
     />
-    
+
     {selectedService && data ? (
       <>
-        <MetricsSelector 
-          metrics={metrics} 
-          onMetricsChange={updateMetricSelection} 
-        />
-        
+        <MetricsSelector metrics={metrics} onMetricsChange={updateMetricSelection} />
+
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={data}>
             {metrics
-              .filter(metric => metric.selected)
-              .map(metric => (
-                <Line 
+              .filter((metric) => metric.selected)
+              .map((metric) => (
+                <Line
                   key={metric.id}
                   type="monotone"
                   dataKey={metric.dataKey}
@@ -204,8 +217,8 @@ return (
       </>
     ) : (
       <div className="placeholder-message">
-        {selectedService 
-          ? 'No metrics available for this service' 
+        {selectedService
+          ? 'No metrics available for this service'
           : 'Please select a microservice to view its metrics'}
       </div>
     )}

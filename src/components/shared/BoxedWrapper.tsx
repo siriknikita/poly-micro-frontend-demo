@@ -6,11 +6,7 @@ interface BoxedWrapperProps {
   className?: string;
 }
 
-const BoxedWrapper: React.FC<BoxedWrapperProps> = ({
-  children,
-  style,
-  className = '',
-}) => {
+const BoxedWrapper: React.FC<BoxedWrapperProps> = ({ children, style, className = '' }) => {
   return (
     <div
       style={style}

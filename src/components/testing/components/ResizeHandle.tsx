@@ -9,10 +9,7 @@ interface ResizeHandleProps {
 /**
  * Component for resizing panels
  */
-export const ResizeHandle = memo<ResizeHandleProps>(({
-  onResizeStart,
-  className = ''
-}) => {
+export const ResizeHandle = memo<ResizeHandleProps>(({ onResizeStart, className = '' }) => {
   return (
     <div
       className={`flex items-center cursor-col-resize hover:bg-gray-200 dark:hover:bg-gray-700 ${className}`}

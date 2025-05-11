@@ -22,5 +22,5 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, './src/helpers/constants'),
       '@data': path.resolve(__dirname, './src/data'),
     },
-  }
+  },
 });

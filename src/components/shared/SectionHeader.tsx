@@ -16,7 +16,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
       <HeaderIcon className={iconClassName} />
       {title}
     </h3>
-  )
-}
+  );
+};
 
 export default SectionHeader;

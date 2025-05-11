@@ -7,7 +7,7 @@ import { db } from '@/db/db';
 
 // Mock the react-router-dom useNavigate hook
 vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn()
+  useNavigate: vi.fn(),
 }));
 
 // Mock the database with Dexie's query API structure
@@ -16,7 +16,7 @@ vi.mock('@/db/db', () => {
   const mockFirst = vi.fn();
   const mockEquals = vi.fn().mockImplementation(() => ({ first: mockFirst }));
   const mockWhere = vi.fn().mockImplementation(() => ({ equals: mockEquals }));
-  
+
   return {
     db: {
       users: {
@@ -24,16 +24,16 @@ vi.mock('@/db/db', () => {
         add: vi.fn(),
         update: vi.fn(),
         delete: vi.fn(),
-        get: vi.fn()
+        get: vi.fn(),
       },
       projects: {
         where: mockWhere,
         toArray: vi.fn(),
         add: vi.fn(),
         update: vi.fn(),
-        get: vi.fn()
-      }
-    }
+        get: vi.fn(),
+      },
+    },
   };
 });
 
@@ -50,12 +50,12 @@ const mockLocalStorage = (() => {
     }),
     clear: vi.fn(() => {
       store = {};
-    })
+    }),
   };
 })();
 
 Object.defineProperty(window, 'localStorage', {
-  value: mockLocalStorage
+  value: mockLocalStorage,
 });
 
 describe('useAuth', () => {
@@ -65,7 +65,7 @@ describe('useAuth', () => {
     username: 'testuser',
     password: 'password123',
     email: 'test@example.com',
-    businessName: 'Test Business'
+    businessName: 'Test Business',
   };
 
   beforeEach(() => {
@@ -81,7 +81,7 @@ describe('useAuth', () => {
     const { result } = renderHook(() => useAuth());
 
     // Initial state should be loading
-    expect(result.current.isLoading).toBe(false); 
+    expect(result.current.isLoading).toBe(false);
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBe(null);
   });
@@ -90,9 +90,9 @@ describe('useAuth', () => {
     // Setup localStorage with a user
     const storedUser = JSON.stringify(mockUser);
     mockLocalStorage.getItem.mockReturnValueOnce(storedUser);
-    
+
     const { result } = renderHook(() => useAuth());
-    
+
     await vi.waitFor(() => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.isAuthenticated).toBe(true);
@@ -107,11 +107,13 @@ describe('useAuth', () => {
       username: 'testuser',
       email: 'test@example.com',
       businessName: 'Test Business',
-      password: 'password123'
+      password: 'password123',
     };
-    
+
     // Mock db.users.where().equals().first() to return our test user
-    vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce(testUser as User);
+    vi.mocked(db.users.where('username').equals('testuser').first).mockResolvedValueOnce(
+      testUser as User,
+    );
 
     const { result } = renderHook(() => useAuth());
 
@@ -119,7 +121,7 @@ describe('useAuth', () => {
     await act(async () => {
       await result.current.login('testuser', 'password123');
     });
-    
+
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user).toEqual(testUser);
     expect(mockLocalStorage.setItem).toHaveBeenCalledWith('currentUser', JSON.stringify(testUser));
@@ -132,9 +134,10 @@ describe('useAuth', () => {
     const { result } = renderHook(() => useAuth());
 
     // Mock failed login
-    await expect(result.current.login('wronguser', 'wrongpassword'))
-      .rejects.toThrow('Invalid username or password');
-    
+    await expect(result.current.login('wronguser', 'wrongpassword')).rejects.toThrow(
+      'Invalid username or password',
+    );
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBe(null);
   });
@@ -146,15 +149,16 @@ describe('useAuth', () => {
       username: 'testuser',
       password: 'correctpassword', // Different from what we'll try to login with
       email: 'test@example.com',
-      businessName: 'Test Business'
+      businessName: 'Test Business',
     } as User);
 
     const { result } = renderHook(() => useAuth());
 
     // Mock failed login
-    await expect(result.current.login('testuser', 'wrongpassword'))
-      .rejects.toThrow('Invalid username or password');
-    
+    await expect(result.current.login('testuser', 'wrongpassword')).rejects.toThrow(
+      'Invalid username or password',
+    );
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBe(null);
   });
@@ -162,20 +166,20 @@ describe('useAuth', () => {
   it('handles registration success', async () => {
     // Mock db.users.where().equals().first() to return null (username doesn't exist)
     vi.mocked(db.users.where('username').equals('newuser').first).mockResolvedValueOnce(null);
-    
+
     const { result } = renderHook(() => useAuth());
 
     const newUser = {
       username: 'newuser',
       password: 'newpassword',
       email: 'new@example.com',
-      businessName: 'New Business'
+      businessName: 'New Business',
     };
 
     await act(async () => {
       await result.current.register(newUser);
     });
-    
+
     expect(db.users.add).toHaveBeenCalledWith(newUser);
   });
 
@@ -186,7 +190,7 @@ describe('useAuth', () => {
       username: 'testuser',
       password: 'password123',
       email: 'test@example.com',
-      businessName: 'Test Business'
+      businessName: 'Test Business',
     } as User);
 
     const { result } = renderHook(() => useAuth());
@@ -195,12 +199,11 @@ describe('useAuth', () => {
       username: 'testuser', // Same username as existing user
       password: 'newpassword',
       email: 'new@example.com',
-      businessName: 'New Business'
+      businessName: 'New Business',
     };
 
-    await expect(result.current.register(newUser))
-      .rejects.toThrow('Username already exists');
-    
+    await expect(result.current.register(newUser)).rejects.toThrow('Username already exists');
+
     expect(db.users.add).not.toHaveBeenCalled();
   });
 
@@ -211,12 +214,12 @@ describe('useAuth', () => {
       username: 'testuser',
       email: 'test@example.com',
       businessName: 'Test Business',
-      password: 'password123'
+      password: 'password123',
     };
-    
+
     mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(testUser));
     const { result } = renderHook(() => useAuth());
-    
+
     // Verify user is logged in
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user).toEqual(testUser);
@@ -225,7 +228,7 @@ describe('useAuth', () => {
     act(() => {
       result.current.logout();
     });
-    
+
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBe(null);
     expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('currentUser');

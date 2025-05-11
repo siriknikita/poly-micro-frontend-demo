@@ -2,15 +2,19 @@
 
 ## Overview
 
-This guide explains how to properly import components in the Poly Micro Manager application, particularly focusing on the refactored component structure and custom hooks.
+This guide explains how to properly import components in the Poly Micro Manager application,
+particularly focusing on the refactored component structure and custom hooks.
 
 ## Component Export Structure
 
 The application uses a centralized export system through index files at various levels:
 
-1. **Main components index**: `src/components/index.ts` - Re-exports components from all feature modules
-2. **Feature module index**: e.g., `src/components/testing/index.ts` - Re-exports components from a specific feature
-3. **Sub-module index**: e.g., `src/components/testing/components/index.ts` - Re-exports components from a specific sub-module
+1. **Main components index**: `src/components/index.ts` - Re-exports components from all feature
+   modules
+2. **Feature module index**: e.g., `src/components/testing/index.ts` - Re-exports components from a
+   specific feature
+3. **Sub-module index**: e.g., `src/components/testing/components/index.ts` - Re-exports components
+   from a specific sub-module
 
 ```typescript
 // Import from the main components index
@@ -25,29 +29,42 @@ import { SubComponent } from '@/components/feature/components';
 
 ## Custom Hooks
 
-The application has been refactored to use custom hooks for better separation of concerns. Each feature module has its own hooks directory with an index file for exports.
+The application has been refactored to use custom hooks for better separation of concerns. Each
+feature module has its own hooks directory with an index file for exports.
 
 ```typescript
 // Import hooks from the main hooks directory
 import { useTheme, usePagination } from '@/hooks';
 
 // Import feature-specific hooks
-import { useTestItems, useResizablePanel, useMicroserviceNavigation } from '@/components/testing/hooks';
+import {
+  useTestItems,
+  useResizablePanel,
+  useMicroserviceNavigation,
+} from '@/components/testing/hooks';
 import { useAuthManagement, useServiceSelection } from '@/components/monitoring/hooks';
 ```
 
 ## Reusable UI Components
 
-Many UI components have been refactored into smaller, reusable components. These are typically organized in a `components` directory within each feature module.
+Many UI components have been refactored into smaller, reusable components. These are typically
+organized in a `components` directory within each feature module.
 
 ```typescript
 // Import reusable components from the testing feature
-import { IconButton, NavigationControls, SearchInput, TestItem } from '@/components/testing/components';
+import {
+  IconButton,
+  NavigationControls,
+  SearchInput,
+  TestItem,
+} from '@/components/testing/components';
 ```
 
 ## Renamed Components
 
-Some components have been renamed in the main export file to avoid naming conflicts between different feature modules. The most notable examples are components with the same name in different features.
+Some components have been renamed in the main export file to avoid naming conflicts between
+different feature modules. The most notable examples are components with the same name in different
+features.
 
 ### Example: IconButton Components
 
@@ -69,7 +86,8 @@ import { TestingIconButton, PipeliningIconButton } from '@/components';
 
 #### Direct Imports
 
-If you're working directly within a feature module, you can import the original component with its original name:
+If you're working directly within a feature module, you can import the original component with its
+original name:
 
 ```typescript
 // Within testing feature components

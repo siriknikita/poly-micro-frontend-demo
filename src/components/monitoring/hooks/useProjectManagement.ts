@@ -11,39 +11,39 @@ import { useProject } from '@/context/useProject';
 export function useProjectManagement(activeTab: string) {
   const { setProject } = useProject();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  
+
   // Load saved project on component mount
   useEffect(() => {
     // Load last selected project
     const savedProjectId = localStorage.getItem('lastSelectedProject');
     if (savedProjectId) {
-      const project = mockProjects.find(p => p.id === savedProjectId);
+      const project = mockProjects.find((p) => p.id === savedProjectId);
       if (project) {
         setSelectedProject(project);
       }
     }
   }, []);
-  
+
   // Update project context when tab or selected project changes
   useEffect(() => {
     if (!selectedProject) return;
-    
+
     // If we're on the testing tab, make sure the project has microservices data
     if (activeTab === 'testing') {
       // Get project-specific test data or fallback to an empty array
       const projectTestData = mockTestDataByProject[selectedProject.id] || [];
-      
+
       const projectWithMicroservices = {
         ...selectedProject,
-        microservices: projectTestData
+        microservices: projectTestData,
       };
-      
+
       setProject(projectWithMicroservices);
     } else {
       // For other tabs, we don't need the microservices data
       setProject({
         ...selectedProject,
-        microservices: undefined
+        microservices: undefined,
       });
     }
   }, [activeTab, selectedProject, setProject]);
@@ -57,6 +57,6 @@ export function useProjectManagement(activeTab: string) {
   return {
     selectedProject,
     setSelectedProject,
-    handleSelectProject
+    handleSelectProject,
   };
 }

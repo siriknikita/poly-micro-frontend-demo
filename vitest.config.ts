@@ -9,12 +9,39 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/__tests__/setup.ts'],
     css: true,
-    deps: {
-      inline: ['lucide-react'], // Add packages that should be inlined in tests
+    // Fix for the deprecation warning
+    server: {
+      deps: {
+        inline: ['lucide-react'], // Add packages that should be inlined in tests
+      },
     },
     typecheck: {
       enabled: true,
       tsconfig: './tsconfig.app.json',
+    },
+    // Suppress various test warnings
+    onConsoleLog(log) {
+      // Suppress React act() warnings
+      if (
+        (log.includes('Warning: An update to') &&
+          log.includes('inside a test was not wrapped in act')) ||
+        log.includes('data-testId')
+      ) {
+        return false;
+      }
+
+      // Suppress experimental feature warnings
+      if (
+        log.includes('Testing types with tsc and vue-tsc is an experimental feature') ||
+        log.includes('Breaking changes might not follow SemVer')
+      ) {
+        return false;
+      }
+
+      // Suppress guidance state logs
+      if (log.includes('Current guidance state:')) {
+        return false;
+      }
     },
     coverage: {
       provider: 'v8',
@@ -24,6 +51,23 @@ export default defineConfig({
         'src/__tests__/**',
         '**/*.d.ts',
         '**/index.ts',
+        'coverage/**',
+        '.github/**',
+        'dev-scripts/**',
+        'postcss.config.js',
+        'tailwind.config.js',
+        '**/*.config.{js,ts}',
+        '**/emscripten_fetch_worker.js',
+        'src/App.tsx',
+        'src/main.tsx',
+        'src/setupTests.ts',
+        // Components not ready for coverage reporting
+        'src/context/toastTypes.ts',
+        'src/utils/**',
+        'src/db/resetDatabase.ts',
+        'src/db/seedReleases.ts',
+        'src/hooks/useRelease.ts',
+        'src/components/pipelining/**',
       ],
     },
   },

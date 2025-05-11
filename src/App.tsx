@@ -32,8 +32,11 @@ function AppContent() {
 
   // Handle navigation after logout
   useEffect(() => {
-    if (!isAuthenticated && !window.location.pathname.includes('/login') && 
-        !window.location.pathname.includes('/register')) {
+    if (
+      !isAuthenticated &&
+      !window.location.pathname.includes('/login') &&
+      !window.location.pathname.includes('/register')
+    ) {
       // Use navigate instead of direct window.location modification
       // to preserve React context and state
       navigate('/login', { replace: true });

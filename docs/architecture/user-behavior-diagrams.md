@@ -1,21 +1,23 @@
 # User Behavior Diagrams
 
-This document contains UML diagrams illustrating the expected user behavior and flow through the Poly Micro Manager application.
+This document contains UML diagrams illustrating the expected user behavior and flow through the
+Poly Micro Manager application.
 
 ## Monitoring Dashboard Flow
 
-The monitoring dashboard is a crucial component allowing users to observe and manage microservices in real-time.
+The monitoring dashboard is a crucial component allowing users to observe and manage microservices
+in real-time.
 
 ### Metric Exploration Flow
 
 ```mermaid
 sequenceDiagram
     title Metrics Exploration Flow
-    
+
     actor User
     participant ServiceDetails
     participant Metrics
-    
+
     User->>ServiceDetails: Click on metrics tab
     ServiceDetails->>Metrics: Request service metrics
     Metrics-->>User: Display performance graphs
@@ -28,11 +30,11 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     title Service Selection Flow
-    
+
     actor User
     participant MicroserviceList
     participant ServiceDetails
-    
+
     User->>MicroserviceList: Select microservice
     MicroserviceList->>ServiceDetails: Request service details
     ServiceDetails-->>User: Display service overview
@@ -43,11 +45,11 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     title Alert Management Flow
-    
+
     actor User
     participant ServiceDetails
     participant Alerts
-    
+
     User->>ServiceDetails: Click on alerts tab
     ServiceDetails->>Alerts: Request active alerts
     Alerts-->>User: Display alerts list
@@ -60,10 +62,10 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     title Dashboard Customization
-    
+
     actor User
     participant Dashboard
-    
+
     User->>Dashboard: Customize view
     Dashboard-->>User: Save preference
     User->>Dashboard: Export dashboard data
@@ -77,7 +79,7 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> Unauthenticated
-    
+
     state Unauthenticated {
         [*] --> LoginPage
         LoginPage --> AttemptLogin: Submit credentials
@@ -98,7 +100,7 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
     [*] --> Unauthenticated
-    
+
     state Unauthenticated {
         [*] --> RegistrationPage
         RegistrationPage --> AttemptRegistration: Submit registration

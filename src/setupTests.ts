@@ -8,8 +8,8 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useNavigate: () => vi.fn(),
     useLocation: () => ({ pathname: '/dashboard' }),
-    BrowserRouter: ({ children }: { children: React.ReactNode }) => 
-      React.createElement(React.Fragment, null, children)
+    BrowserRouter: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   };
 });
 
@@ -29,10 +29,10 @@ vi.mock('@/context/GuidanceContext', async () => {
       prevStep: vi.fn(),
       goToStep: vi.fn(),
       completeGuidance: vi.fn().mockResolvedValue(undefined),
-      shouldShowTooltipForStep: vi.fn().mockReturnValue(false)
+      shouldShowTooltipForStep: vi.fn().mockReturnValue(false),
     }),
-    GuidanceProvider: ({ children }: { children: React.ReactNode }) => 
-      React.createElement(React.Fragment, null, children)
+    GuidanceProvider: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   };
 });
 
@@ -42,9 +42,9 @@ Object.defineProperty(window, 'localStorage', {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
-    clear: vi.fn()
+    clear: vi.fn(),
   },
-  writable: true
+  writable: true,
 });
 
 // Mock sessionStorage
@@ -53,7 +53,7 @@ Object.defineProperty(window, 'sessionStorage', {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
-    clear: vi.fn()
+    clear: vi.fn(),
   },
-  writable: true
+  writable: true,
 });

@@ -8,15 +8,15 @@ export const useHelp = () => {
 
   const submitQuestion = async (question: QuestionSubmission): Promise<void> => {
     setIsSubmitting(true);
-    
+
     try {
       // In a real application, this would be an API call to submit the question
       // For demo purposes, we're simulating a successful submission after a delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Log the question to console for demo purposes
       console.log('Question submitted:', question);
-      
+
       showSuccess('Your question has been submitted successfully!');
       return Promise.resolve();
     } catch (error) {
@@ -30,6 +30,6 @@ export const useHelp = () => {
 
   return {
     submitQuestion,
-    isSubmitting
+    isSubmitting,
   };
 };

@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Authentication feature provides user authentication and registration functionality for the Poly Micro Manager application. It handles user login, registration, and session management to secure access to the application's features.
+The Authentication feature provides user authentication and registration functionality for the Poly
+Micro Manager application. It handles user login, registration, and session management to secure
+access to the application's features.
 
 ## Components Structure
 
@@ -29,6 +31,7 @@ src/components/auth/
 Provides a form interface for users to log in to the application.
 
 **Key Features:**
+
 - Username and password input fields
 - Form validation using useForm hook
 - Error handling and display
@@ -40,6 +43,7 @@ Provides a form interface for users to log in to the application.
 Provides a form interface for new users to register for the application.
 
 **Key Features:**
+
 - Business name, email, username, and password fields
 - Email format validation
 - Username and password length validation
@@ -54,6 +58,7 @@ Provides a form interface for new users to register for the application.
 Provides a consistent layout for authentication pages.
 
 **Key Features:**
+
 - Title and icon display
 - Dark mode toggle
 - Responsive design with proper spacing
@@ -64,6 +69,7 @@ Provides a consistent layout for authentication pages.
 A customizable button component used throughout the auth forms.
 
 **Key Features:**
+
 - Multiple variants (primary, secondary, outline)
 - Loading state with spinner
 - Full-width option
@@ -74,6 +80,7 @@ A customizable button component used throughout the auth forms.
 A reusable input component with built-in label and error display.
 
 **Key Features:**
+
 - Label integration
 - Error message display
 - Various input types (text, email, password)
@@ -86,6 +93,7 @@ A reusable input component with built-in label and error display.
 Manages authentication state and operations.
 
 **Key Features:**
+
 - User authentication state
 - Login functionality
 - Registration functionality
@@ -97,6 +105,7 @@ Manages authentication state and operations.
 Handles form state, validation, and submission.
 
 **Key Features:**
+
 - Form values management
 - Field validation with custom rules
 - Error state handling
@@ -105,7 +114,8 @@ Handles form state, validation, and submission.
 
 ## Authentication Flow
 
-1. **User Access**: When a user accesses the application, they are directed to the login page if not authenticated
+1. **User Access**: When a user accesses the application, they are directed to the login page if not
+   authenticated
 2. **Login/Register**: User enters credentials or registers a new account
 3. **Validation**: The application validates the credentials against the backend
 4. **Session Management**: Upon successful authentication, a session is created
@@ -113,8 +123,10 @@ Handles form state, validation, and submission.
 
 ## Integration with Other Features
 
-- **All Protected Features**: Authentication is required to access testing, monitoring, and pipelining features
-- **User-specific Data**: User authentication determines what projects and microservices are accessible
+- **All Protected Features**: Authentication is required to access testing, monitoring, and
+  pipelining features
+- **User-specific Data**: User authentication determines what projects and microservices are
+  accessible
 - **Dark Mode Support**: Authentication components support the application's dark mode toggle
 
 ## Security Considerations
@@ -131,7 +143,8 @@ The authentication module has comprehensive test coverage using Vitest and React
 
 ### Hook Tests
 
-- **useAuth.test.tsx**: Tests for authentication state management, login, registration, and logout functionality
+- **useAuth.test.tsx**: Tests for authentication state management, login, registration, and logout
+  functionality
 - **useForm.test.tsx**: Tests for form state management, validation, submission, and error handling
 
 ### Component Tests

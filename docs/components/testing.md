@@ -2,7 +2,12 @@
 
 ## Overview
 
-The Testing feature provides a comprehensive suite of tools for automated testing of microservices. It allows users to create, manage, and execute tests against their microservices, view test results, and use AI assistance for test creation. The system includes toast notifications for real-time feedback on test execution and other key actions. The feature has been recently refactored to improve code organization, reusability, and performance through custom hooks and reusable UI components.
+The Testing feature provides a comprehensive suite of tools for automated testing of microservices.
+It allows users to create, manage, and execute tests against their microservices, view test results,
+and use AI assistance for test creation. The system includes toast notifications for real-time
+feedback on test execution and other key actions. The feature has been recently refactored to
+improve code organization, reusability, and performance through custom hooks and reusable UI
+components.
 
 ## Components Structure
 
@@ -38,9 +43,11 @@ src/components/testing/
 
 ### AutomatedTesting.tsx
 
-The main container component for the testing feature. It integrates all the testing components and manages the overall state of the testing interface.
+The main container component for the testing feature. It integrates all the testing components and
+manages the overall state of the testing interface.
 
 **Key Features:**
+
 - Resizable panels for test list and test details
 - Navigation between microservices
 - Integration with AI for test generation
@@ -51,6 +58,7 @@ The main container component for the testing feature. It integrates all the test
 Displays the list of available tests for the selected microservice.
 
 **Key Features:**
+
 - Expandable/collapsible test items
 - Test selection and execution
 - Filtering and searching tests
@@ -60,6 +68,7 @@ Displays the list of available tests for the selected microservice.
 Provides an interactive chat interface for test creation and modification.
 
 **Key Features:**
+
 - AI-assisted test creation
 - Test history viewing
 - Test execution from chat
@@ -69,6 +78,7 @@ Provides an interactive chat interface for test creation and modification.
 Modal component for creating AI-assisted tests.
 
 **Key Features:**
+
 - Prompt templates for common test scenarios
 - Custom prompt input
 - Test generation with AI
@@ -80,6 +90,7 @@ Modal component for creating AI-assisted tests.
 Manages the state and functionality for resizable panels.
 
 **Usage:**
+
 - Controls panel dimensions
 - Handles resize events
 - Maintains minimum and maximum sizes
@@ -89,6 +100,7 @@ Manages the state and functionality for resizable panels.
 Manages the state of test items, including expansion state and selection.
 
 **Usage:**
+
 - Tracks expanded/collapsed state of test items
 - Handles test selection
 - Provides filtering functionality
@@ -98,6 +110,7 @@ Manages the state of test items, including expansion state and selection.
 Handles navigation between different microservices for testing.
 
 **Usage:**
+
 - Tracks current microservice
 - Provides navigation controls
 - Maintains navigation history
@@ -130,7 +143,8 @@ Handles navigation between different microservices for testing.
 
 ## Toast Notification System
 
-The Testing feature includes a comprehensive toast notification system that provides real-time feedback to users on various actions and events.
+The Testing feature includes a comprehensive toast notification system that provides real-time
+feedback to users on various actions and events.
 
 ### Types of Notifications
 
@@ -149,31 +163,40 @@ The Testing feature includes a comprehensive toast notification system that prov
 
 ### Implementation
 
-The toast system is implemented using React Toastify and integrated throughout the testing components via a custom context provider. This allows for consistent toast styling and behavior across the entire testing feature.
+The toast system is implemented using React Toastify and integrated throughout the testing
+components via a custom context provider. This allows for consistent toast styling and behavior
+across the entire testing feature.
 
 ```tsx
 const { showSuccess, showError, showInfo, showWarning } = useToast();
 ```
 
-Toast notifications are triggered by key user actions and system events, providing immediate feedback and improving the overall user experience.
+Toast notifications are triggered by key user actions and system events, providing immediate
+feedback and improving the overall user experience.
 
 ## Service Filters Testing
 
 ### Overview
 
-The Service Filters feature allows users to filter microservices based on their status and health. The testing approach for this feature follows best practices for React component testing, focusing on component behavior, user interactions, and proper state management.
+The Service Filters feature allows users to filter microservices based on their status and health.
+The testing approach for this feature follows best practices for React component testing, focusing
+on component behavior, user interactions, and proper state management.
 
-For detailed implementation information, refer to the [Service Filters Implementation](../implementation/service-filters-implementation.md) document.
+For detailed implementation information, refer to the
+[Service Filters Implementation](../implementation/service-filters-implementation.md) document.
 
 ## Comprehensive Test Suite
 
 ### Overview
 
-The application includes a comprehensive test suite for both the testing feature components and the authentication components. This ensures high code quality, reliability, and helps prevent regressions during development.
+The application includes a comprehensive test suite for both the testing feature components and the
+authentication components. This ensures high code quality, reliability, and helps prevent
+regressions during development.
 
 ### Testing Framework
 
 All tests are implemented using:
+
 - **Vitest**: For test running and assertions
 - **React Testing Library**: For rendering and interacting with components
 - **userEvent**: For simulating user interactions
@@ -187,12 +210,14 @@ The test suite provides extensive coverage across multiple areas:
 Tests for the Service Filters feature are organized into three main categories:
 
 1. **Hook Tests** (`useServiceFilters.test.tsx`)
+
    - Test the custom hook that manages filter state and logic
    - Verify filter persistence in local storage
    - Test filter application logic
    - Ensure proper filter group management (add, update, remove, clear)
 
 2. **Component Tests** (`ServiceFilters.test.tsx`, `ServiceFilterDialog.test.tsx`)
+
    - Test UI rendering and interactions
    - Verify dialog opening/closing behavior
    - Test filter creation and editing workflows
@@ -221,6 +246,7 @@ const applyFilterButton = screen.getByRole('button', { name: /apply filter/i });
 #### Testing Components
 
 1. **Testing Feature Tests**:
+
    - **Component Tests**:
      - Individual UI components (IconButton, TestItem, NavigationControls, etc.)
      - Container components (TestList, AutomatedTesting)
@@ -232,7 +258,8 @@ const applyFilterButton = screen.getByRole('button', { name: /apply filter/i });
 
 2. **Authentication Feature Tests**:
    - **Hook Tests**:
-     - useAuth.test.tsx: Tests for authentication state management, login, registration, and logout functionality
+     - useAuth.test.tsx: Tests for authentication state management, login, registration, and logout
+       functionality
      - useForm.test.tsx: Tests for form state management, validation, submission, and error handling
    - **Component Tests**:
      - LoginForm.test.tsx: Tests for rendering, validation, submission, and error handling
@@ -276,7 +303,7 @@ For component testing, we use Jest mocks to isolate components and test their be
 jest.mock('@/components/monitoring/shared/ServiceFilterDialog', () => ({
   ServiceFilterDialog: ({ isOpen, onClose, onApplyFilter, initialFilterGroup }) => {
     // Mock implementation
-  }
+  },
 }));
 ```
 
@@ -304,14 +331,14 @@ The test suite aims to cover:
 ```tsx
 it('should filter services based on status', () => {
   const { result } = renderHook(() => useServiceFilters('test-project'));
-  
+
   act(() => {
     result.current.addFilterGroup({
       operator: 'AND',
-      conditions: [{ field: 'status', value: 'Online' }]
+      conditions: [{ field: 'status', value: 'Online' }],
     });
   });
-  
+
   const filteredServices = result.current.filterServices(mockServices);
   expect(filteredServices.length).toBe(1);
   expect(filteredServices[0].status).toBe('Online');
@@ -322,14 +349,8 @@ it('should filter services based on status', () => {
 
 ```tsx
 it('should open filter dialog when add filter button is clicked', () => {
-  render(
-    <ServiceFilters
-      services={mockServices}
-      filterGroups={[]}
-      {...mockHandlers}
-    />
-  );
-  
+  render(<ServiceFilters services={mockServices} filterGroups={[]} {...mockHandlers} />);
+
   fireEvent.click(screen.getByText('Add Filter'));
   expect(screen.getByTestId('filter-dialog')).toBeInTheDocument();
 });
@@ -337,12 +358,16 @@ it('should open filter dialog when add filter button is clicked', () => {
 
 ### Troubleshooting Common Test Issues
 
-1. **Selector Issues**: If tests can't find elements, check if the component structure has changed. Prefer role-based selectors over test IDs when possible.
+1. **Selector Issues**: If tests can't find elements, check if the component structure has changed.
+   Prefer role-based selectors over test IDs when possible.
 
-2. **Mock Function Calls**: Ensure mock functions are properly set up and that the component is correctly calling them.
+2. **Mock Function Calls**: Ensure mock functions are properly set up and that the component is
+   correctly calling them.
 
-3. **Asynchronous Updates**: Use `act()` for state updates and `waitFor()` for asynchronous operations.
+3. **Asynchronous Updates**: Use `act()` for state updates and `waitFor()` for asynchronous
+   operations.
 
 4. **Local Storage Issues**: Mock localStorage for consistent test behavior across environments.
 
-5. **Component Isolation**: Use proper mocking to isolate the component under test from its dependencies.
+5. **Component Isolation**: Use proper mocking to isolate the component under test from its
+   dependencies.

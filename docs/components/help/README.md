@@ -1,12 +1,15 @@
 # Help Center Component
 
-The Help Center provides users with a comprehensive FAQ system and the ability to submit questions when they can't find the information they need.
+The Help Center provides users with a comprehensive FAQ system and the ability to submit questions
+when they can't find the information they need.
 
 ## Features
 
-- **Searchable FAQ System**: Users can search through categorized FAQs to find answers to common questions.
+- **Searchable FAQ System**: Users can search through categorized FAQs to find answers to common
+  questions.
 - **Expandable FAQ Items**: FAQs can be expanded and collapsed to show/hide answers.
-- **Question Submission Form**: Users can submit their own questions when they can't find the information they need.
+- **Question Submission Form**: Users can submit their own questions when they can't find the
+  information they need.
 - **Form Validation**: The question submission form includes validation for all fields.
 - **Responsive Design**: The Help Center is fully responsive and works well on all device sizes.
 
@@ -14,21 +17,25 @@ The Help Center provides users with a comprehensive FAQ system and the ability t
 
 ### HelpPage
 
-The main component that renders the entire Help Center page. It includes the search functionality, FAQ sections, and the question submission form.
+The main component that renders the entire Help Center page. It includes the search functionality,
+FAQ sections, and the question submission form.
 
 ### FAQSection
 
-Renders a section of FAQs with an expandable/collapsible interface. Each FAQ item can be clicked to show or hide its answer.
+Renders a section of FAQs with an expandable/collapsible interface. Each FAQ item can be clicked to
+show or hide its answer.
 
 ### AskQuestionForm
 
-A form component that allows users to submit questions. It includes validation for all fields and shows a success message after submission.
+A form component that allows users to submit questions. It includes validation for all fields and
+shows a success message after submission.
 
 ## Hooks
 
 ### useHelp
 
-A custom hook that handles the question submission logic. It manages the submission state and handles success/error notifications.
+A custom hook that handles the question submission logic. It manages the submission state and
+handles success/error notifications.
 
 ## Types
 

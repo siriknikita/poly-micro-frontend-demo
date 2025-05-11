@@ -11,9 +11,9 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ title, faqs }) => {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
 
   const toggleItem = (id: string) => {
-    setExpandedItems(prev => ({
+    setExpandedItems((prev) => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
@@ -43,7 +43,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ title, faqs }) => {
               </div>
             </button>
             {expandedItems[faq.id] && (
-              <div 
+              <div
                 id={`faq-answer-${faq.id}`}
                 className="mt-3 text-gray-600 dark:text-gray-300 text-sm bg-gray-50 dark:bg-gray-750 p-4 rounded-md"
               >

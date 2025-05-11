@@ -22,37 +22,42 @@ export const useMetricsSelection = ({
 }: UseMetricsSelectionProps) => {
   // Create a unique key for localStorage
   const storageKey = 'metrics-selection-preferences';
-  
+
   // Get the initial metrics state from localStorage or use defaults
   const getInitialMetrics = useCallback((): Metric[] => {
     try {
       const storedPreferences = localStorage.getItem(storageKey);
-      
+
       if (storedPreferences && projectId && serviceName) {
         const preferences: ProjectMetricsMap = JSON.parse(storedPreferences);
         const projectPreferences = preferences[projectId];
-        
+
         if (projectPreferences && projectPreferences[serviceName]) {
           const selectedMetricIds = projectPreferences[serviceName];
-          
+
           // Apply stored selection to default metrics
-          return defaultMetrics.map(metric => ({
+          return defaultMetrics.map((metric) => ({
             ...metric,
-            selected: selectedMetricIds.includes(metric.id)
+            selected: selectedMetricIds.includes(metric.id),
           }));
         }
       }
     } catch (error) {
-      console.error('Error retrieving metrics preferences:', error);
+      // In production, we might want to log this error
+      // But we'll silence it during tests to avoid console noise
+      if (process.env.NODE_ENV !== 'test') {
+        console.error('Error retrieving metrics preferences:', error);
+      }
+      return defaultMetrics;
     }
-    
-    // Return default metrics if no stored preferences or error
+
+    // If no stored preferences or invalid structure, use defaults
     return defaultMetrics;
-  }, [projectId, serviceName, defaultMetrics, storageKey]);
+  }, [defaultMetrics, projectId, serviceName, storageKey]);
 
   // State for metrics
   const [metrics, setMetrics] = useState<Metric[]>(getInitialMetrics);
-  
+
   // Update metrics when service or project changes
   useEffect(() => {
     if (projectId && serviceName) {
@@ -64,35 +69,36 @@ export const useMetricsSelection = ({
   }, [projectId, serviceName, defaultMetrics, getInitialMetrics]);
 
   // Selected metric IDs
-  const selectedMetricIds = useMemo(() => 
-    metrics.filter(m => m.selected).map(m => m.id),
-  [metrics]);
+  const selectedMetricIds = useMemo(
+    () => metrics.filter((m) => m.selected).map((m) => m.id),
+    [metrics],
+  );
 
   // Update metric selection
   const updateMetricSelection = (metricIds: string[]) => {
-    const updatedMetrics = metrics.map(metric => ({
+    const updatedMetrics = metrics.map((metric) => ({
       ...metric,
-      selected: metricIds.includes(metric.id)
+      selected: metricIds.includes(metric.id),
     }));
-    
+
     setMetrics(updatedMetrics);
-    
+
     // Save to localStorage
     if (projectId && serviceName) {
       try {
         const storedPreferences = localStorage.getItem(storageKey);
-        const preferences: ProjectMetricsMap = storedPreferences 
-          ? JSON.parse(storedPreferences) 
+        const preferences: ProjectMetricsMap = storedPreferences
+          ? JSON.parse(storedPreferences)
           : {};
-        
+
         // Ensure project exists in preferences
         if (!preferences[projectId]) {
           preferences[projectId] = {};
         }
-        
+
         // Update service preferences
         preferences[projectId][serviceName] = metricIds;
-        
+
         // Save back to localStorage
         localStorage.setItem(storageKey, JSON.stringify(preferences));
       } catch (error) {
@@ -104,7 +110,7 @@ export const useMetricsSelection = ({
   return {
     metrics,
     selectedMetricIds,
-    updateMetricSelection
+    updateMetricSelection,
   };
 };
 

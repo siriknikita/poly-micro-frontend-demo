@@ -18,20 +18,33 @@ export const mockUser: User = {
   email: 'test@example.com',
   businessName: 'Test Business',
   password: 'password123',
-  hasCompletedOnboarding: true
+  hasCompletedOnboarding: true,
 };
 
 // Mock react-router-dom
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   const navigateMock = vi.fn();
-  
+
+  // Silence React Router warnings by intercepting console.warn
+  const originalWarn = console.warn;
+  console.warn = function (message, ...args) {
+    if (
+      message &&
+      typeof message === 'string' &&
+      message.includes('React Router Future Flag Warning')
+    ) {
+      return; // Suppress React Router warnings
+    }
+    originalWarn.call(console, message, ...args);
+  };
+
   return {
     ...actual,
     useNavigate: () => navigateMock,
     useLocation: () => ({ pathname: '/dashboard' }),
-    BrowserRouter: ({ children }: { children: React.ReactNode }) => 
-      React.createElement(React.Fragment, null, children)
+    BrowserRouter: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   };
 });
 
@@ -51,14 +64,14 @@ vi.mock('@/context/GuidanceContext', async () => {
     prevStep: vi.fn(),
     goToStep: vi.fn(),
     completeGuidance: vi.fn().mockResolvedValue(undefined),
-    shouldShowTooltipForStep: vi.fn().mockReturnValue(false)
+    shouldShowTooltipForStep: vi.fn().mockReturnValue(false),
   };
-  
+
   return {
     ...actual,
     useGuidance: () => guidanceMock,
-    GuidanceProvider: ({ children }: { children: React.ReactNode }) => 
-      React.createElement(React.Fragment, null, children)
+    GuidanceProvider: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
   };
 });
 
@@ -69,18 +82,18 @@ vi.mock('@/context/ProjectContext', async () => {
     project: {
       id: 'project1',
       name: 'Test Project',
-      microservices: []
+      microservices: [],
     },
     setProject: vi.fn(),
     loading: false,
-    error: null
+    error: null,
   };
-  
+
   return {
     ...actual,
-    ProjectProvider: ({ children }: { children: React.ReactNode }) => 
+    ProjectProvider: ({ children }: { children: React.ReactNode }) =>
       React.createElement(React.Fragment, null, children),
-    useProject: () => projectMock
+    useProject: () => projectMock,
   };
 });
 
@@ -89,7 +102,7 @@ const ToastContext = React.createContext({
   showInfo: vi.fn(),
   showSuccess: vi.fn(),
   showError: vi.fn(),
-  showWarning: vi.fn()
+  showWarning: vi.fn(),
 });
 
 // Mock ToastContext
@@ -98,14 +111,14 @@ vi.mock('@/context/ToastContext', async () => {
     showInfo: vi.fn(),
     showSuccess: vi.fn(),
     showError: vi.fn(),
-    showWarning: vi.fn()
+    showWarning: vi.fn(),
   };
-  
+
   return {
     ToastContext,
-    ToastProvider: ({ children }: { children: React.ReactNode }) => 
+    ToastProvider: ({ children }: { children: React.ReactNode }) =>
       React.createElement(ToastContext.Provider, { value: toastMock }, children),
-    useToast: () => React.useContext(ToastContext)
+    useToast: () => React.useContext(ToastContext),
   };
 });
 
@@ -115,9 +128,9 @@ Object.defineProperty(window, 'localStorage', {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
-    clear: vi.fn()
+    clear: vi.fn(),
   },
-  writable: true
+  writable: true,
 });
 
 // Mock sessionStorage
@@ -126,15 +139,15 @@ Object.defineProperty(window, 'sessionStorage', {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
-    clear: vi.fn()
+    clear: vi.fn(),
   },
-  writable: true
+  writable: true,
 });
 
 // Mock window.matchMedia for GuidanceTooltip
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,

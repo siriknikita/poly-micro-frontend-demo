@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Pipelining feature provides CI/CD (Continuous Integration/Continuous Deployment) pipeline management for microservices. It allows users to create, configure, and execute deployment pipelines with a visual interface, manage pipeline variables, and monitor pipeline execution.
+The Pipelining feature provides CI/CD (Continuous Integration/Continuous Deployment) pipeline
+management for microservices. It allows users to create, configure, and execute deployment pipelines
+with a visual interface, manage pipeline variables, and monitor pipeline execution.
 
 ## Components Structure
 
@@ -27,9 +29,11 @@ src/components/pipelining/
 
 ### CICDPipeline.tsx
 
-The main container component for the pipelining feature. It integrates all pipeline components and manages the overall state of the pipeline interface.
+The main container component for the pipelining feature. It integrates all pipeline components and
+manages the overall state of the pipeline interface.
 
 **Key Features:**
+
 - Pipeline creation and management
 - Pipeline execution and monitoring
 - Integration with microservices
@@ -40,6 +44,7 @@ The main container component for the pipelining feature. It integrates all pipel
 Provides a visual canvas for building and configuring pipelines.
 
 **Key Features:**
+
 - Drag-and-drop pipeline building
 - Visual representation of pipeline flow
 - Connection management between blocks
@@ -50,6 +55,7 @@ Provides a visual canvas for building and configuring pipelines.
 Contains available pipeline blocks that can be added to the pipeline.
 
 **Key Features:**
+
 - Categorized pipeline blocks
 - Block descriptions and usage information
 - Drag-and-drop functionality
@@ -60,6 +66,7 @@ Contains available pipeline blocks that can be added to the pipeline.
 Modal for configuring individual pipeline blocks.
 
 **Key Features:**
+
 - Block-specific configuration options
 - Parameter validation
 - Environment variable integration
@@ -70,6 +77,7 @@ Modal for configuring individual pipeline blocks.
 Panel for managing pipeline variables and environment configurations.
 
 **Key Features:**
+
 - Variable creation and management
 - Environment-specific configurations
 - Secret management
@@ -88,7 +96,8 @@ Panel for managing pipeline variables and environment configurations.
 ## Integration with Other Features
 
 - **Testing**: Tests can be integrated into CI/CD pipelines
-- **Monitoring**: Pipeline execution is monitored and results are displayed in the monitoring dashboard
+- **Monitoring**: Pipeline execution is monitored and results are displayed in the monitoring
+  dashboard
 - **Authentication**: User permissions determine pipeline access and execution rights
 
 ## Usage Examples

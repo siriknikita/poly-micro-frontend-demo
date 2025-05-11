@@ -9,8 +9,8 @@ import { ProjectContextType } from '@/context/projectTypes';
 jest.mock('@data/mockData', () => ({
   mockProjects: [
     { id: '1', name: 'E-commerce Platform', path: '/path/to/ecommerce' },
-    { id: '2', name: 'Banking System', path: '/path/to/banking' }
-  ]
+    { id: '2', name: 'Banking System', path: '/path/to/banking' },
+  ],
 }));
 
 // Create test data matching the actual structure
@@ -28,14 +28,14 @@ const mockMicroservices1 = [
           {
             id: 'test-1',
             name: 'should authenticate valid credentials',
-            type: 'test-case'
+            type: 'test-case',
           },
           {
             id: 'test-2',
             name: 'should reject invalid password',
-            type: 'test-case'
-          }
-        ]
+            type: 'test-case',
+          },
+        ],
       },
       {
         id: 'fn-2',
@@ -45,11 +45,11 @@ const mockMicroservices1 = [
           {
             id: 'test-3',
             name: 'should update user details',
-            type: 'test-case'
-          }
-        ]
-      }
-    ]
+            type: 'test-case',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'ms-2',
@@ -64,16 +64,16 @@ const mockMicroservices1 = [
           {
             id: 'test-4',
             name: 'should process valid payment',
-            type: 'test-case'
+            type: 'test-case',
           },
           {
             id: 'test-5',
             name: 'should handle declined transactions',
-            type: 'test-case'
-          }
-        ]
-      }
-    ]
+            type: 'test-case',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'ms-3',
@@ -88,9 +88,9 @@ const mockMicroservices1 = [
           {
             id: 'test-6',
             name: 'should send email successfully',
-            type: 'test-case'
-          }
-        ]
+            type: 'test-case',
+          },
+        ],
       },
       {
         id: 'fn-5',
@@ -100,12 +100,12 @@ const mockMicroservices1 = [
           {
             id: 'test-7',
             name: 'should send push notification',
-            type: 'test-case'
-          }
-        ]
-      }
-    ]
-  }
+            type: 'test-case',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 const mockMicroservices2 = [
@@ -122,11 +122,11 @@ const mockMicroservices2 = [
           {
             id: 'test-8',
             name: 'should process valid payment',
-            type: 'test-case'
-          }
-        ]
-      }
-    ]
+            type: 'test-case',
+          },
+        ],
+      },
+    ],
   },
   {
     id: 'ms-5',
@@ -141,19 +141,19 @@ const mockMicroservices2 = [
           {
             id: 'test-11',
             name: 'should apply for a loan',
-            type: 'test-case'
-          }
-        ]
-      }
-    ]
-  }
+            type: 'test-case',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 jest.mock('@data/mockTestData', () => ({
   mockTestDataByProject: {
     '1': mockMicroservices1,
-    '2': mockMicroservices2
-  }
+    '2': mockMicroservices2,
+  },
 }));
 
 // No need to mock useProject since we'll provide the actual context
@@ -179,19 +179,15 @@ describe('useProjectManagement', () => {
   Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
   const mockSetProject = jest.fn();
-  
+
   // Create a wrapper with ProjectContext
   const wrapper = ({ children }: { children: ReactNode }) => {
     const contextValue: ProjectContextType = {
       project: null,
-      setProject: mockSetProject
+      setProject: mockSetProject,
     };
-    
-    return (
-      <ProjectContext.Provider value={contextValue}>
-        {children}
-      </ProjectContext.Provider>
-    );
+
+    return <ProjectContext.Provider value={contextValue}>{children}</ProjectContext.Provider>;
   };
 
   beforeEach(() => {
@@ -202,51 +198,51 @@ describe('useProjectManagement', () => {
 
   it('should load saved project from localStorage on mount', () => {
     localStorageMock.setItem('lastSelectedProject', '1');
-    
+
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
-    
+
     expect(result.current.selectedProject).toEqual(mockProjects[0]);
   });
 
   it('should not set a project if none is saved in localStorage', () => {
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
-    
+
     expect(result.current.selectedProject).toBeNull();
   });
 
   it('should update project context with microservices when on testing tab', () => {
     const { result } = renderHook(() => useProjectManagement('testing'), { wrapper });
-    
+
     act(() => {
       result.current.handleSelectProject(mockProjects[0]);
     });
-    
+
     expect(mockSetProject).toHaveBeenCalledWith({
       ...mockProjects[0],
-      microservices: mockMicroservices1
+      microservices: mockMicroservices1,
     });
   });
 
   it('should update project context without microservices when not on testing tab', () => {
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
-    
+
     act(() => {
       result.current.handleSelectProject(mockProjects[0]);
     });
-    
+
     expect(mockSetProject).toHaveBeenCalledWith({
       ...mockProjects[0],
-      microservices: undefined
+      microservices: undefined,
     });
   });
 
   it('should save selected project to localStorage', () => {
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
-    
+
     act(() => {
       result.current.handleSelectProject(mockProjects[1]);
     });
-    
+
     expect(localStorageMock.setItem).toHaveBeenCalledWith('lastSelectedProject', '2');
     expect(result.current.selectedProject).toEqual(mockProjects[1]);
   });

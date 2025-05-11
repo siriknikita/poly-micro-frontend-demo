@@ -9,17 +9,31 @@ vi.mock('../../../components/monitoring/hooks', () => ({
     metrics: [
       { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
       { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-      { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: false }
+      {
+        id: 'threads',
+        name: 'Active Threads',
+        dataKey: 'threads',
+        color: '#db2777',
+        selected: false,
+      },
     ],
-    updateMetricSelection: vi.fn()
-  }))
+    updateMetricSelection: vi.fn(),
+  })),
 }));
 
 // Mock the shared components
 vi.mock('../../../components/monitoring/shared/ServiceSelector', () => ({
-  ServiceSelector: ({ onServiceSelect, services, selectedService }: { onServiceSelect: (service: string) => void, services: Service[], selectedService: string | null }) => (
+  ServiceSelector: ({
+    onServiceSelect,
+    services,
+    selectedService,
+  }: {
+    onServiceSelect: (service: string) => void;
+    services: Service[];
+    selectedService: string | null;
+  }) => (
     <div data-testid="service-selector">
-      <select 
+      <select
         data-testid="service-select"
         value={selectedService || ''}
         onChange={(e) => onServiceSelect(e.target.value)}
@@ -32,13 +46,16 @@ vi.mock('../../../components/monitoring/shared/ServiceSelector', () => ({
         ))}
       </select>
     </div>
-  )
+  ),
 }));
 
 vi.mock('../../../components/monitoring/shared/MetricsSelector', () => ({
-  MetricsSelector: ({ metrics, onMetricsChange }: { 
-    metrics: Array<{ id: string; name: string; dataKey: string; color: string; selected: boolean }>, 
-    onMetricsChange: (ids: string[]) => void 
+  MetricsSelector: ({
+    metrics,
+    onMetricsChange,
+  }: {
+    metrics: Array<{ id: string; name: string; dataKey: string; color: string; selected: boolean }>;
+    onMetricsChange: (ids: string[]) => void;
   }) => (
     <div data-testid="metrics-selector">
       {metrics.map((metric) => (
@@ -48,7 +65,7 @@ vi.mock('../../../components/monitoring/shared/MetricsSelector', () => ({
             checked={metric.selected}
             onChange={() => {
               const selectedIds = metrics
-                .filter((m) => m.id === metric.id ? !m.selected : m.selected)
+                .filter((m) => (m.id === metric.id ? !m.selected : m.selected))
                 .map((m) => m.id);
               onMetricsChange(selectedIds);
             }}
@@ -57,7 +74,7 @@ vi.mock('../../../components/monitoring/shared/MetricsSelector', () => ({
         </div>
       ))}
     </div>
-  )
+  ),
 }));
 
 // Mock recharts components
@@ -65,27 +82,33 @@ vi.mock('recharts', () => {
   const OriginalModule = vi.importActual('recharts');
   return {
     ...OriginalModule,
-    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="responsive-container">{children}</div>,
-    LineChart: ({ children }: { children: React.ReactNode }) => <div data-testid="line-chart">{children}</div>,
-    Line: ({ dataKey, stroke, name }: { dataKey: string, stroke: string, name: string }) => <div data-testid={`line-${dataKey}`} style={{ stroke }} data-name={name}></div>,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="responsive-container">{children}</div>
+    ),
+    LineChart: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="line-chart">{children}</div>
+    ),
+    Line: ({ dataKey, stroke, name }: { dataKey: string; stroke: string; name: string }) => (
+      <div data-testid={`line-${dataKey}`} style={{ stroke }} data-name={name}></div>
+    ),
     CartesianGrid: () => <div data-testid="cartesian-grid"></div>,
     XAxis: () => <div data-testid="x-axis"></div>,
     YAxis: () => <div data-testid="y-axis"></div>,
     Tooltip: () => <div data-testid="tooltip"></div>,
-    Legend: () => <div data-testid="legend"></div>
+    Legend: () => <div data-testid="legend"></div>,
   };
 });
 
 describe('CPUChart Component', () => {
   const mockServices: Service[] = [
     { id: 'service1', name: 'Service 1', status: 'Running' },
-    { id: 'service2', name: 'Service 2', status: 'Stopped' }
+    { id: 'service2', name: 'Service 2', status: 'Stopped' },
   ];
 
   const mockCPUData: CPUData[] = [
     { time: '10:00', load: 25, memory: 40, threads: 10 },
     { time: '10:05', load: 30, memory: 45, threads: 12 },
-    { time: '10:10', load: 35, memory: 50, threads: 15 }
+    { time: '10:10', load: 35, memory: 50, threads: 15 },
   ];
 
   const mockOnServiceSelect = vi.fn();
@@ -102,10 +125,12 @@ describe('CPUChart Component', () => {
         services={mockServices}
         onServiceSelect={mockOnServiceSelect}
         selectedProjectId="project1"
-      />
+      />,
     );
 
-    expect(screen.getByText('Please select a microservice to view its metrics')).toBeInTheDocument();
+    expect(
+      screen.getByText('Please select a microservice to view its metrics'),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('service-selector')).toBeInTheDocument();
   });
 
@@ -117,7 +142,7 @@ describe('CPUChart Component', () => {
         services={mockServices}
         onServiceSelect={mockOnServiceSelect}
         selectedProjectId="project1"
-      />
+      />,
     );
 
     expect(screen.getByText('No metrics available for this service')).toBeInTheDocument();
@@ -131,7 +156,7 @@ describe('CPUChart Component', () => {
         services={mockServices}
         onServiceSelect={mockOnServiceSelect}
         selectedProjectId="project1"
-      />
+      />,
     );
 
     expect(screen.getByTestId('responsive-container')).toBeInTheDocument();
@@ -150,7 +175,7 @@ describe('CPUChart Component', () => {
         services={mockServices}
         onServiceSelect={mockOnServiceSelect}
         selectedProjectId="project1"
-      />
+      />,
     );
 
     expect(screen.getByTestId('metrics-selector')).toBeInTheDocument();
@@ -164,7 +189,7 @@ describe('CPUChart Component', () => {
         services={mockServices}
         onServiceSelect={mockOnServiceSelect}
         selectedProjectId="project1"
-      />
+      />,
     );
 
     const selectElement = screen.getByTestId('service-select');

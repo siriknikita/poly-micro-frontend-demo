@@ -20,52 +20,54 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (!formData.category) {
       newErrors.category = 'Please select a category';
     }
-    
+
     if (!formData.question.trim()) {
       newErrors.question = 'Question is required';
     } else if (formData.question.length < 10) {
       newErrors.question = 'Question must be at least 10 characters long';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error when field is edited
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: '',
       }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     try {
       await onSubmit(formData);
       setFormData({
@@ -83,7 +85,9 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
   if (submitted) {
     return (
       <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 text-center">
-        <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">Thank You!</h3>
+        <h3 className="text-xl font-semibold text-green-700 dark:text-green-400 mb-2">
+          Thank You!
+        </h3>
         <p className="text-green-600 dark:text-green-300 mb-4">
           Your question has been submitted successfully. We'll get back to you as soon as possible.
         </p>
@@ -98,10 +102,16 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Name
           </label>
           <input
@@ -116,9 +126,12 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
           />
           {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
         </div>
-        
+
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
             Email
           </label>
           <input
@@ -132,12 +145,19 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
             data-testid="question-email-input"
             aria-invalid={errors.email ? 'true' : 'false'}
           />
-          {errors.email && <p className="mt-1 text-sm text-red-500" data-testid="email-error">{errors.email}</p>}
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-500" data-testid="email-error">
+              {errors.email}
+            </p>
+          )}
         </div>
       </div>
-      
+
       <div className="mb-6">
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
           Category
         </label>
         <select
@@ -148,22 +168,23 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
           className={`w-full p-3 border ${errors.category ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-transparent focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:text-white`}
           data-testid="question-category-select"
         >
-          <option value="" className="bg-white dark:bg-gray-800">Select a category</option>
-          {QUESTION_CATEGORIES.map(category => (
-            <option 
-              key={category.id} 
-              value={category.id}
-              className="bg-white dark:bg-gray-800"
-            >
+          <option value="" className="bg-white dark:bg-gray-800">
+            Select a category
+          </option>
+          {QUESTION_CATEGORIES.map((category) => (
+            <option key={category.id} value={category.id} className="bg-white dark:bg-gray-800">
               {category.name}
             </option>
           ))}
         </select>
         {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
       </div>
-      
+
       <div className="mb-6">
-        <label htmlFor="question" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label
+          htmlFor="question"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+        >
           Your Question
         </label>
         <textarea
@@ -178,7 +199,7 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
         />
         {errors.question && <p className="mt-1 text-sm text-red-500">{errors.question}</p>}
       </div>
-      
+
       <div className="flex justify-end">
         <button
           type="submit"

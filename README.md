@@ -13,22 +13,28 @@
 
 ## 📋 Overview
 
-Poly Micro Manager is a comprehensive web application designed to simplify the management of microservices architecture. This frontend demo showcases the user interface and core functionality of the platform, providing tools for authentication, testing, monitoring, and CI/CD pipeline management of microservices.
+Poly Micro Manager is a comprehensive web application designed to simplify the management of
+microservices architecture. This frontend demo showcases the user interface and core functionality
+of the platform, providing tools for authentication, testing, monitoring, and CI/CD pipeline
+management of microservices.
 
 ## ✨ Key Features
 
 - **🔐 Authentication System**
+
   - Secure user login and registration
   - JWT-based authentication
   - Role-based access control
 
 - **🧪 Automated Testing**
+
   - AI-assisted test generation and execution
   - Real-time test results visualization
   - Comprehensive test coverage reporting
   - Resizable test panels for better workflow
 
 - **📊 Monitoring Dashboard**
+
   - Real-time health metrics for microservices
   - Performance analytics and visualization
   - Customizable monitoring parameters
@@ -57,33 +63,46 @@ Poly Micro Manager is a comprehensive web application designed to simplify the m
 
 ### SOLID Principles in React
 
-- **Single Responsibility Principle**: Each component has one purpose only. For example, our `TestItemComponent` focuses solely on rendering test items, while logic is extracted to custom hooks.
+- **Single Responsibility Principle**: Each component has one purpose only. For example, our
+  `TestItemComponent` focuses solely on rendering test items, while logic is extracted to custom
+  hooks.
 
-- **Open/Closed Principle**: Components are designed to be extended without modification through props and composition. This allows for flexibility without changing the core implementation.
+- **Open/Closed Principle**: Components are designed to be extended without modification through
+  props and composition. This allows for flexibility without changing the core implementation.
 
-- **Liskov Substitution Principle**: Specialized components can replace base components without breaking functionality. Our button components (like `IconButton`) follow this principle.
+- **Liskov Substitution Principle**: Specialized components can replace base components without
+  breaking functionality. Our button components (like `IconButton`) follow this principle.
 
-- **Interface Segregation Principle**: Props are kept focused and minimal, avoiding large monolithic prop objects. Components receive only what they need to function.
+- **Interface Segregation Principle**: Props are kept focused and minimal, avoiding large monolithic
+  prop objects. Components receive only what they need to function.
 
-- **Dependency Inversion Principle**: Components depend on abstractions rather than concrete implementations. This is achieved through custom hooks like `useResizablePanel`, `useTestItems`, and `useMicroserviceNavigation`.
+- **Dependency Inversion Principle**: Components depend on abstractions rather than concrete
+  implementations. This is achieved through custom hooks like `useResizablePanel`, `useTestItems`,
+  and `useMicroserviceNavigation`.
 
 ### Code Organization
 
-- **Component Structure**: Components are kept small (under 150 lines) and JSX is limited to 3 levels of nesting for readability.
+- **Component Structure**: Components are kept small (under 150 lines) and JSX is limited to 3
+  levels of nesting for readability.
 
-- **Separation of Concerns**: Logic is extracted into custom hooks, keeping UI components focused on presentation.
+- **Separation of Concerns**: Logic is extracted into custom hooks, keeping UI components focused on
+  presentation.
 
-- **Constants and Utilities**: Magic numbers, strings, and repeated values are extracted into constants and utility functions in dedicated directories.
+- **Constants and Utilities**: Magic numbers, strings, and repeated values are extracted into
+  constants and utility functions in dedicated directories.
 
-- **Feature-based Organization**: Code is organized by feature rather than by type, promoting cohesion and discoverability.
+- **Feature-based Organization**: Code is organized by feature rather than by type, promoting
+  cohesion and discoverability.
 
 ### Clean Code Practices
 
 - **Meaningful Naming**: Clear, descriptive names for components, functions, and variables.
 
-- **Memoization**: Strategic use of `React.memo`, `useCallback`, and `useMemo` to optimize performance.
+- **Memoization**: Strategic use of `React.memo`, `useCallback`, and `useMemo` to optimize
+  performance.
 
-- **TypeScript**: Strict typing throughout the codebase to catch errors early and improve developer experience.
+- **TypeScript**: Strict typing throughout the codebase to catch errors early and improve developer
+  experience.
 
 - **Testing**: Comprehensive test coverage with unit, component, and integration tests.
 
@@ -134,7 +153,8 @@ Comprehensive documentation is available in the `docs/` directory:
 - [🏛️ Architecture Patterns](./docs/architecture/patterns.md) - Design patterns used
 - [💻 For Developers](./docs/for-developers/README.md) - Development guidelines
 
-**Online Documentation**: Access the full documentation at [https://siriknikita.github.io/poly-micro-frontend-demo/#/](https://siriknikita.github.io/poly-micro-frontend-demo/#/)
+**Online Documentation**: Access the full documentation at
+[https://siriknikita.github.io/poly-micro-frontend-demo/#/](https://siriknikita.github.io/poly-micro-frontend-demo/#/)
 
 ## 🧪 Testing
 
