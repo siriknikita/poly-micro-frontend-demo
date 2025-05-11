@@ -85,7 +85,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
 
   return (
     <div
-      className={`sticky top-0 h-screen flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}
+      className={`flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}
     >
       <div className="p-2 border-b border-gray-200 dark:border-gray-700 h-16">
         <button
@@ -96,7 +96,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
         </button>
       </div>
 
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div className="flex-1 p-4">
         <GuidanceTooltip
           step={OnboardingStep.SIDEBAR}
           title="Navigation Sidebar"

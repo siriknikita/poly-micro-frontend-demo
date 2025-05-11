@@ -122,7 +122,7 @@ export const AutomatedTesting = () => {
 
   if (!selectedMicroservice) {
     return (
-      <div className="h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="h-full flex flex-col overflow-hidden">
         <EmptyState />
       </div>
     );
@@ -201,7 +201,7 @@ export const AutomatedTesting = () => {
             position="bottom"
             className="h-full"
           >
-            <div className="p-4 overflow-auto h-full">
+            <div className="p-4 h-full">
               {selectedMicroservice.children && selectedMicroservice.children.length > 0 ? (
                 <TestList
                   tests={selectedMicroservice.children}

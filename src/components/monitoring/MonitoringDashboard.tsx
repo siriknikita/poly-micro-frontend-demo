@@ -40,7 +40,7 @@ export const MonitoringDashboard: React.FC<MonitoringDashboardProps> = memo(
     }, [selectedProjectId, setSelectedProjectId]);
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 overflow-visible">
         <CPUChart
           data={selectedMetricService ? cpuData[selectedProjectId][selectedMetricService] : null}
           selectedService={selectedMetricService}
