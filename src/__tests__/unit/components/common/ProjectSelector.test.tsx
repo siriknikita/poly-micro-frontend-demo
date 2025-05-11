@@ -60,7 +60,7 @@ describe('ProjectSelector Component', () => {
 
   test('calls onSelectProject when a project is selected', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <ProjectSelector
         projects={mockProjects}
@@ -86,7 +86,7 @@ describe('ProjectSelector Component', () => {
 
   test('dropdown button toggles menu visibility', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <ProjectSelector
         projects={mockProjects}
@@ -99,18 +99,18 @@ describe('ProjectSelector Component', () => {
     const dropdownElement = screen.getByTestId('selected-project');
     const dropdownButton = dropdownElement.querySelector('button');
     expect(dropdownButton).not.toBeNull();
-    
+
     // Initial state - check that dropdown button shows the selected project
     expect(dropdownButton).toHaveTextContent(mockProjects[0].name);
-    
+
     // Open the dropdown
     await user.click(dropdownButton as HTMLElement);
-    
+
     // After clicking, dropdown menu should be visible - verify by checking for menu role
     const menuElement = dropdownElement.querySelector('[role="menu"]');
     expect(menuElement).not.toBeNull();
     expect(menuElement).toBeVisible();
-    
+
     // Verify at least one option is visible
     const options = dropdownElement.querySelectorAll('[role="menuitem"]');
     expect(options.length).toBeGreaterThan(0);
