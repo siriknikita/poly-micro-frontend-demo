@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard,
+  // LayoutDashboard,
   Activity,
   GitBranch,
   TestTube2,
@@ -17,11 +17,11 @@ import { useGuidance, OnboardingStep } from '@/context/GuidanceContext';
 import { GuidanceTooltip } from '@/components/guidance';
 
 const tabs: Tab[] = [
-  {
-    id: 'dashboard',
-    name: 'Dashboard',
-    icon: LayoutDashboard,
-  },
+  // {
+  //   id: 'dashboard',
+  //   name: 'Dashboard',
+  //   icon: LayoutDashboard,
+  // },
   {
     id: 'monitoring',
     name: 'Microservices',
