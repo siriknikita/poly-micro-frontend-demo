@@ -52,6 +52,7 @@ function AppContent() {
               <Route path="/monitoring" element={<Dashboard />} />
               <Route path="/cicd" element={<Dashboard />} />
               <Route path="/testing" element={<Dashboard />} />
+              <Route path="/help" element={<Dashboard />} />
               <Route path="/" element={<Navigate to="/login" replace />} />
             </Routes>
             <ToastContainer />

@@ -36,6 +36,11 @@ const tabs: Tab[] = [
     id: 'testing',
     name: 'Automated Testing',
     icon: TestTube2,
+  },
+  {
+    id: 'help',
+    name: 'Help',
+    icon: HelpCircle,
   }
 ];
 
@@ -152,10 +157,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange, user }
               >
                 <BookOpen className="h-5 w-5" />
                 <span>Show Guide</span>
-              </button>
-              <button className="w-full flex items-center space-x-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
-                <HelpCircle className="h-5 w-5" />
-                <span>Help</span>
               </button>
             </div>
           )}
