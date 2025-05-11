@@ -1,6 +1,14 @@
 [
   {
-    "type": "improvement",
-    "description": "improve type safety in LogViewer and add block scope to statusUtils"
+    "type": "feature",
+    "description": "Add initial Help Center with FAQ sections and question submission form"
+  },
+  {
+    "type": "feature",
+    "description": "Feat: Update Repo Version To 1.9.5 (#54)"
+  },
+  {
+    "type": "fix",
+    "description": "ESLint errors and warnings"
   }
 ]

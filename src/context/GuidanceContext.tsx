@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { User, db } from '@/db/db';
 import { useNavigate } from 'react-router-dom';
@@ -321,7 +322,7 @@ export const GuidanceProvider: React.FC<GuidanceProviderProps> = ({ children, cu
         setIsOnboarding(true);
       }
     }
-  }, [isGuidanceVisible, window.location.pathname]);
+  }, [isGuidanceVisible]);
 
   // Helper function to check if a component should show a tooltip for the current step
   const shouldShowTooltipForStep = useCallback((step: number) => {

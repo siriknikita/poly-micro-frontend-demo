@@ -7,6 +7,7 @@ import { TopBar } from '../layout/TopBar';
 import { MonitoringDashboard } from './MonitoringDashboard';
 import { AutomatedTesting } from '../testing/AutomatedTesting';
 import { CICDPipeline } from '../pipelining/CICDPipeline';
+import { HelpPage } from '../help/HelpPage';
 
 // Import custom hooks
 import { 
@@ -21,6 +22,7 @@ export function Dashboard() {
   
   // Use custom hooks to manage different aspects of the dashboard
   const { activeTab, setActiveTab } = useTabNavigation();
+  console.log('activeTab', activeTab);
   const { selectedProject, handleSelectProject } = useProjectManagement(activeTab);
   const { user, handleLogout, getLastSelectedService, refreshAuthState } = useAuthManagement();
   
@@ -101,7 +103,9 @@ export function Dashboard() {
 
         <main className="flex-1 overflow-y-auto">
           <div className={mainPageRenderClassName}>
-            {selectedProject ? (
+            {activeTab === 'help' ? (
+              <HelpPage />
+            ) : selectedProject ? (
               <div>
                 {activeTab === 'dashboard' && (
                   <MonitoringDashboard 
