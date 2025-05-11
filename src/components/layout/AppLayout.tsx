@@ -96,7 +96,7 @@ export const AppLayout = memo(function AppLayout() {
           onLogout={handleLogout}
         />
 
-        <MainContent 
+        <MainContent
           activeTab={activeTab as TabName}
           selectedProject={selectedProject}
           getLastSelectedService={getLastSelectedService}

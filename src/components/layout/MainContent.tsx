@@ -24,10 +24,10 @@ export const MainContent: React.FC<MainContentProps> = ({
   // Determine CSS classes based on active tab
   const isScrollable = SCROLLABLE_TABS.includes(activeTab);
   const isFullWidth = selectedProject && FULL_WIDTH_TABS.includes(activeTab);
-  
+
   // Main container classes
   const mainClasses = `flex-1 ${isScrollable ? 'overflow-auto' : 'overflow-hidden'}`;
-  
+
   // Content container classes
   const contentClasses = `
     ${isFullWidth ? 'mx-auto' : 'max-w-7xl mx-auto'}
