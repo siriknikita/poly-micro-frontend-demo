@@ -130,8 +130,9 @@ export const AskQuestionForm: React.FC<AskQuestionFormProps> = ({ onSubmit, isSu
             className={`w-full p-3 border ${errors.email ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md bg-transparent focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:text-white`}
             placeholder="your.email@example.com"
             data-testid="question-email-input"
+            aria-invalid={errors.email ? 'true' : 'false'}
           />
-          {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+          {errors.email && <p className="mt-1 text-sm text-red-500" data-testid="email-error">{errors.email}</p>}
         </div>
       </div>
       
