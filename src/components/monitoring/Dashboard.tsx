@@ -99,10 +99,10 @@ export function Dashboard() {
         />
 
         <main
-          className={`flex-1 ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'overflow-auto' : 'overflow-hidden'}`}
+          className={`flex-1 ${activeTab === 'dashboard' || activeTab === 'monitoring' || activeTab === 'help' ? 'overflow-auto' : 'overflow-hidden'}`}
         >
           <div
-            className={`${mainPageRenderClassName} ${activeTab === 'dashboard' || activeTab === 'monitoring' ? 'pb-8' : ''}`}
+            className={`${mainPageRenderClassName} ${activeTab === 'dashboard' || activeTab === 'monitoring' || activeTab === 'help' ? 'pb-8' : ''}`}
           >
             {activeTab === 'help' ? (
               <HelpPage />
