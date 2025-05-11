@@ -2,7 +2,9 @@
 
 ## Overview
 
-The Shared Components module provides reusable UI components that are used across multiple features in the Poly Micro Manager application. These components ensure consistency in the user interface and reduce code duplication by centralizing common UI elements.
+The Shared Components module provides reusable UI components that are used across multiple features
+in the Poly Micro Manager application. These components ensure consistency in the user interface and
+reduce code duplication by centralizing common UI elements.
 
 ## Components Structure
 
@@ -23,12 +25,14 @@ src/components/shared/
 A dropdown component for selecting and switching between different projects/microservice ecosystems.
 
 **Key Features:**
+
 - Project list display in a dropdown format
 - Project selection and change handling
 - Visual indication of currently selected project
 - Integration with the TopBar component
 
 **Usage:**
+
 ```tsx
 import { ProjectSelector } from '../shared/selectors';
 
@@ -46,12 +50,14 @@ const MyComponent = () => (
 A wrapper component that provides consistent styling for boxed content throughout the application.
 
 **Key Features:**
+
 - Consistent padding and margins
 - Border and shadow styling
 - Responsive behavior
 - Theme-aware styling
 
 **Usage:**
+
 ```tsx
 import { BoxedWrapper } from '../shared';
 
@@ -67,12 +73,14 @@ const MyComponent = () => (
 A header component for section titles with consistent styling.
 
 **Key Features:**
+
 - Consistent typography
 - Optional action buttons
 - Theme-aware styling
 - Responsive behavior
 
 **Usage:**
+
 ```tsx
 import { SectionHeader } from '../shared';
 
@@ -102,7 +110,8 @@ When using shared components, follow these guidelines:
 2. **Respect prop interfaces**: Provide all required props and use optional props as needed
 3. **Avoid direct styling**: Use the provided props for customization rather than direct styling
 4. **Maintain consistency**: Use shared components instead of creating similar one-off components
-5. **Extend responsibly**: If a shared component needs new functionality, consider extending it rather than creating a new one
+5. **Extend responsibly**: If a shared component needs new functionality, consider extending it
+   rather than creating a new one
 
 ## Integration with Other Features
 

@@ -7,7 +7,7 @@ const mockUseLocation = vi.fn();
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
-  useLocation: () => mockUseLocation()
+  useLocation: () => mockUseLocation(),
 }));
 
 describe('useTabNavigation', () => {
@@ -23,7 +23,7 @@ describe('useTabNavigation', () => {
     mockUseLocation.mockReturnValue(mockLocation);
 
     const { result } = renderHook(() => useTabNavigation());
-    
+
     expect(result.current.activeTab).toBe('monitoring');
   });
 
@@ -32,7 +32,7 @@ describe('useTabNavigation', () => {
     mockUseLocation.mockReturnValue(mockLocation);
 
     const { result } = renderHook(() => useTabNavigation());
-    
+
     expect(result.current.activeTab).toBe('dashboard');
   });
 
@@ -41,11 +41,11 @@ describe('useTabNavigation', () => {
     mockUseLocation.mockReturnValue(mockLocation);
 
     const { result } = renderHook(() => useTabNavigation());
-    
+
     act(() => {
       result.current.setActiveTab('monitoring');
     });
-    
+
     expect(mockNavigate).toHaveBeenCalledWith('/monitoring', { replace: true });
   });
 
@@ -54,22 +54,22 @@ describe('useTabNavigation', () => {
     mockUseLocation.mockReturnValue(mockLocation);
 
     const { result } = renderHook(() => useTabNavigation());
-    
+
     act(() => {
       result.current.setActiveTab('monitoring');
     });
-    
+
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should export pathToTab mapping object', () => {
     const { result } = renderHook(() => useTabNavigation());
-    
+
     expect(result.current.pathToTab).toEqual({
       '/dashboard': 'dashboard',
       '/monitoring': 'monitoring',
       '/cicd': 'cicd',
-      '/testing': 'testing'
+      '/testing': 'testing',
     });
   });
 });

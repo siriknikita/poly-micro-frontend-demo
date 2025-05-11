@@ -2,7 +2,8 @@
 
 ## Architecture Overview
 
-The Service Filters feature follows the SOLID principles and React best practices outlined in the project's architecture guidelines. It consists of:
+The Service Filters feature follows the SOLID principles and React best practices outlined in the
+project's architecture guidelines. It consists of:
 
 1. **Custom Hook**: `useServiceFilters` for state management and business logic
 2. **UI Components**: `ServiceFilters` and `ServiceFilterDialog` for user interaction
@@ -31,36 +32,44 @@ The `useServiceFilters` hook manages filter state and persistence:
 export const useServiceFilters = ({ projectId, services }: UseServiceFiltersProps) => {
   const [filterGroups, setFilterGroups] = useState<FilterGroup[]>([]);
   const [filteredServices, setFilteredServices] = useState<Service[]>(services);
-  
+
   // Load filters from localStorage on component mount
   useEffect(() => {
     const savedFilters = localStorage.getItem(`serviceFilters_${projectId}`);
     // ...
   }, [projectId]);
-  
+
   // Save filters to localStorage when they change
   useEffect(() => {
     // ...
   }, [filterGroups, projectId]);
-  
+
   // Apply filters to services
   useEffect(() => {
     // ...
   }, [services, filterGroups]);
-  
+
   // Filter management functions
-  const addFilterGroup = (group: FilterGroup) => { /* ... */ };
-  const updateFilterGroup = (index: number, group: FilterGroup) => { /* ... */ };
-  const removeFilterGroup = (index: number) => { /* ... */ };
-  const clearFilters = () => { /* ... */ };
-  
+  const addFilterGroup = (group: FilterGroup) => {
+    /* ... */
+  };
+  const updateFilterGroup = (index: number, group: FilterGroup) => {
+    /* ... */
+  };
+  const removeFilterGroup = (index: number) => {
+    /* ... */
+  };
+  const clearFilters = () => {
+    /* ... */
+  };
+
   return {
     filterGroups,
     filteredServices,
     addFilterGroup,
     updateFilterGroup,
     removeFilterGroup,
-    clearFilters
+    clearFilters,
   };
 };
 ```
@@ -78,16 +87,22 @@ export const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   onAddFilterGroup,
   onUpdateFilterGroup,
   onRemoveFilterGroup,
-  onClearFilters
+  onClearFilters,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingFilterIndex, setEditingFilterIndex] = useState<number | null>(null);
-  
+
   // Handler functions
-  const handleDialogClose = () => { /* ... */ };
-  const handleApplyFilter = (group: FilterGroup) => { /* ... */ };
-  const handleEditFilter = (index: number) => { /* ... */ };
-  
+  const handleDialogClose = () => {
+    /* ... */
+  };
+  const handleApplyFilter = (group: FilterGroup) => {
+    /* ... */
+  };
+  const handleEditFilter = (index: number) => {
+    /* ... */
+  };
+
   // Render UI
   // ...
 };
@@ -103,17 +118,17 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   onClose,
   onApplyFilter,
   services,
-  initialFilterGroup
+  initialFilterGroup,
 }) => {
   // State management
   const [operator, setOperator] = useState<FilterOperator>(initialFilterGroup?.operator || 'AND');
   const [conditions, setConditions] = useState<FilterCondition[]>(
-    initialFilterGroup?.conditions || [{ field: 'status', value: '' }]
+    initialFilterGroup?.conditions || [{ field: 'status', value: '' }],
   );
-  
+
   // Handler functions
   // ...
-  
+
   // Render UI
   // ...
 };
@@ -138,7 +153,7 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
     <BoxedWrapper>
       <div className="flex flex-col">
         <SectionHeader /* ... */ />
-        
+
         <ServiceFilters
           services={services}
           filterGroups={filterGroups}
@@ -147,7 +162,7 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
           onRemoveFilterGroup={removeFilterGroup}
           onClearFilters={clearFilters}
         />
-        
+
         {/* Display filtered services */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {filteredServices.length > 0 ? (
@@ -196,45 +211,45 @@ useEffect(() => {
     setFilteredServices([]);
     return;
   }
-  
+
   if (filterGroups.length === 0) {
     // No filters, show all services
     setFilteredServices(services);
     return;
   }
-  
+
   // Apply each filter group
-  const filtered = services.filter(service => {
+  const filtered = services.filter((service) => {
     // Check each filter group
-    return filterGroups.every(group => {
+    return filterGroups.every((group) => {
       const { operator, conditions } = group;
-      
+
       // Apply conditions based on operator
       switch (operator) {
         case 'AND':
-          return conditions.every(condition => {
+          return conditions.every((condition) => {
             const serviceValue = service[condition.field];
             return serviceValue === condition.value;
           });
-          
+
         case 'OR':
-          return conditions.some(condition => {
+          return conditions.some((condition) => {
             const serviceValue = service[condition.field];
             return serviceValue === condition.value;
           });
-          
+
         case 'NOT':
-          return conditions.every(condition => {
+          return conditions.every((condition) => {
             const serviceValue = service[condition.field];
             return serviceValue !== condition.value;
           });
-          
+
         default:
           return true;
       }
     });
   });
-  
+
   setFilteredServices(filtered);
 }, [services, filterGroups]);
 ```
@@ -244,11 +259,13 @@ useEffect(() => {
 When writing tests for the Service Filters feature, consider:
 
 1. **Unit Tests**:
+
    - Test the `useServiceFilters` hook in isolation
    - Verify filter logic for different operators (AND, OR, NOT)
    - Test localStorage persistence
 
 2. **Component Tests**:
+
    - Test the `ServiceFilters` component rendering
    - Verify dialog interactions
    - Test filter editing functionality

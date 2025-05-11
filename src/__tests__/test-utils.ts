@@ -13,7 +13,7 @@ export function createMockService(overrides: Partial<Service> = {}): Service {
     health: 'Healthy',
     uptime: '1d 2h 30m',
     version: '1.0.0',
-    ...overrides
+    ...overrides,
   };
 }
 

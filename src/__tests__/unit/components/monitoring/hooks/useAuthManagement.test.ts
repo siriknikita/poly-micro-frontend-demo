@@ -22,9 +22,9 @@ function createWrapper(mockUser: User | null) {
     login: vi.fn(),
     logout: mockLogout,
     register: vi.fn(),
-    refreshAuthState: mockRefreshAuthState
+    refreshAuthState: mockRefreshAuthState,
   });
-  
+
   // Create a wrapper component
   return ({ children }: { children: React.ReactNode }) => {
     return React.createElement(React.Fragment, null, children);
@@ -34,7 +34,7 @@ function createWrapper(mockUser: User | null) {
 // Mock the hooks we need
 vi.mock('@/components/auth/hooks/useAuth');
 vi.mock('react-router-dom', () => ({
-  useNavigate: () => navigateMock
+  useNavigate: () => navigateMock,
 }));
 
 describe('useAuthManagement', () => {
@@ -44,28 +44,28 @@ describe('useAuthManagement', () => {
     email: 'test@example.com',
     businessName: 'Test Business',
     password: 'password123',
-    hasCompletedOnboarding: true
+    hasCompletedOnboarding: true,
   };
   const mockLocalStorage = {
     getItem: vi.fn(),
     setItem: vi.fn(),
     removeItem: vi.fn(),
   };
-  
+
   // Save the original localStorage
   const originalLocalStorage = window.localStorage;
-  
+
   // Setup and teardown
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {
       value: mockLocalStorage,
       writable: true,
     });
-    
+
     // Reset mocks
     vi.resetAllMocks();
   });
-  
+
   afterEach(() => {
     // Restore original localStorage
     Object.defineProperty(window, 'localStorage', {
@@ -73,57 +73,57 @@ describe('useAuthManagement', () => {
       writable: true,
     });
   });
-  
+
   it('should retrieve user data from localStorage', () => {
     const wrapper = createWrapper(mockUser);
-    
+
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
-    
+
     expect(result.current.user).toEqual(mockUser);
   });
-  
+
   it('should return null if user not in localStorage', () => {
     const wrapper = createWrapper(null);
-    
+
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
-    
+
     expect(result.current.user).toBeNull();
   });
-  
+
   it('should handle logout correctly', () => {
     const wrapper = createWrapper(mockUser);
-    
+
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
-    
+
     // Call the logout function
     act(() => {
       result.current.handleLogout();
     });
-    
+
     // Verify that the logout function from useAuth was called
     expect(mockLogout).toHaveBeenCalled();
     expect(navigateMock).toHaveBeenCalledWith('/login');
   });
-  
+
   it('should get the last selected service', () => {
     const wrapper = createWrapper(mockUser);
-    
+
     const projectId = 'project1';
     const tabName = 'monitoring';
     const serviceId = 'service1';
     const expectedKey = `lastSelected_${tabName}_${projectId}`;
-    
+
     mockLocalStorage.getItem.mockImplementation((key) => {
       if (key === expectedKey) {
         return serviceId;
       }
       return null;
     });
-    
+
     const { result } = renderHook(() => useAuthManagement(), { wrapper });
-    
+
     const lastSelected = result.current.getLastSelectedService(projectId, tabName);
-    
+
     expect(mockLocalStorage.getItem).toHaveBeenCalledWith(expectedKey);
     expect(lastSelected).toBe(serviceId);
   });

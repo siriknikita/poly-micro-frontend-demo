@@ -4,7 +4,11 @@ import { mockTestItems } from './mockData';
 // Mock implementation of useTestItems hook
 import { TestItem } from '@/types';
 
-export const mockUseTestItems = (_tests: TestItem[], _projectId: string, _microserviceId: string) => ({
+export const mockUseTestItems = (
+  _tests: TestItem[],
+  _projectId: string,
+  _microserviceId: string,
+) => ({
   testItems: mockTestItems,
   isLoading: false,
   error: null,

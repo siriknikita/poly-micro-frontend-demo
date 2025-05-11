@@ -17,19 +17,19 @@ const mockLocalStorage = (() => {
     removeItem: vi.fn((key: string) => {
       delete store[key];
     }),
-    getStore: () => store
+    getStore: () => store,
   };
 })();
 
 Object.defineProperty(window, 'localStorage', {
-  value: mockLocalStorage
+  value: mockLocalStorage,
 });
 
 describe('useMetricsSelection Hook', () => {
   const defaultMetrics: Metric[] = [
     { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
     { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true }
+    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true },
   ];
 
   const projectId = 'project1';
@@ -41,11 +41,13 @@ describe('useMetricsSelection Hook', () => {
   });
 
   it('should return default metrics when no stored preferences exist', () => {
-    const { result } = renderHook(() => useMetricsSelection({
-      projectId,
-      serviceName,
-      defaultMetrics
-    }));
+    const { result } = renderHook(() =>
+      useMetricsSelection({
+        projectId,
+        serviceName,
+        defaultMetrics,
+      }),
+    );
 
     expect(result.current.metrics).toEqual(defaultMetrics);
     expect(result.current.selectedMetricIds).toEqual(['load', 'memory', 'threads']);
@@ -55,32 +57,42 @@ describe('useMetricsSelection Hook', () => {
     // Setup stored preferences
     const storedPreferences = {
       [projectId]: {
-        [serviceName]: ['load', 'memory'] // Only load and memory are selected
-      }
+        [serviceName]: ['load', 'memory'], // Only load and memory are selected
+      },
     };
     mockLocalStorage.setItem('metrics-selection-preferences', JSON.stringify(storedPreferences));
 
-    const { result } = renderHook(() => useMetricsSelection({
-      projectId,
-      serviceName,
-      defaultMetrics
-    }));
+    const { result } = renderHook(() =>
+      useMetricsSelection({
+        projectId,
+        serviceName,
+        defaultMetrics,
+      }),
+    );
 
     // Verify metrics have correct selected state based on stored preferences
     expect(result.current.metrics).toEqual([
       { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
       { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-      { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: false }
+      {
+        id: 'threads',
+        name: 'Active Threads',
+        dataKey: 'threads',
+        color: '#db2777',
+        selected: false,
+      },
     ]);
     expect(result.current.selectedMetricIds).toEqual(['load', 'memory']);
   });
 
   it('should update metrics selection and save to localStorage', () => {
-    const { result } = renderHook(() => useMetricsSelection({
-      projectId,
-      serviceName,
-      defaultMetrics
-    }));
+    const { result } = renderHook(() =>
+      useMetricsSelection({
+        projectId,
+        serviceName,
+        defaultMetrics,
+      }),
+    );
 
     // Initially all metrics are selected
     expect(result.current.selectedMetricIds).toEqual(['load', 'memory', 'threads']);
@@ -93,14 +105,28 @@ describe('useMetricsSelection Hook', () => {
     // Check that metrics state is updated
     expect(result.current.metrics).toEqual([
       { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
-      { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: false },
-      { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: false }
+      {
+        id: 'memory',
+        name: 'Memory Usage %',
+        dataKey: 'memory',
+        color: '#059669',
+        selected: false,
+      },
+      {
+        id: 'threads',
+        name: 'Active Threads',
+        dataKey: 'threads',
+        color: '#db2777',
+        selected: false,
+      },
     ]);
     expect(result.current.selectedMetricIds).toEqual(['load']);
 
     // Verify localStorage was updated
     expect(mockLocalStorage.setItem).toHaveBeenCalled();
-    const savedPreferences = JSON.parse(mockLocalStorage.getStore()['metrics-selection-preferences']);
+    const savedPreferences = JSON.parse(
+      mockLocalStorage.getStore()['metrics-selection-preferences'],
+    );
     expect(savedPreferences[projectId][serviceName]).toEqual(['load']);
   });
 
@@ -111,11 +137,13 @@ describe('useMetricsSelection Hook', () => {
     });
 
     // Should not throw and should use default metrics
-    const { result } = renderHook(() => useMetricsSelection({
-      projectId,
-      serviceName,
-      defaultMetrics
-    }));
+    const { result } = renderHook(() =>
+      useMetricsSelection({
+        projectId,
+        serviceName,
+        defaultMetrics,
+      }),
+    );
 
     expect(result.current.metrics).toEqual(defaultMetrics);
   });
@@ -125,19 +153,20 @@ describe('useMetricsSelection Hook', () => {
     const storedPreferences = {
       [projectId]: {
         [serviceName]: ['load', 'memory'],
-        'service2': ['threads']
-      }
+        service2: ['threads'],
+      },
     };
     mockLocalStorage.setItem('metrics-selection-preferences', JSON.stringify(storedPreferences));
 
     // Initial render with service1
     const { result, rerender } = renderHook(
-      ({ projectId, serviceName }: { projectId: string, serviceName: string | null }) => useMetricsSelection({
-        projectId,
-        serviceName,
-        defaultMetrics
-      }),
-      { initialProps: { projectId, serviceName } }
+      ({ projectId, serviceName }: { projectId: string; serviceName: string | null }) =>
+        useMetricsSelection({
+          projectId,
+          serviceName,
+          defaultMetrics,
+        }),
+      { initialProps: { projectId, serviceName } },
     );
 
     // Verify service1 preferences loaded

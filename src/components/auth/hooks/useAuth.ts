@@ -14,7 +14,7 @@ export function useAuth() {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isAuthenticated: false,
-    isLoading: true
+    isLoading: true,
   });
 
   // Check if user is already logged in
@@ -27,58 +27,52 @@ export function useAuth() {
           setAuthState({
             user,
             isAuthenticated: true,
-            isLoading: false
+            isLoading: false,
           });
-          console.log('User authenticated from localStorage:', user.username);
         } else {
           setAuthState({
             user: null,
             isAuthenticated: false,
-            isLoading: false
+            isLoading: false,
           });
-          console.log('No authenticated user found in localStorage');
         }
       } catch (error) {
         console.error('Auth check failed:', error);
         setAuthState({
           user: null,
           isAuthenticated: false,
-          isLoading: false
+          isLoading: false,
         });
       }
     };
 
     checkAuth();
-    
+
     // Add event listener to handle storage changes from other tabs/windows
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === AUTH_STATE_KEY) {
         checkAuth();
       }
     };
-    
+
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   const login = useCallback(async (username: string, password: string): Promise<void> => {
     try {
-      const user = await db.users
-        .where('username')
-        .equals(username)
-        .first();
-      
+      const user = await db.users.where('username').equals(username).first();
+
       if (user && user.password === password) {
         // Store user in localStorage with consistent key
         localStorage.setItem(AUTH_STATE_KEY, JSON.stringify(user));
-        
+
         // Update auth state
         setAuthState({
           user,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
         });
-        console.log('User logged in successfully:', username);
         return Promise.resolve();
       } else {
         return Promise.reject(new Error('Invalid username or password'));
@@ -106,17 +100,15 @@ export function useAuth() {
   const logout = useCallback(() => {
     // Remove user from localStorage
     localStorage.removeItem(AUTH_STATE_KEY);
-    
+
     // Update auth state
     setAuthState({
       user: null,
       isAuthenticated: false,
-      isLoading: false
+      isLoading: false,
     });
-    console.log('User logged out');
-    // Navigation will be handled by the component that uses this hook
   }, []);
-  
+
   // Helper function to refresh auth state from localStorage
   // This can be called manually when needed
   const refreshAuthState = useCallback(() => {
@@ -127,9 +119,8 @@ export function useAuth() {
         setAuthState({
           user,
           isAuthenticated: true,
-          isLoading: false
+          isLoading: false,
         });
-        console.log('Auth state refreshed successfully');
         return true;
       }
       return false;
@@ -144,6 +135,6 @@ export function useAuth() {
     login,
     register,
     logout,
-    refreshAuthState
+    refreshAuthState,
   };
 }

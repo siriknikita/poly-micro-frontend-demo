@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Welcome to the Poly Micro Manager user guide! This document provides comprehensive guidance on using the application's features, with a focus on the recently refactored testing components and the new test suite.
+Welcome to the Poly Micro Manager user guide! This document provides comprehensive guidance on using
+the application's features, with a focus on the recently refactored testing components and the new
+test suite.
 
 ## Table of Contents
 
@@ -25,7 +27,8 @@ Welcome to the Poly Micro Manager user guide! This document provides comprehensi
 
 ## Testing Feature
 
-The Testing feature has been completely refactored to improve usability, performance, and code organization. This section guides you through using the enhanced testing interface.
+The Testing feature has been completely refactored to improve usability, performance, and code
+organization. This section guides you through using the enhanced testing interface.
 
 ### Navigating the Testing Interface
 
@@ -75,7 +78,8 @@ The AI assistance feature helps you create tests quickly:
 5. Make any necessary adjustments
 6. Click "Save Test" to add it to your test list
 
-**Pro Tip**: For best results, be specific in your prompt about what the test should verify and any edge cases to consider.
+**Pro Tip**: For best results, be specific in your prompt about what the test should verify and any
+edge cases to consider.
 
 ### Using Resizable Panels
 
@@ -166,7 +170,8 @@ If you forget your password:
 
 ### Running the Test Suite
 
-The application includes a comprehensive test suite for both the testing feature components and the authentication components:
+The application includes a comprehensive test suite for both the testing feature components and the
+authentication components:
 
 ```bash
 # Run all tests
@@ -187,10 +192,12 @@ npm test -- components/testing/hooks/useResizablePanel.test.tsx
 The application follows a modular architecture with components organized by feature:
 
 1. **Feature-based organization**:
+
    - Each feature (auth, testing, monitoring, etc.) has its own directory
    - Within each feature directory, components are further organized by type
 
 2. **Component hierarchy**:
+
    - Container components manage state and data flow
    - Presentation components focus on rendering UI
    - Custom hooks extract and manage logic
@@ -204,6 +211,7 @@ The application follows a modular architecture with components organized by feat
 The application provides several custom hooks that you can use in your components:
 
 1. **Testing hooks**:
+
    - `useResizablePanel`: Manages resizable panels
    - `useTestItems`: Manages test items and their expanded state
    - `useMicroserviceNavigation`: Handles navigation between microservices
@@ -218,12 +226,8 @@ The application provides several custom hooks that you can use in your component
 import { useResizablePanel } from 'components/testing/hooks';
 
 const MyComponent = () => {
-  const { 
-    panelSize, 
-    handleResize, 
-    resetSize 
-  } = useResizablePanel('leftPanel', 300);
-  
+  const { panelSize, handleResize, resetSize } = useResizablePanel('leftPanel', 300);
+
   return (
     <div style={{ width: `${panelSize}px` }}>
       <ResizeHandle onResize={handleResize} onDoubleClick={resetSize} />
@@ -238,16 +242,19 @@ const MyComponent = () => {
 When contributing to the project, please follow these guidelines:
 
 1. **Code organization**:
+
    - Follow the existing pattern of feature-based organization
    - Create custom hooks for complex logic
    - Use reusable components for UI elements
 
 2. **Testing**:
+
    - Write tests for all new components and hooks
    - Follow the existing testing patterns
    - Aim for high test coverage
 
 3. **Documentation**:
+
    - Update documentation when adding or changing features
    - Add JSDoc comments to functions and components
    - Keep the user guide up to date
@@ -260,6 +267,9 @@ When contributing to the project, please follow these guidelines:
 
 ## Conclusion
 
-This user guide provides an overview of the key features and how to use them effectively. For more detailed information about specific components, please refer to the component documentation in the `docs/components/` directory.
+This user guide provides an overview of the key features and how to use them effectively. For more
+detailed information about specific components, please refer to the component documentation in the
+`docs/components/` directory.
 
-If you have any questions or need further assistance, please contact the development team or open an issue on the project repository.
+If you have any questions or need further assistance, please contact the development team or open an
+issue on the project repository.

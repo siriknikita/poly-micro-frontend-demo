@@ -8,18 +8,18 @@ import { syncReleasesToDatabase } from '../utils/releaseSync';
  */
 export const resetDatabase = async (
   syncSource: 'local' | 'github' = 'local',
-  path?: string
+  path?: string,
 ): Promise<void> => {
   console.log('Resetting database...');
-  
+
   try {
     // Delete all tables
     await db.releases.clear();
     await db.userAcknowledgments.clear();
-    
+
     // Sync releases from the specified source
     await syncReleasesToDatabase(syncSource, path);
-    
+
     console.log('Database reset successfully');
   } catch (error) {
     console.error('Error resetting database:', error);

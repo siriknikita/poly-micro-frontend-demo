@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { Service } from '@/types';
-import { FilterCondition, FilterGroup, FilterOperator, FilterField } from '../hooks/useServiceFilters';
+import {
+  FilterCondition,
+  FilterGroup,
+  FilterOperator,
+  FilterField,
+} from '../hooks/useServiceFilters';
 import { Dropdown } from '@/components/shared/Dropdown';
 
 interface ServiceFilterDialogProps {
@@ -53,17 +58,17 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   onClose,
   onApplyFilter,
   services,
-  initialFilterGroup
+  initialFilterGroup,
 }) => {
   const [operator, setOperator] = useState<FilterOperator>(initialFilterGroup?.operator || 'AND');
   const [conditions, setConditions] = useState<FilterCondition[]>(
-    initialFilterGroup?.conditions || [{ field: 'status', value: '' }]
+    initialFilterGroup?.conditions || [{ field: 'status', value: '' }],
   );
 
   // Get unique status values from services
   const statusOptions = React.useMemo(() => {
     const statuses = new Set<string>();
-    services.forEach(service => {
+    services.forEach((service) => {
       if (service.status) statuses.add(service.status);
     });
     return Array.from(statuses);
@@ -72,7 +77,7 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   // Get unique health values from services
   const healthOptions = React.useMemo(() => {
     const healths = new Set<string>();
-    services.forEach(service => {
+    services.forEach((service) => {
       if (service.health) healths.add(service.health);
     });
     return Array.from(healths);
@@ -95,7 +100,7 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
     const updatedConditions = [...conditions];
     updatedConditions[index] = {
       ...updatedConditions[index],
-      [field]: value
+      [field]: value,
     };
     setConditions(updatedConditions);
   };
@@ -103,14 +108,14 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   // Apply filter
   const applyFilter = () => {
     // Validate conditions - ensure all have values
-    const validConditions = conditions.filter(c => c.value !== '');
+    const validConditions = conditions.filter((c) => c.value !== '');
     if (validConditions.length === 0) {
       return; // Don't apply empty filters
     }
 
     onApplyFilter({
       operator,
-      conditions: validConditions
+      conditions: validConditions,
     });
     onClose();
   };
@@ -129,7 +134,10 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" data-testid="filter-dialog">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      data-testid="filter-dialog"
+    >
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -161,21 +169,21 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
                   {
                     id: 'AND',
                     label: 'AND (All conditions must match)',
-                    colorClass: 'text-indigo-600 dark:text-indigo-400'
+                    colorClass: 'text-indigo-600 dark:text-indigo-400',
                   },
                   {
                     id: 'OR',
                     label: 'OR (Any condition can match)',
-                    colorClass: 'text-green-600 dark:text-green-400'
+                    colorClass: 'text-green-600 dark:text-green-400',
                   },
                   {
                     id: 'NOT',
                     label: 'NOT (None of the conditions should match)',
-                    colorClass: 'text-red-600 dark:text-red-400'
-                  }
+                    colorClass: 'text-red-600 dark:text-red-400',
+                  },
                 ],
-                onSelect: (id) => setOperator(id as FilterOperator)
-              }
+                onSelect: (id) => setOperator(id as FilterOperator),
+              },
             ]}
           />
         </div>
@@ -195,19 +203,19 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
                       {
                         id: 'status',
                         label: 'Status',
-                        colorClass: 'text-blue-600 dark:text-blue-400'
+                        colorClass: 'text-blue-600 dark:text-blue-400',
                       },
                       {
                         id: 'health',
                         label: 'Health',
-                        colorClass: 'text-purple-600 dark:text-purple-400'
-                      }
+                        colorClass: 'text-purple-600 dark:text-purple-400',
+                      },
                     ],
-                    onSelect: (id) => updateCondition(index, 'field', id as FilterField)
-                  }
+                    onSelect: (id) => updateCondition(index, 'field', id as FilterField),
+                  },
                 ]}
               />
-              
+
               <Dropdown
                 buttonLabel="Select a value"
                 selectedOption={condition.value}
@@ -218,24 +226,23 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
                   {
                     options: [
                       { id: '', label: 'Select a value', disabled: true },
-                      ...(condition.field === 'status' 
-                        ? statusOptions.map(status => ({
+                      ...(condition.field === 'status'
+                        ? statusOptions.map((status) => ({
                             id: status,
                             label: status,
-                            colorClass: getStatusColorClass(status)
+                            colorClass: getStatusColorClass(status),
                           }))
-                        : healthOptions.map(health => ({
+                        : healthOptions.map((health) => ({
                             id: health,
                             label: health,
-                            colorClass: getHealthColorClass(health)
-                          }))
-                      )
+                            colorClass: getHealthColorClass(health),
+                          }))),
                     ],
-                    onSelect: (id) => updateCondition(index, 'value', id)
-                  }
+                    onSelect: (id) => updateCondition(index, 'value', id),
+                  },
                 ]}
               />
-              
+
               <button
                 onClick={() => removeCondition(index)}
                 disabled={conditions.length <= 1}

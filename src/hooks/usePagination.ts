@@ -11,20 +11,20 @@ const usePagination = (logs: Log[], itemsPerPageDefaultValue: number) => {
   });
 
   const totalPages = Math.ceil(logs.length / itemsPerPage);
-  const paginatedLogs = useMemo(() => logs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  ), [logs, currentPage, itemsPerPage]);
+  const paginatedLogs = useMemo(
+    () => logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage),
+    [logs, currentPage, itemsPerPage],
+  );
 
   // Use useRef to maintain a reference that persists across renders
   const lastLogNodeRef = useRef<HTMLTableRowElement | null>(null);
-  
+
   // Create a callback ref function that will be used in the component
   const setLastLogRowRef = useCallback((node: HTMLTableRowElement | null) => {
     // Store the reference in our ref object
     lastLogNodeRef.current = node;
   }, []);
-  
+
   // Function to access the current node
   const getLastLogNode = useCallback(() => {
     return lastLogNodeRef.current;

@@ -10,11 +10,7 @@ interface MetricItemProps {
 /**
  * Individual metric item component with checkbox
  */
-export const MetricItem: React.FC<MetricItemProps> = memo(({
-  metric,
-  onToggle,
-  onKeyDown
-}) => {
+export const MetricItem: React.FC<MetricItemProps> = memo(({ metric, onToggle, onKeyDown }) => {
   const handleClick = () => {
     onToggle(metric.id);
   };

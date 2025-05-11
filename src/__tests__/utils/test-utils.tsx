@@ -7,12 +7,10 @@ import {
   waitFor,
   within,
   act,
-  cleanup
+  cleanup,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import AllProviders from './TestProviders';
-
-
 
 // Interface for the extended render result
 interface CustomRenderResult extends ReturnType<typeof rtlRender> {
@@ -34,14 +32,7 @@ function customRender(
 }
 
 // Export specific functions from @testing-library/react
-export {
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-  act,
-  cleanup
-};
+export { screen, fireEvent, waitFor, within, act, cleanup };
 
 // Override the render method with our customized version
 export { customRender as render };

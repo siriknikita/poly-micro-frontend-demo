@@ -13,11 +13,11 @@ export const createNewRelease = async (
   version: string,
   title: string,
   description: string,
-  changes: ReleaseChange[]
+  changes: ReleaseChange[],
 ): Promise<IndexableType> => {
   // First, update all existing releases to not be latest
   await db.releases.where('isLatest').equals(1).modify({ isLatest: 0 });
-  
+
   // Create the new release
   const newRelease: Release = {
     version,
@@ -25,9 +25,9 @@ export const createNewRelease = async (
     description,
     changes,
     releaseDate: new Date(),
-    isLatest: 1
+    isLatest: 1,
   };
-  
+
   // Add to database and return the ID
   return await db.releases.add(newRelease);
 };
@@ -45,7 +45,7 @@ export const getAllReleases = async (): Promise<Release[]> => {
  * @returns The latest release or null if none exists
  */
 export const getLatestRelease = async (): Promise<Release | null> => {
-  return await db.releases.where('isLatest').equals(1).first() || null;
+  return (await db.releases.where('isLatest').equals(1).first()) || null;
 };
 
 /**
@@ -56,11 +56,11 @@ export const getLatestRelease = async (): Promise<Release | null> => {
 export const hasUserAcknowledgedLatestRelease = async (userId: IndexableType): Promise<boolean> => {
   const latestRelease = await getLatestRelease();
   if (!latestRelease || !latestRelease.id) return true; // No release to acknowledge
-  
+
   const acknowledgment = await db.userAcknowledgments
     .where({ userId, releaseId: latestRelease.id })
     .first();
-    
+
   return !!acknowledgment;
 };
 
@@ -69,11 +69,14 @@ export const hasUserAcknowledgedLatestRelease = async (userId: IndexableType): P
  * @param userId User ID
  * @param releaseId Release ID
  */
-export const acknowledgeRelease = async (userId: IndexableType, releaseId: IndexableType): Promise<void> => {
+export const acknowledgeRelease = async (
+  userId: IndexableType,
+  releaseId: IndexableType,
+): Promise<void> => {
   await db.userAcknowledgments.add({
     userId,
     releaseId,
-    acknowledgedAt: new Date()
+    acknowledgedAt: new Date(),
   });
 };
 
@@ -88,18 +91,18 @@ export const exampleDeployNewVersion = async (): Promise<void> => {
     [
       {
         type: 'feature',
-        description: 'Added new CI/CD pipeline integration'
+        description: 'Added new CI/CD pipeline integration',
       },
       {
         type: 'improvement',
-        description: 'Enhanced microservice discovery process'
+        description: 'Enhanced microservice discovery process',
       },
       {
         type: 'fix',
-        description: 'Fixed issue with project selection in the dashboard'
-      }
-    ]
+        description: 'Fixed issue with project selection in the dashboard',
+      },
+    ],
   );
-  
+
   console.log('New release created successfully!');
 };

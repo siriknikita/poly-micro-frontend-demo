@@ -25,9 +25,9 @@ describe('useServiceSelection', () => {
   const mockServices: Service[] = [
     { id: '1', name: 'service1', url: 'http://service1.com' },
     { id: '2', name: 'service2', url: 'http://service2.com' },
-    { id: '3', name: 'service3', url: 'http://service3.com' }
+    { id: '3', name: 'service3', url: 'http://service3.com' },
   ];
-  
+
   const projectId = 'project123';
 
   beforeEach(() => {
@@ -36,50 +36,60 @@ describe('useServiceSelection', () => {
   });
 
   it('should select the service provided by initialServiceName', () => {
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices,
-      initialServiceName: 'service2'
-    }));
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+        initialServiceName: 'service2',
+      }),
+    );
 
     expect(result.current.selectedService).toBe('service2');
   });
 
   it('should select the service from localStorage if initialServiceName is not provided', () => {
     localStorageMock.setItem(`lastSelected_monitoring_${projectId}`, 'service3');
-    
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices
-    }));
+
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+      }),
+    );
 
     expect(result.current.selectedService).toBe('service3');
   });
 
   it('should select the first service if initialServiceName is not provided and nothing is in localStorage', () => {
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices
-    }));
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+      }),
+    );
 
     expect(result.current.selectedService).toBe('service1');
   });
 
   it('should select the first service if initialServiceName is not found in services', () => {
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices,
-      initialServiceName: 'nonexistent'
-    }));
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+        initialServiceName: 'nonexistent',
+      }),
+    );
 
     expect(result.current.selectedService).toBe('service1');
   });
 
   it('should save the selected service to localStorage when it changes', () => {
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices
-    }));
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+      }),
+    );
 
     act(() => {
       result.current.setSelectedService('service2');
@@ -87,19 +97,21 @@ describe('useServiceSelection', () => {
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       `lastSelected_monitoring_${projectId}`,
-      'service2'
+      'service2',
     );
     expect(result.current.selectedService).toBe('service2');
   });
 
   it('should use custom storageKey if provided', () => {
     const customKey = 'customKey';
-    
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: mockServices,
-      storageKey: customKey
-    }));
+
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: mockServices,
+        storageKey: customKey,
+      }),
+    );
 
     act(() => {
       result.current.setSelectedService('service2');
@@ -107,15 +119,17 @@ describe('useServiceSelection', () => {
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       `lastSelected_${customKey}_${projectId}`,
-      'service2'
+      'service2',
     );
   });
 
   it('should handle empty services array', () => {
-    const { result } = renderHook(() => useServiceSelection({
-      projectId,
-      services: []
-    }));
+    const { result } = renderHook(() =>
+      useServiceSelection({
+        projectId,
+        services: [],
+      }),
+    );
 
     expect(result.current.selectedService).toBeNull();
   });

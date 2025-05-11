@@ -7,8 +7,6 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [project, setProject] = useState<Project | null>(null);
 
   return (
-    <ProjectContext.Provider value={{ project, setProject }}>
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={{ project, setProject }}>{children}</ProjectContext.Provider>
   );
 }

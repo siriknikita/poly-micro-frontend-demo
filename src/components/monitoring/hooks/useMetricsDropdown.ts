@@ -9,16 +9,16 @@ interface UseMetricsDropdownProps {
 /**
  * Custom hook to manage metrics dropdown state and functionality
  */
-export const useMetricsDropdown = ({ 
-  metrics: initialMetrics, 
-  onMetricsChange 
+export const useMetricsDropdown = ({
+  metrics: initialMetrics,
+  onMetricsChange,
 }: UseMetricsDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [metrics, setMetrics] = useState<Metric[]>(initialMetrics);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   // Update local metrics when props change
   useEffect(() => {
     setMetrics(initialMetrics);
@@ -47,56 +47,62 @@ export const useMetricsDropdown = ({
   }, [isOpen]);
 
   const toggleDropdown = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
-  const toggleMetric = useCallback((id: string) => {
-    setMetrics(prevMetrics => {
-      const updatedMetrics = prevMetrics.map(metric => 
-        metric.id === id ? { ...metric, selected: !metric.selected } : metric
-      );
-      
-      // Notify parent component of changes
-      const selectedMetricIds = updatedMetrics
-        .filter(metric => metric.selected)
-        .map(metric => metric.id);
-      
-      onMetricsChange(selectedMetricIds);
-      
-      return updatedMetrics;
-    });
-  }, [onMetricsChange]);
+  const toggleMetric = useCallback(
+    (id: string) => {
+      setMetrics((prevMetrics) => {
+        const updatedMetrics = prevMetrics.map((metric) =>
+          metric.id === id ? { ...metric, selected: !metric.selected } : metric,
+        );
+
+        // Notify parent component of changes
+        const selectedMetricIds = updatedMetrics
+          .filter((metric) => metric.selected)
+          .map((metric) => metric.id);
+
+        onMetricsChange(selectedMetricIds);
+
+        return updatedMetrics;
+      });
+    },
+    [onMetricsChange],
+  );
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchTerm(value);
   }, []);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, metricId?: string) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false);
-      return;
-    }
-    
-    if (e.key === 'Enter') {
-      if (metricId) {
-        toggleMetric(metricId);
-      } else {
-        const filteredMetrics = metrics.filter(metric => 
-          metric.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        
-        if (filteredMetrics.length === 1) {
-          toggleMetric(filteredMetrics[0].id);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent, metricId?: string) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        if (metricId) {
+          toggleMetric(metricId);
+        } else {
+          const filteredMetrics = metrics.filter((metric) =>
+            metric.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          );
+
+          if (filteredMetrics.length === 1) {
+            toggleMetric(filteredMetrics[0].id);
+          }
         }
       }
-    }
-  }, [metrics, searchTerm, toggleMetric]);
-
-  const filteredMetrics = metrics.filter(metric => 
-    metric.name.toLowerCase().includes(searchTerm.toLowerCase())
+    },
+    [metrics, searchTerm, toggleMetric],
   );
 
-  const selectedCount = metrics.filter(metric => metric.selected).length;
+  const filteredMetrics = metrics.filter((metric) =>
+    metric.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const selectedCount = metrics.filter((metric) => metric.selected).length;
 
   return {
     isOpen,
@@ -108,6 +114,6 @@ export const useMetricsDropdown = ({
     toggleDropdown,
     toggleMetric,
     handleSearchChange,
-    handleKeyDown
+    handleKeyDown,
   };
 };

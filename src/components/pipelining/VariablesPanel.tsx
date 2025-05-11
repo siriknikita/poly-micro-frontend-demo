@@ -11,17 +11,13 @@ interface PipelineVariable {
 
 export const VariablesPanel = memo(() => {
   // Use our custom hook for managing pipeline variables
-  const { 
-    variables, 
-    addVariable,
-    deleteVariable
-  } = usePipelineVariables();
+  const { variables, addVariable, deleteVariable } = usePipelineVariables();
 
   // Local state for new variable form
   const [newVariable, setNewVariable] = useState<PipelineVariable>({
     name: '',
     value: '',
-    scope: 'local'
+    scope: 'local',
   });
 
   // Handle adding a new variable
@@ -34,8 +30,6 @@ export const VariablesPanel = memo(() => {
     }
   }, [addVariable, newVariable]);
 
-
-
   return (
     <div className="w-64 bg-white dark:bg-gray-800 border-l dark:border-gray-700 flex flex-col">
       <div className="p-4 border-b dark:border-gray-700 flex items-center space-x-2">
@@ -46,11 +40,7 @@ export const VariablesPanel = memo(() => {
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
           {variables.map((variable, index) => (
-            <VariableItem
-              key={index}
-              variable={variable}
-              onDelete={() => deleteVariable(index)}
-            />
+            <VariableItem key={index} variable={variable} onDelete={() => deleteVariable(index)} />
           ))}
         </div>
 
@@ -71,7 +61,9 @@ export const VariablesPanel = memo(() => {
           />
           <select
             value={newVariable.scope}
-            onChange={(e) => setNewVariable({ ...newVariable, scope: e.target.value as 'local' | 'global' })}
+            onChange={(e) =>
+              setNewVariable({ ...newVariable, scope: e.target.value as 'local' | 'global' })
+            }
             className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           >
             <option value="local">Local</option>

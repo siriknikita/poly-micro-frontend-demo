@@ -18,7 +18,7 @@ export const AutomatedTesting = () => {
   // State for selected test and chat visibility
   const [, setSelectedTest] = useState<TestItem | null>(null);
   const [showChat, setShowChat] = useState(true);
-  
+
   // Use our custom hooks
   const { width: chatWidth, isDragging, setIsDragging, startResize } = useResizablePanel();
   const { project } = useProject();
@@ -27,15 +27,10 @@ export const AutomatedTesting = () => {
 
   // Use the current project's microservices
   const microservices = project?.microservices || [];
-  
-  const {
-    functionResults,
-    runTest,
-    runAllTests,
-    setCurrentMicroservice,
-    allTestsComplete,
-  } = useTestItems(microservices, project?.id || '');
-  
+
+  const { functionResults, runTest, runAllTests, setCurrentMicroservice, allTestsComplete } =
+    useTestItems(microservices, project?.id || '');
+
   const {
     selectedMicroservice,
     setSelectedMicroservice,
@@ -44,17 +39,15 @@ export const AutomatedTesting = () => {
     filteredMicroservices,
     navigateMicroservice,
     getPreviousMicroserviceName,
-    getNextMicroserviceName
+    getNextMicroserviceName,
   } = useMicroserviceNavigation({
     microservices,
-    initialMicroservice: microservices[0] || null
+    initialMicroservice: microservices[0] || null,
   });
-
-
 
   // Reference to the chat component for setting input
   const chatRef = useRef<{ setInput: (text: string) => void }>(null);
-  
+
   // Handle generating a test
   const handleGenerateTest = (test: TestItem) => {
     setSelectedTest(test);
@@ -71,7 +64,7 @@ export const AutomatedTesting = () => {
       setSelectedMicroservice(filteredMicroservices[0]);
     }
   }, [selectedMicroservice, filteredMicroservices, setSelectedMicroservice]);
-  
+
   // Show a toast notification when all tests complete, but only when tests were actually run
   useEffect(() => {
     // Only show the notification if tests were actually run (totalTestsRunningRef.current > 0)
@@ -86,14 +79,14 @@ export const AutomatedTesting = () => {
   useEffect(() => {
     setCurrentMicroservice(selectedMicroservice);
   }, [selectedMicroservice, setCurrentMicroservice]);
-  
+
   // Handle guidance state when component mounts
   useEffect(() => {
     // Check if we need to restore guidance state
     const guidanceVisible = localStorage.getItem('guidanceVisible');
     const guidanceStep = localStorage.getItem('guidanceCurrentStep');
     const forceTestingTab = sessionStorage.getItem('forceTestingTab');
-    
+
     if (guidanceVisible === 'true' && guidanceStep && forceTestingTab === 'true') {
       console.log('AutomatedTesting detected active guidance state:', guidanceStep);
       // Force a refresh of the guidance state to ensure tooltips are shown
@@ -104,21 +97,23 @@ export const AutomatedTesting = () => {
         console.log('Forcing guidance visibility for testing tab');
       }
     }
-    
+
     // Log current guidance state for debugging
     console.log('Current guidance state:', { isGuidanceVisible, currentStep });
   }, [isGuidanceVisible, currentStep]);
-  
+
   // Force guidance visibility when in testing tab with the right step
   useEffect(() => {
     if (window.location.pathname === '/testing') {
       const guidanceStep = localStorage.getItem('guidanceCurrentStep');
       if (guidanceStep) {
         const stepNumber = parseInt(guidanceStep, 10);
-        if (stepNumber === OnboardingStep.AUTOMATED_TESTING || 
-            stepNumber === OnboardingStep.EXPAND_ALL_TESTS || 
-            stepNumber === OnboardingStep.RUN_ALL_TESTS || 
-            stepNumber === OnboardingStep.TEST_ASSISTANT) {
+        if (
+          stepNumber === OnboardingStep.AUTOMATED_TESTING ||
+          stepNumber === OnboardingStep.EXPAND_ALL_TESTS ||
+          stepNumber === OnboardingStep.RUN_ALL_TESTS ||
+          stepNumber === OnboardingStep.TEST_ASSISTANT
+        ) {
           console.log('Testing tab with relevant guidance step detected');
         }
       }
@@ -134,7 +129,7 @@ export const AutomatedTesting = () => {
   }
 
   return (
-    <div 
+    <div
       className="h-[calc(100vh-4rem)] flex flex-col bg-gray-50 dark:bg-gray-900"
       onMouseMove={(e) => isDragging && e.preventDefault()}
       onMouseUp={() => setIsDragging(false)}
@@ -147,10 +142,10 @@ export const AutomatedTesting = () => {
               Testing: {selectedMicroservice.name}
             </h2>
             <SearchInput
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search microservices..."
-          />
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search microservices..."
+            />
           </div>
 
           <div className="flex items-center space-x-2">
@@ -166,7 +161,9 @@ export const AutomatedTesting = () => {
                   if (selectedMicroservice) {
                     const result = runAllTests();
                     if (result) {
-                      showInfo(`Running ${result.totalTests} tests for ${result.microserviceName}...`);
+                      showInfo(
+                        `Running ${result.totalTests} tests for ${result.microserviceName}...`,
+                      );
                     }
                   }
                 }}
@@ -186,7 +183,7 @@ export const AutomatedTesting = () => {
               <IconButton
                 onClick={() => setShowChat(!showChat)}
                 icon={<MessageSquare className="h-5 w-5" />}
-                variant={showChat ? "outline" : "active"}
+                variant={showChat ? 'outline' : 'active'}
                 title={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
                 aria-label={showChat ? 'Hide Test Assistant' : 'Show Test Assistant'}
               />
@@ -204,19 +201,19 @@ export const AutomatedTesting = () => {
             position="bottom"
             className="h-full"
           >
-          <div className="p-4 overflow-auto h-full">
-            {selectedMicroservice.children && selectedMicroservice.children.length > 0 ? (
-              <TestList
-                tests={selectedMicroservice.children}
-                onRunTest={runTest}
-                onGenerateTest={handleGenerateTest}
-                functionResults={functionResults}
-                microserviceId={selectedMicroservice.id}
-              />
-            ) : (
-              <EmptyState />
-            )}
-          </div>
+            <div className="p-4 overflow-auto h-full">
+              {selectedMicroservice.children && selectedMicroservice.children.length > 0 ? (
+                <TestList
+                  tests={selectedMicroservice.children}
+                  onRunTest={runTest}
+                  onGenerateTest={handleGenerateTest}
+                  functionResults={functionResults}
+                  microserviceId={selectedMicroservice.id}
+                />
+              ) : (
+                <EmptyState />
+              )}
+            </div>
           </GuidanceTooltip>
 
           <NavigationControls
@@ -243,5 +240,3 @@ export const AutomatedTesting = () => {
     </div>
   );
 };
-
-

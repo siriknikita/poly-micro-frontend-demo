@@ -1,7 +1,10 @@
 import React from 'react';
 
 // Mock TestItemComponent
-export const MockTestItemComponent = ({ item, isExpanded }: {
+export const MockTestItemComponent = ({
+  item,
+  isExpanded,
+}: {
   item: { id: string; name: string; status?: string };
   isExpanded: boolean;
 }) => (
@@ -12,14 +15,21 @@ export const MockTestItemComponent = ({ item, isExpanded }: {
         <div>description</div>
         <button>Run Test</button>
         <button>View Output</button>
-        <div data-testid="test-status-indicator" className={`status-${item.status || 'unknown'}`}></div>
+        <div
+          data-testid="test-status-indicator"
+          className={`status-${item.status || 'unknown'}`}
+        ></div>
       </div>
     )}
   </div>
 );
 
 // Mock IconButton
-export const MockIconButton = ({ children, onClick, title }: {
+export const MockIconButton = ({
+  children,
+  onClick,
+  title,
+}: {
   children: React.ReactNode;
   onClick?: () => void;
   title?: string;

@@ -14,12 +14,8 @@ interface ChatContainerProps {
 /**
  * Container for the test chat with resize handle
  */
-export const ChatContainer = memo<ChatContainerProps>(({
-  chatWidth,
-  setIsDragging,
-  chatRef,
-  handleGenerateTest,
-}) => (
+export const ChatContainer = memo<ChatContainerProps>(
+  ({ chatWidth, setIsDragging, chatRef, handleGenerateTest }) => (
     <>
       <ResizeHandle onResizeStart={() => setIsDragging(true)} />
 
@@ -30,9 +26,8 @@ export const ChatContainer = memo<ChatContainerProps>(({
         <TestChat ref={chatRef} onGenerateTest={handleGenerateTest} />
       </div>
     </>
-), (prevProps, nextProps) => {
-  return (
-    isEqual(prevProps.chatWidth, nextProps.chatWidth)
-  );
-});
-
+  ),
+  (prevProps, nextProps) => {
+    return isEqual(prevProps.chatWidth, nextProps.chatWidth);
+  },
+);

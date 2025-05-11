@@ -5,23 +5,23 @@ export const mockProjects: Project[] = [
   {
     id: '1',
     name: 'E-commerce Platform',
-    path: '/path/to/ecommerce'
+    path: '/path/to/ecommerce',
   },
   {
     id: '2',
     name: 'Banking System',
-    path: '/path/to/banking'
+    path: '/path/to/banking',
   },
   {
     id: '3',
     name: 'Healthcare Portal',
-    path: '/path/to/healthcare'
+    path: '/path/to/healthcare',
   },
   {
     id: '4',
     name: 'Education Platform',
-    path: '/path/to/education'
-  }
+    path: '/path/to/education',
+  },
 ];
 
 export const mockCpuData: MockedCPUData = {
@@ -30,99 +30,99 @@ export const mockCpuData: MockedCPUData = {
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(25 + Math.random() * 60).toFixed(2),
       memory: +(40 + Math.random() * 45).toFixed(2),
-      threads: Math.floor(10 + Math.random() * 20)
+      threads: Math.floor(10 + Math.random() * 20),
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(15 + Math.random() * 40).toFixed(2),
       memory: +(30 + Math.random() * 35).toFixed(2),
-      threads: Math.floor(5 + Math.random() * 15)
+      threads: Math.floor(5 + Math.random() * 15),
     })),
     'Inventory Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(20 + Math.random() * 50).toFixed(2),
       memory: +(35 + Math.random() * 40).toFixed(2),
-      threads: Math.floor(8 + Math.random() * 18)
-    }))
+      threads: Math.floor(8 + Math.random() * 18),
+    })),
   },
   '2': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(20 + Math.random() * 55).toFixed(2),
       memory: +(35 + Math.random() * 50).toFixed(2),
-      threads: Math.floor(12 + Math.random() * 22)
+      threads: Math.floor(12 + Math.random() * 22),
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(15 + Math.random() * 45).toFixed(2),
       memory: +(30 + Math.random() * 40).toFixed(2),
-      threads: Math.floor(8 + Math.random() * 18)
+      threads: Math.floor(8 + Math.random() * 18),
     })),
     'Loan Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(10 + Math.random() * 35).toFixed(2),
       memory: +(25 + Math.random() * 30).toFixed(2),
-      threads: Math.floor(5 + Math.random() * 15)
+      threads: Math.floor(5 + Math.random() * 15),
     })),
     'Authentication Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(20 + Math.random() * 55).toFixed(2),
       memory: +(35 + Math.random() * 45).toFixed(2),
-      threads: Math.floor(10 + Math.random() * 20)
-    }))
+      threads: Math.floor(10 + Math.random() * 20),
+    })),
   },
   '3': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(25 + Math.random() * 60).toFixed(2),
       memory: +(40 + Math.random() * 45).toFixed(2),
-      threads: Math.floor(10 + Math.random() * 20)
+      threads: Math.floor(10 + Math.random() * 20),
     })),
     'Notification Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(10 + Math.random() * 30).toFixed(2),
       memory: +(20 + Math.random() * 25).toFixed(2),
-      threads: Math.floor(3 + Math.random() * 10)
+      threads: Math.floor(3 + Math.random() * 10),
     })),
     'Authentication Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(20 + Math.random() * 50).toFixed(2),
       memory: +(35 + Math.random() * 40).toFixed(2),
-      threads: Math.floor(8 + Math.random() * 18)
+      threads: Math.floor(8 + Math.random() * 18),
     })),
     'Health Monitoring Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(18 + Math.random() * 45).toFixed(2),
       memory: +(25 + Math.random() * 30).toFixed(2),
-      threads: Math.floor(6 + Math.random() * 12)
-    }))
+      threads: Math.floor(6 + Math.random() * 12),
+    })),
   },
   '4': {
     'User Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(20 + Math.random() * 55).toFixed(2),
       memory: +(35 + Math.random() * 50).toFixed(2),
-      threads: Math.floor(12 + Math.random() * 22)
+      threads: Math.floor(12 + Math.random() * 22),
     })),
     'Payment Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(15 + Math.random() * 45).toFixed(2),
       memory: +(30 + Math.random() * 40).toFixed(2),
-      threads: Math.floor(8 + Math.random() * 18)
+      threads: Math.floor(8 + Math.random() * 18),
     })),
     'Notification Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(10 + Math.random() * 35).toFixed(2),
       memory: +(25 + Math.random() * 30).toFixed(2),
-      threads: Math.floor(5 + Math.random() * 15)
+      threads: Math.floor(5 + Math.random() * 15),
     })),
     'Course Management Service': Array.from({ length: 24 }, (_, i) => ({
       time: new Date(Date.now() - (23 - i) * 300000).toLocaleTimeString(),
       load: +(18 + Math.random() * 50).toFixed(2),
       memory: +(30 + Math.random() * 35).toFixed(2),
-      threads: Math.floor(8 + Math.random() * 18)
-    }))
-  }
+      threads: Math.floor(8 + Math.random() * 18),
+    })),
+  },
 };
 
 const servicesDefinitions: Service[] = [
@@ -133,16 +133,16 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '5d 12h 30m',
     version: '1.2.0',
-    lastDeployment: '2024-02-25 14:30'
+    lastDeployment: '2024-02-25 14:30',
   },
   {
-    name: "Notification Service",
+    name: 'Notification Service',
     port: 3009,
     status: 'Running',
     health: 'Healthy',
     uptime: '1d 10h 45m',
     version: '1.0.2',
-    lastDeployment: '2024-02-27 09:00'
+    lastDeployment: '2024-02-27 09:00',
   },
   {
     name: 'Payment Service',
@@ -151,7 +151,7 @@ const servicesDefinitions: Service[] = [
     health: 'Warning',
     uptime: '3d 8h 15m',
     version: '1.1.5',
-    lastDeployment: '2024-02-26 09:45'
+    lastDeployment: '2024-02-26 09:45',
   },
   {
     name: 'Inventory Service',
@@ -160,7 +160,7 @@ const servicesDefinitions: Service[] = [
     health: 'Critical',
     uptime: '0d 0h 0m',
     version: '1.0.0',
-    lastDeployment: '2024-02-28 08:00'
+    lastDeployment: '2024-02-28 08:00',
   },
   {
     name: 'Loan Service',
@@ -169,7 +169,7 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '4d 6h 20m',
     version: '1.3.0',
-    lastDeployment: '2024-02-24 11:00'
+    lastDeployment: '2024-02-24 11:00',
   },
   {
     name: 'Authentication Service',
@@ -178,7 +178,7 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '7d 3h 45m',
     version: '2.0.1',
-    lastDeployment: '2024-02-22 16:20'
+    lastDeployment: '2024-02-22 16:20',
   },
   {
     name: 'Education Service',
@@ -187,7 +187,7 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '2d 6h 10m',
     version: '1.0.0',
-    lastDeployment: '2024-02-27 11:00'
+    lastDeployment: '2024-02-27 11:00',
   },
   {
     name: 'Health Monitoring Service',
@@ -196,7 +196,7 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '3d 7h 50m',
     version: '1.1.0',
-    lastDeployment: '2024-02-26 12:45'
+    lastDeployment: '2024-02-26 12:45',
   },
   {
     name: 'Course Management Service',
@@ -205,18 +205,14 @@ const servicesDefinitions: Service[] = [
     health: 'Healthy',
     uptime: '5d 4h 30m',
     version: '1.2.1',
-    lastDeployment: '2024-02-25 10:20'
-  }
+    lastDeployment: '2024-02-25 10:20',
+  },
 ];
 
 const services = _.keyBy(servicesDefinitions, 'name');
 
 export const mockServices: MockedServices = {
-  '1': [
-    services['User Service'],
-    services['Payment Service'],
-    services['Inventory Service'],
-  ],
+  '1': [services['User Service'], services['Payment Service'], services['Inventory Service']],
   '2': [
     services['User Service'],
     services['Payment Service'],
@@ -244,7 +240,7 @@ export const mockLogs: Log[] = [
     severity: 'INFO',
     message: 'User authentication successful',
     timestamp: '2024-02-28 12:00:00',
-    details: { userId: '123', method: 'OAuth' }
+    details: { userId: '123', method: 'OAuth' },
   },
   {
     id: '2',
@@ -252,7 +248,7 @@ export const mockLogs: Log[] = [
     severity: 'ERROR',
     message: 'Payment processing failed: Invalid card number',
     timestamp: '2024-02-28 12:01:00',
-    details: { transactionId: 'tx_789', errorCode: 'INVALID_CARD' }
+    details: { transactionId: 'tx_789', errorCode: 'INVALID_CARD' },
   },
   {
     id: '3',
@@ -260,7 +256,7 @@ export const mockLogs: Log[] = [
     severity: 'WARN',
     message: 'Email delivery delayed: Rate limit exceeded',
     timestamp: '2024-02-28 12:02:00',
-    details: { emailId: 'em_456', retryCount: 2 }
+    details: { emailId: 'em_456', retryCount: 2 },
   },
   {
     id: '4',
@@ -268,7 +264,7 @@ export const mockLogs: Log[] = [
     severity: 'DEBUG',
     message: 'Token refresh completed',
     timestamp: '2024-02-28 12:03:00',
-    details: { userId: '124', tokenType: 'refresh' }
+    details: { userId: '124', tokenType: 'refresh' },
   },
   {
     id: '5',
@@ -276,7 +272,7 @@ export const mockLogs: Log[] = [
     severity: 'INFO',
     message: 'New course added successfully',
     timestamp: '2024-02-28 12:04:00',
-    details: { courseId: 'course_101', instructor: 'John Doe' }
+    details: { courseId: 'course_101', instructor: 'John Doe' },
   },
   {
     id: '6',
@@ -284,7 +280,7 @@ export const mockLogs: Log[] = [
     severity: 'ERROR',
     message: 'User authentication failed: Invalid credentials',
     timestamp: '2024-02-28 12:05:00',
-    details: { userId: '125', method: 'OAuth' }
+    details: { userId: '125', method: 'OAuth' },
   },
   {
     id: '7',
@@ -292,7 +288,7 @@ export const mockLogs: Log[] = [
     severity: 'INFO',
     message: 'Payment processed successfully',
     timestamp: '2024-02-28 12:06:00',
-    details: { transactionId: 'tx_790', amount: 100 }
+    details: { transactionId: 'tx_790', amount: 100 },
   },
   {
     id: '8',
@@ -300,7 +296,7 @@ export const mockLogs: Log[] = [
     severity: 'INFO',
     message: 'Notification sent successfully',
     timestamp: '2024-02-28 12:07:00',
-    details: { notificationId: 'notif_123', recipient: 'user@example.com' }
+    details: { notificationId: 'notif_123', recipient: 'user@example.com' },
   },
   {
     id: '9',
@@ -308,7 +304,7 @@ export const mockLogs: Log[] = [
     severity: 'ERROR',
     message: 'Token refresh failed: Expired token',
     timestamp: '2024-02-28 12:08:00',
-    details: { userId: '126', tokenType: 'refresh' }
+    details: { userId: '126', tokenType: 'refresh' },
   },
   {
     id: '10',
@@ -316,7 +312,7 @@ export const mockLogs: Log[] = [
     severity: 'WARN',
     message: 'Course enrollment limit reached',
     timestamp: '2024-02-28 12:09:00',
-    details: { courseId: 'course_102', limit: 50 }
+    details: { courseId: 'course_102', limit: 50 },
   },
   {
     id: '11',
@@ -324,7 +320,7 @@ export const mockLogs: Log[] = [
     severity: 'INFO',
     message: 'User authentication successful',
     timestamp: '2024-02-28 12:10:00',
-    details: { userId: '126', method: 'OAuth' }
+    details: { userId: '126', method: 'OAuth' },
   },
   {
     id: '12',
@@ -332,6 +328,6 @@ export const mockLogs: Log[] = [
     severity: 'ERROR',
     message: 'Payment processing failed: Insufficient funds',
     timestamp: '2024-02-28 12:11:00',
-    details: { transactionId: 'tx_791', errorCode: 'INSUFFICIENT_FUNDS' }
+    details: { transactionId: 'tx_791', errorCode: 'INSUFFICIENT_FUNDS' },
   },
 ];

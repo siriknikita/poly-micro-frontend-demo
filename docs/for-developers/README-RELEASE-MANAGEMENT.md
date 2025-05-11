@@ -1,10 +1,12 @@
 # Automatic Release Management System
 
-This document explains how to set up and use the automatic release management system for the Poly Micro Manager application.
+This document explains how to set up and use the automatic release management system for the Poly
+Micro Manager application.
 
 ## Overview
 
-The release management system automatically notifies users of new releases in a Discord-style format. It includes:
+The release management system automatically notifies users of new releases in a Discord-style
+format. It includes:
 
 1. **Discord-style notifications** with version information and release notes
 2. **Dark theme support** that adapts to your application's theme
@@ -15,7 +17,8 @@ The release management system automatically notifies users of new releases in a 
 
 ## Release File Structure
 
-Releases are defined in a JSON file located at `releases/releases.json` with the following structure:
+Releases are defined in a JSON file located at `releases/releases.json` with the following
+structure:
 
 ```json
 {
@@ -44,16 +47,20 @@ Releases are defined in a JSON file located at `releases/releases.json` with the
 
 ### Understanding Git Tags
 
-Git tags are references that point to specific points in Git history, typically used to mark release versions. Unlike branches, tags don't change once created - they're like snapshots of your repository at a specific commit.
+Git tags are references that point to specific points in Git history, typically used to mark release
+versions. Unlike branches, tags don't change once created - they're like snapshots of your
+repository at a specific commit.
 
 ### When to Apply Tags
 
 Apply tags when:
+
 - You've completed a set of features that constitute a new version
 - You're ready to deploy a new release to users
 - You want to mark a significant milestone in your project
 
 A common pattern is to follow [Semantic Versioning](https://semver.org/):
+
 - **v1.0.0**: Initial release
 - **v1.1.0**: Added new features
 - **v1.1.1**: Bug fixes
@@ -62,11 +69,13 @@ A common pattern is to follow [Semantic Versioning](https://semver.org/):
 ### Using Tags for Release Management
 
 1. **Create a tag** when you're ready to release a new version:
+
    ```bash
    git tag v1.3.0
    ```
 
 2. **Push the tag** to your remote repository:
+
    ```bash
    git push origin v1.3.0
    ```
@@ -75,7 +84,8 @@ A common pattern is to follow [Semantic Versioning](https://semver.org/):
 
 ### Option 1: GitHub Actions Workflow
 
-The project includes a GitHub Actions workflow at `.github/workflows/release-update.yml` that automatically:
+The project includes a GitHub Actions workflow at `.github/workflows/release-update.yml` that
+automatically:
 
 1. Triggers when you push a tag starting with 'v' (e.g., v1.3.0)
 2. Extracts the version number from the tag
@@ -140,7 +150,8 @@ The release management system automatically adapts to your application's theme (
 - **Light Mode**: Clean, white background with blue accents
 - **Dark Mode**: Dark background with adjusted colors for better contrast and readability
 
-The system uses the application's existing `useTheme` hook to detect the current theme and apply appropriate styling. No additional configuration is needed - it works out of the box.
+The system uses the application's existing `useTheme` hook to detect the current theme and apply
+appropriate styling. No additional configuration is needed - it works out of the box.
 
 ## Customization
 
@@ -150,7 +161,8 @@ You can customize the appearance and behavior of the release notification system
 - `ReleaseNotification.tsx`: The notification badge
 - `releaseSync.ts`: The synchronization logic
 
-The components use Tailwind CSS for styling, making it easy to adjust colors, spacing, and other visual elements.
+The components use Tailwind CSS for styling, making it easy to adjust colors, spacing, and other
+visual elements.
 
 ## Troubleshooting
 
@@ -165,8 +177,11 @@ If releases are not showing up:
 ### Common Issues
 
 - **No releases showing**: Make sure your releases.json file is properly formatted and accessible
-- **Release notification not appearing**: Check if the user has already acknowledged the latest release
+- **Release notification not appearing**: Check if the user has already acknowledged the latest
+  release
 - **Theme not applying correctly**: Ensure the useTheme hook is properly integrated
-- **Git tag workflow not triggering**: Verify you've pushed the tag correctly with `git push origin v1.3.0`
+- **Git tag workflow not triggering**: Verify you've pushed the tag correctly with
+  `git push origin v1.3.0`
 
-For more detailed information, refer to the [release management documentation](./docs/release-management.md).
+For more detailed information, refer to the
+[release management documentation](./docs/release-management.md).

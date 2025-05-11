@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Core and Layout Components are the main structural elements of the Poly Micro Manager application. They provide the application's layout, navigation functionality, and core application logic. These components serve as the foundation upon which the feature-specific components are built.
+The Core and Layout Components are the main structural elements of the Poly Micro Manager
+application. They provide the application's layout, navigation functionality, and core application
+logic. These components serve as the foundation upon which the feature-specific components are
+built.
 
 ## Project Structure
 
@@ -35,9 +38,11 @@ src/
 
 ### Dashboard.tsx
 
-The main dashboard component that serves as the landing page after authentication. It provides an overview of the microservices ecosystem and quick access to key features.
+The main dashboard component that serves as the landing page after authentication. It provides an
+overview of the microservices ecosystem and quick access to key features.
 
 **Key Features:**
+
 - Microservice overview and status
 - Quick access to frequently used features
 - Recent activity and notifications
@@ -48,6 +53,7 @@ The main dashboard component that serves as the landing page after authenticatio
 The main navigation component that provides access to all features of the application.
 
 **Key Features:**
+
 - Feature navigation (Testing, Monitoring, Pipelining)
 - Collapsible sections
 - Visual indicators for active sections
@@ -59,6 +65,7 @@ The main navigation component that provides access to all features of the applic
 The top navigation bar that provides global actions and information.
 
 **Key Features:**
+
 - Project selection
 - User account information
 - Notifications
@@ -70,6 +77,7 @@ The top navigation bar that provides global actions and information.
 Component for selecting and switching between different projects/microservice ecosystems.
 
 **Key Features:**
+
 - Project list display
 - Project switching
 - Project information
@@ -80,6 +88,7 @@ Component for selecting and switching between different projects/microservice ec
 A toggle component for switching between light and dark themes.
 
 **Key Features:**
+
 - Theme state management
 - Visual toggle indicator
 - Smooth theme transition

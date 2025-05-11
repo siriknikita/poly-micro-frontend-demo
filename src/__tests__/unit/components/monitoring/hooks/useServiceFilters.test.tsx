@@ -27,24 +27,24 @@ describe('useServiceFilters', () => {
   // Test data
   const projectId = 'test-project';
   const mockServices: Service[] = [
-    { 
-      id: '1', 
-      name: 'API Gateway', 
+    {
+      id: '1',
+      name: 'API Gateway',
       status: 'Online',
-      health: 'Healthy'
+      health: 'Healthy',
     },
-    { 
-      id: '2', 
-      name: 'Auth Service', 
+    {
+      id: '2',
+      name: 'Auth Service',
       status: 'Online',
-      health: 'Degraded'
+      health: 'Degraded',
     },
-    { 
-      id: '3', 
-      name: 'Database Service', 
+    {
+      id: '3',
+      name: 'Database Service',
       status: 'Offline',
-      health: 'Error'
-    }
+      health: 'Error',
+    },
   ];
 
   beforeEach(() => {
@@ -53,26 +53,28 @@ describe('useServiceFilters', () => {
   });
 
   it('should return all services when no filters are applied', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     expect(result.current.filteredServices).toEqual(mockServices);
     expect(result.current.filterGroups).toEqual([]);
   });
 
   it('should filter services with AND operator', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       result.current.addFilterGroup({
         operator: 'AND',
         conditions: [
           { field: 'status', value: 'Online' },
-          { field: 'health', value: 'Healthy' }
-        ]
+          { field: 'health', value: 'Healthy' },
+        ],
       });
     });
 
@@ -82,17 +84,18 @@ describe('useServiceFilters', () => {
   });
 
   it('should filter services with OR operator', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       result.current.addFilterGroup({
         operator: 'OR',
         conditions: [
           { field: 'health', value: 'Degraded' },
-          { field: 'health', value: 'Error' }
-        ]
+          { field: 'health', value: 'Error' },
+        ],
       });
     });
 
@@ -103,16 +106,15 @@ describe('useServiceFilters', () => {
   });
 
   it('should filter services with NOT operator', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       result.current.addFilterGroup({
         operator: 'NOT',
-        conditions: [
-          { field: 'status', value: 'Online' }
-        ]
+        conditions: [{ field: 'status', value: 'Online' }],
       });
     });
 
@@ -122,25 +124,22 @@ describe('useServiceFilters', () => {
   });
 
   it('should handle multiple filter groups', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       // First filter: status is Online
       result.current.addFilterGroup({
         operator: 'AND',
-        conditions: [
-          { field: 'status', value: 'Online' }
-        ]
+        conditions: [{ field: 'status', value: 'Online' }],
       });
 
       // Second filter: health is not Healthy
       result.current.addFilterGroup({
         operator: 'NOT',
-        conditions: [
-          { field: 'health', value: 'Healthy' }
-        ]
+        conditions: [{ field: 'health', value: 'Healthy' }],
       });
     });
 
@@ -150,17 +149,16 @@ describe('useServiceFilters', () => {
   });
 
   it('should update a filter group', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       // Add initial filter
       result.current.addFilterGroup({
         operator: 'AND',
-        conditions: [
-          { field: 'status', value: 'Online' }
-        ]
+        conditions: [{ field: 'status', value: 'Online' }],
       });
     });
 
@@ -171,9 +169,7 @@ describe('useServiceFilters', () => {
       // Update the filter
       result.current.updateFilterGroup(0, {
         operator: 'AND',
-        conditions: [
-          { field: 'status', value: 'Offline' }
-        ]
+        conditions: [{ field: 'status', value: 'Offline' }],
       });
     });
 
@@ -183,17 +179,16 @@ describe('useServiceFilters', () => {
   });
 
   it('should remove a filter group', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       // Add filter
       result.current.addFilterGroup({
         operator: 'AND',
-        conditions: [
-          { field: 'status', value: 'Online' }
-        ]
+        conditions: [{ field: 'status', value: 'Online' }],
       });
     });
 
@@ -210,24 +205,21 @@ describe('useServiceFilters', () => {
   });
 
   it('should clear all filters', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     act(() => {
       // Add multiple filters
       result.current.addFilterGroup({
         operator: 'AND',
-        conditions: [
-          { field: 'status', value: 'Online' }
-        ]
+        conditions: [{ field: 'status', value: 'Online' }],
       });
-      
+
       result.current.addFilterGroup({
         operator: 'NOT',
-        conditions: [
-          { field: 'health', value: 'Healthy' }
-        ]
+        conditions: [{ field: 'health', value: 'Healthy' }],
       });
     });
 
@@ -245,15 +237,14 @@ describe('useServiceFilters', () => {
   });
 
   it('should save filters to localStorage', () => {
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     const testFilter: FilterGroup = {
       operator: 'AND',
-      conditions: [
-        { field: 'status', value: 'Online' }
-      ]
+      conditions: [{ field: 'status', value: 'Online' }],
     };
 
     act(() => {
@@ -263,58 +254,56 @@ describe('useServiceFilters', () => {
     // Check if localStorage was called with the right key and value
     expect(localStorageMock.setItem).toHaveBeenCalledWith(
       `serviceFilters_${projectId}`,
-      JSON.stringify([testFilter])
+      JSON.stringify([testFilter]),
     );
   });
 
   it('should load filters from localStorage', () => {
     const savedFilter: FilterGroup = {
       operator: 'OR',
-      conditions: [
-        { field: 'health', value: 'Error' }
-      ]
+      conditions: [{ field: 'health', value: 'Error' }],
     };
 
     // Set up localStorage with saved filter
-    localStorageMock.setItem(
-      `serviceFilters_${projectId}`,
-      JSON.stringify([savedFilter])
-    );
+    localStorageMock.setItem(`serviceFilters_${projectId}`, JSON.stringify([savedFilter]));
 
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+    const { result } = renderHook(
+      () => useServiceFilters({ projectId, services: mockServices }),
+      {},
+    );
 
     // Check if filter was loaded
     expect(result.current.filterGroups).toEqual([savedFilter]);
-    
+
     // Check if services were filtered correctly
     expect(result.current.filteredServices).toHaveLength(1);
     expect(result.current.filteredServices[0].name).toBe('Database Service');
   });
 
-  it('should handle localStorage parsing errors', () => {
-    // Set up localStorage with invalid JSON
-    localStorageMock.setItem(
-      `serviceFilters_${projectId}`,
-      'invalid-json'
-    );
+  it(
+    'should handle localStorage parsing errors',
+    () => {
+      // Set up localStorage with invalid JSON
+      localStorageMock.setItem(`serviceFilters_${projectId}`, 'invalid-json');
 
-    // Spy on console.error
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      // Spy on console.error
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    const { result } = renderHook(() => 
-      useServiceFilters({ projectId, services: mockServices })
-    , {});
+      const { result } = renderHook(
+        () => useServiceFilters({ projectId, services: mockServices }),
+        {},
+      );
 
-    // Should log error and remove the invalid item
-    expect(consoleSpy).toHaveBeenCalled();
-    expect(localStorageMock.removeItem).toHaveBeenCalledWith(`serviceFilters_${projectId}`);
-    
-    // Should still work with default empty filters
-    expect(result.current.filterGroups).toEqual([]);
-    expect(result.current.filteredServices).toEqual(mockServices);
+      // Should log error and remove the invalid item
+      expect(consoleSpy).toHaveBeenCalled();
+      expect(localStorageMock.removeItem).toHaveBeenCalledWith(`serviceFilters_${projectId}`);
 
-    consoleSpy.mockRestore();
-  }, {});
+      // Should still work with default empty filters
+      expect(result.current.filterGroups).toEqual([]);
+      expect(result.current.filteredServices).toEqual(mockServices);
+
+      consoleSpy.mockRestore();
+    },
+    {},
+  );
 });

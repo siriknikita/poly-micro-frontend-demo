@@ -6,17 +6,28 @@ import { Log, Service } from '@/types';
 // Mock dependencies
 const mockUsePagination = jest.fn().mockImplementation(() => mockPaginationReturn);
 jest.mock('@hooks/index', () => ({
-  usePagination: mockUsePagination
+  usePagination: mockUsePagination,
 }));
 
 jest.mock('@shared/index', () => ({
-  BoxedWrapper: ({ children }: { children: React.ReactNode }) => <div data-testid="boxed-wrapper">{children}</div>,
-  SectionHeader: ({ title, HeaderIcon, headerClassName }: { title: string; HeaderIcon?: React.ComponentType; headerClassName?: string; iconClassName?: string }) => (
+  BoxedWrapper: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="boxed-wrapper">{children}</div>
+  ),
+  SectionHeader: ({
+    title,
+    HeaderIcon,
+    headerClassName,
+  }: {
+    title: string;
+    HeaderIcon?: React.ComponentType;
+    headerClassName?: string;
+    iconClassName?: string;
+  }) => (
     <div data-testid="section-header">
       {HeaderIcon && <HeaderIcon data-testid="header-icon" />}
       <span className={headerClassName}>{title}</span>
     </div>
-  )
+  ),
 }));
 
 jest.mock('lucide-react', () => ({
@@ -29,84 +40,79 @@ jest.mock('../../../../../../../src/components/monitoring/LogViewer/TablePaginat
     <div data-testid="table-pagination">
       Table Pagination: Page {currentPage} of {totalPages}
     </div>
-  )
+  ),
 }));
 
 // Mock the shared components
 jest.mock('@/components/monitoring/shared', () => {
   // Create simple mock components that directly call the handlers
-  const ServiceSelector = ({ selectedService, onServiceSelect }: { selectedService: string; services?: Service[]; onServiceSelect: (service: string) => void }) => (
+  const ServiceSelector = ({
+    selectedService,
+    onServiceSelect,
+  }: {
+    selectedService: string;
+    services?: Service[];
+    onServiceSelect: (service: string) => void;
+  }) => (
     <div data-testid="service-selector">
       <div data-testid="service-display">{selectedService || 'All Services'}</div>
       <div className="dropdown-menu">
-        <button 
-          data-testid="dropdown-option-service1" 
-          onClick={() => onServiceSelect('service1')}
-        >
+        <button data-testid="dropdown-option-service1" onClick={() => onServiceSelect('service1')}>
           Service 1
         </button>
-        <button 
-          data-testid="dropdown-option-All" 
-          onClick={() => onServiceSelect('All')}
-        >
+        <button data-testid="dropdown-option-All" onClick={() => onServiceSelect('All')}>
           All Services
         </button>
       </div>
     </div>
   );
 
-  const SeveritySelector = ({ selectedSeverity, onSeverityChange }: { selectedSeverity: string; onSeverityChange: (severity: string) => void }) => (
+  const SeveritySelector = ({
+    selectedSeverity,
+    onSeverityChange,
+  }: {
+    selectedSeverity: string;
+    onSeverityChange: (severity: string) => void;
+  }) => (
     <div data-testid="severity-selector">
       <div data-testid="severity-display">{selectedSeverity || 'All Severities'}</div>
       <div className="dropdown-menu">
-        <button 
-          data-testid="dropdown-option-ERROR" 
-          onClick={() => onSeverityChange('ERROR')}
-        >
+        <button data-testid="dropdown-option-ERROR" onClick={() => onSeverityChange('ERROR')}>
           ERROR
         </button>
-        <button 
-          data-testid="dropdown-option-INFO" 
-          onClick={() => onSeverityChange('INFO')}
-        >
+        <button data-testid="dropdown-option-INFO" onClick={() => onSeverityChange('INFO')}>
           INFO
         </button>
-        <button 
-          data-testid="dropdown-option-WARN" 
-          onClick={() => onSeverityChange('WARN')}
-        >
+        <button data-testid="dropdown-option-WARN" onClick={() => onSeverityChange('WARN')}>
           WARN
         </button>
-        <button 
-          data-testid="dropdown-option-All" 
-          onClick={() => onSeverityChange('All')}
-        >
+        <button data-testid="dropdown-option-All" onClick={() => onSeverityChange('All')}>
           All Severities
         </button>
       </div>
     </div>
   );
 
-  const RowsPerPageSelector = ({ itemsPerPage, onItemsPerPageChange }: { itemsPerPage: number; onItemsPerPageChange: (event: { target: { value: number } }) => void }) => {
+  const RowsPerPageSelector = ({
+    itemsPerPage,
+    onItemsPerPageChange,
+  }: {
+    itemsPerPage: number;
+    onItemsPerPageChange: (event: { target: { value: number } }) => void;
+  }) => {
     // Create a function that directly calls the handler with the right value
     const handleChange = (value: number) => {
       onItemsPerPageChange({ target: { value } });
     };
-    
+
     return (
       <div data-testid="rows-per-page-selector">
         <div data-testid="rows-per-page-selector-display">{itemsPerPage} per page</div>
         <div className="dropdown-menu">
-          <button 
-            data-testid="dropdown-option-10" 
-            onClick={() => handleChange(10)}
-          >
+          <button data-testid="dropdown-option-10" onClick={() => handleChange(10)}>
             10 per page
           </button>
-          <button 
-            data-testid="dropdown-option-25" 
-            onClick={() => handleChange(25)}
-          >
+          <button data-testid="dropdown-option-25" onClick={() => handleChange(25)}>
             25 per page
           </button>
         </div>
@@ -122,7 +128,7 @@ jest.mock('@/components/monitoring/shared', () => {
       <span data-testid={`status-badge-${status}`} className={variant}>
         {status}
       </span>
-    )
+    ),
   };
 });
 
@@ -136,21 +142,45 @@ const mockPaginationReturn = {
   paginatedLogs: [] as Log[],
   setLastLogRowRef: jest.fn(),
   handlePageChange: jest.fn(),
-  handleItemsPerPageChange: jest.fn()
+  handleItemsPerPageChange: jest.fn(),
 };
 
 describe('LogViewer', () => {
   // Test data
   const mockServices: Service[] = [
     { id: '1', name: 'service1', url: 'http://service1.com' },
-    { id: '2', name: 'service2', url: 'http://service2.com' }
+    { id: '2', name: 'service2', url: 'http://service2.com' },
   ];
-  
+
   const mockLogs: Log[] = [
-    { id: '1', timestamp: '2025-04-25T10:00:00Z', service: 'service1', severity: 'ERROR', message: 'Error message 1' },
-    { id: '2', timestamp: '2025-04-25T10:05:00Z', service: 'service1', severity: 'INFO', message: 'Info message 1' },
-    { id: '3', timestamp: '2025-04-25T10:10:00Z', service: 'service2', severity: 'WARN', message: 'Warning message 1' },
-    { id: '4', timestamp: '2025-04-25T10:15:00Z', service: 'service2', severity: 'INFO', message: 'Info message 2' }
+    {
+      id: '1',
+      timestamp: '2025-04-25T10:00:00Z',
+      service: 'service1',
+      severity: 'ERROR',
+      message: 'Error message 1',
+    },
+    {
+      id: '2',
+      timestamp: '2025-04-25T10:05:00Z',
+      service: 'service1',
+      severity: 'INFO',
+      message: 'Info message 1',
+    },
+    {
+      id: '3',
+      timestamp: '2025-04-25T10:10:00Z',
+      service: 'service2',
+      severity: 'WARN',
+      message: 'Warning message 1',
+    },
+    {
+      id: '4',
+      timestamp: '2025-04-25T10:15:00Z',
+      service: 'service2',
+      severity: 'INFO',
+      message: 'Info message 2',
+    },
   ];
 
   beforeEach(() => {
@@ -168,9 +198,9 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     expect(screen.getByTestId('boxed-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('section-header')).toBeInTheDocument();
     expect(screen.getByTestId('service-selector')).toBeInTheDocument();
@@ -189,15 +219,15 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     expect(screen.getByText('1 entry')).toBeInTheDocument();
   });
 
   it('should call onServiceChange when service filter changes', () => {
     const mockOnServiceChange = jest.fn();
-    
+
     render(
       <LogViewer
         logs={mockLogs}
@@ -206,19 +236,19 @@ describe('LogViewer', () => {
         onServiceChange={mockOnServiceChange}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     // Click the button that selects Service 1
     const serviceButton = screen.getByTestId('dropdown-option-service1');
     fireEvent.click(serviceButton);
-    
+
     expect(mockOnServiceChange).toHaveBeenCalledWith('service1');
   });
 
   it('should call onSeverityChange when severity filter changes', () => {
     const mockOnSeverityChange = jest.fn();
-    
+
     render(
       <LogViewer
         logs={mockLogs}
@@ -227,13 +257,13 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={mockOnSeverityChange}
         services={mockServices}
-      />
+      />,
     );
-    
+
     // Click the button that selects ERROR severity
     const severityButton = screen.getByTestId('dropdown-option-ERROR');
     fireEvent.click(severityButton);
-    
+
     expect(mockOnSeverityChange).toHaveBeenCalledWith('ERROR');
   });
 
@@ -246,13 +276,13 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     // Verify that the items per page selector is rendered
     const rowsPerPageSelector = screen.getByTestId('rows-per-page-selector');
     expect(rowsPerPageSelector).toBeInTheDocument();
-    
+
     // Instead of checking for the display element, let's check if the dropdown options are available
     const rowsOption = screen.getByTestId('dropdown-option-10');
     expect(rowsOption).toHaveTextContent('10 per page');
@@ -267,9 +297,9 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     // Check that common table headers are present
     expect(screen.getByText('Timestamp')).toBeInTheDocument();
     expect(screen.getByText('Service')).toBeInTheDocument();
@@ -286,9 +316,9 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     expect(screen.getByTestId('table-pagination')).toBeInTheDocument();
   });
 
@@ -304,9 +334,9 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     expect(screen.getByText('No logs found matching the current filters')).toBeInTheDocument();
     expect(screen.queryByTestId('table-pagination')).not.toBeInTheDocument();
   });
@@ -320,23 +350,23 @@ describe('LogViewer', () => {
         onServiceChange={jest.fn()}
         onSeverityChange={jest.fn()}
         services={mockServices}
-      />
+      />,
     );
-    
+
     // Check timestamp, service, and message content for logs
     expect(screen.getByText('Error message 1')).toBeInTheDocument();
     expect(screen.getByText('Info message 1')).toBeInTheDocument();
     expect(screen.getByText('Warning message 1')).toBeInTheDocument();
     expect(screen.getByText('Info message 2')).toBeInTheDocument();
-    
+
     // Check service names in the table
     expect(screen.getAllByText('service1').length).toBeGreaterThan(0);
     expect(screen.getAllByText('service2').length).toBeGreaterThan(0);
-    
+
     // Check timestamps
     expect(screen.getByText('2025-04-25T10:00:00Z')).toBeInTheDocument();
     expect(screen.getByText('2025-04-25T10:15:00Z')).toBeInTheDocument();
-    
+
     // Check severity badges
     expect(screen.getByTestId('status-badge-ERROR')).toBeInTheDocument();
     expect(screen.getByTestId('status-badge-WARN')).toBeInTheDocument();

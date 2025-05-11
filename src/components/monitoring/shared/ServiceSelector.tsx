@@ -17,36 +17,34 @@ export const ServiceSelector: React.FC<ServiceSelectorProps> = ({
   onServiceSelect,
   className = '',
   label = 'Select a service',
-  showAllOption = false
+  showAllOption = false,
 }) => {
   // Transform services to dropdown options
-  const serviceOptions: DropdownOption[] = services.map(service => ({
+  const serviceOptions: DropdownOption[] = services.map((service) => ({
     id: service.name,
-    label: service.name
+    label: service.name,
   }));
-  
+
   // Add placeholder option
-  const placeholderOptions: DropdownOption[] = [
-    { id: '', label }
-  ];
-  
+  const placeholderOptions: DropdownOption[] = [{ id: '', label }];
+
   // Add 'All Services' option if needed
   if (showAllOption) {
     placeholderOptions.push({ id: 'All', label: 'All Services' });
   }
-  
+
   // Create sections for the dropdown
   const sections: DropdownSectionProps[] = [
     {
       options: placeholderOptions,
-      onSelect: onServiceSelect
+      onSelect: onServiceSelect,
     },
     {
       options: serviceOptions,
-      onSelect: onServiceSelect
-    }
+      onSelect: onServiceSelect,
+    },
   ];
-  
+
   return (
     <Dropdown
       buttonLabel={label}

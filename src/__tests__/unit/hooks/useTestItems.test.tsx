@@ -13,23 +13,23 @@ const createStateMock = (initialValue: TestItem[] | null) => {
     }
     return value;
   });
-  
+
   return [value, setValue];
 };
 
 // Mock React hooks
 vi.mock('react', async (importOriginal) => {
-  const actual = await importOriginal() as object;
+  const actual = (await importOriginal()) as object;
   return {
     ...actual,
     useState: vi.fn().mockImplementation((initialValue) => {
       return createStateMock(initialValue);
     }),
-    useEffect: vi.fn().mockImplementation(f => f()),
-    useCallback: vi.fn().mockImplementation(cb => cb),
+    useEffect: vi.fn().mockImplementation((f) => f()),
+    useCallback: vi.fn().mockImplementation((cb) => cb),
     useRef: vi.fn().mockImplementation((initialValue) => ({
-      current: initialValue
-    }))
+      current: initialValue,
+    })),
   };
 });
 
@@ -49,11 +49,11 @@ const mockLocalStorage: MockLocalStorage = {
   }),
   clear: vi.fn(() => {
     mockLocalStorage.store = {};
-  })
+  }),
 };
 
 Object.defineProperty(window, 'localStorage', {
-  value: mockLocalStorage
+  value: mockLocalStorage,
 });
 
 // Create test data
@@ -68,10 +68,10 @@ const createTestMicroservice = (id: string): TestItem => ({
       type: 'function',
       children: [
         { id: `${id}-test1`, name: 'Test 1', type: 'test-case' },
-        { id: `${id}-test2`, name: 'Test 2', type: 'test-case' }
-      ]
-    }
-  ]
+        { id: `${id}-test2`, name: 'Test 2', type: 'test-case' },
+      ],
+    },
+  ],
 });
 
 // Create a fixed date to avoid recursion
@@ -82,25 +82,25 @@ describe('useTestItems', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockLocalStorage.clear();
-    
+
     // Mock Math.random for predictable results
     vi.spyOn(Math, 'random').mockReturnValue(0.5);
-    
+
     // Use a fixed date instance to avoid recursion
     const originalDate = global.Date;
-    const mockDateConstructor = function(...args: unknown[]) {
+    const mockDateConstructor = function (...args: unknown[]) {
       if (args.length === 0) {
         return FIXED_DATE;
       }
       // @ts-expect-error - We're mocking the Date constructor
       return new originalDate(...args);
     } as unknown as DateConstructor;
-    
+
     // Add the necessary static methods
     mockDateConstructor.now = vi.fn(() => FIXED_TIMESTAMP);
     mockDateConstructor.parse = originalDate.parse;
     mockDateConstructor.UTC = originalDate.UTC;
-    
+
     // Replace the global Date
     global.Date = mockDateConstructor;
   });
@@ -111,7 +111,7 @@ describe('useTestItems', () => {
 
   it('returns an object with expected properties', () => {
     const result = useTestItems([], 'project1');
-    
+
     // Check that the hook returns an object with expected properties
     expect(result).toHaveProperty('expandedItems');
     expect(result).toHaveProperty('functionResults');
@@ -123,130 +123,130 @@ describe('useTestItems', () => {
     expect(result).toHaveProperty('runTest');
     expect(result).toHaveProperty('runAllTests');
   });
-  
+
   it('initializes with empty state', () => {
     const result = useTestItems([], 'project1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
-    
+
     expect(result.expandedItems).toEqual({});
     expect(result.functionResults).toEqual({});
     expect(result.showResults).toBe(true);
   });
-  
+
   it('initializes with provided microserviceId', () => {
     const ms1 = createTestMicroservice('ms1');
     const result = useTestItems([ms1], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
-    
+
     // Just verify the test doesn't throw
     expect(result.currentMicroserviceId).toBe('ms1');
   });
-  
+
   it('toggles expanded state for a test item', () => {
     // Create a test microservice with a valid ID
     const ms1 = createTestMicroservice('ms1');
     const result = useTestItems([ms1], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.toggleExpand).toBe('function');
-    
+
     // Call toggleExpand with a valid test ID
     result.toggleExpand(`ms1-test1`);
-    
+
     // Check that localStorage.setItem was called
     expect(mockLocalStorage.setItem).toHaveBeenCalled();
   });
-  
+
   it('expands all items', () => {
     const testMicroservice = createTestMicroservice('ms1');
     const result = useTestItems([testMicroservice], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.expandAll).toBe('function');
-    
+
     // Call expandAll
     result.expandAll();
-    
+
     // Check that localStorage.setItem was called
     expect(mockLocalStorage.setItem).toHaveBeenCalled();
   });
-  
+
   it('collapses all items', () => {
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.collapseAll).toBe('function');
-    
+
     // Call collapseAll
     result.collapseAll();
-    
+
     // Check that localStorage.setItem was called
     expect(mockLocalStorage.setItem).toHaveBeenCalled();
   });
-  
+
   it('toggles results visibility', () => {
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.toggleResultsVisibility).toBe('function');
-    
+
     // Toggle visibility
     result.toggleResultsVisibility();
-    
+
     // Check that localStorage.setItem was called
     expect(mockLocalStorage.setItem).toHaveBeenCalled();
   });
-  
+
   it('handles viewing test output', () => {
     const result = useTestItems([createTestMicroservice('ms1')], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.viewTestOutput).toBe('function');
     expect(typeof result.closeOutputModal).toBe('function');
-    
+
     // View test output
     result.viewTestOutput('test1');
-    
+
     // Close modal
     result.closeOutputModal();
   });
-  
+
   it('sets current microservice', () => {
     const ms1 = createTestMicroservice('ms1');
     const ms2 = createTestMicroservice('ms2');
-    
+
     const result = useTestItems([ms1, ms2], 'project1', 'ms1');
-    
+
     // Make sure result is defined before accessing properties
     expect(result).toBeDefined();
     expect(typeof result.setCurrentMicroservice).toBe('function');
-    
+
     // Mock the setState function to update our local value for testing
     const setCurrentMicroserviceId = vi.fn();
     Object.defineProperty(result, 'setCurrentMicroservice', {
       value: (microservice: TestItem | null) => {
         setCurrentMicroserviceId(microservice?.id || null);
-      }
+      },
     });
-    
+
     // Set to ms2
     result.setCurrentMicroservice(ms2);
-    
+
     // Check that setCurrentMicroserviceId was called with ms2.id
     expect(setCurrentMicroserviceId).toHaveBeenCalledWith('ms2');
-    
+
     // Set to null
     result.setCurrentMicroservice(null);
-    
+
     // Check that setCurrentMicroserviceId was called with null
     expect(setCurrentMicroserviceId).toHaveBeenCalledWith(null);
   });

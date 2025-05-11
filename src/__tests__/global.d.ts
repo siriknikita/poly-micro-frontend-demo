@@ -6,7 +6,7 @@ import { vi, expect, describe, it, beforeEach, afterEach, beforeAll, afterAll } 
 declare global {
   // Add Jest as a global object that's an alias for Vitest's vi
   const jest: typeof vi;
-  
+
   // Add test globals
   const describe: typeof globalThis.describe;
   const it: typeof globalThis.it;

@@ -16,4 +16,4 @@ export default function useTheme() {
   }, [darkMode]);
 
   return { darkMode, setDarkMode };
-};
+}

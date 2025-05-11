@@ -21,21 +21,19 @@ const getSizeClasses = (size: 'sm' | 'md' | 'lg'): string => {
   }
 };
 
-export const Logo: React.FC<LogoProps> = ({ 
-  className = '', 
-  size = 'md',
-  linkEnabled = true 
-}) => {
+export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md', linkEnabled = true }) => {
   const logoContent = (
     <>
       <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-0 group-hover:opacity-75 transition duration-500"></div>
-      <Boxes className={`relative ${getSizeClasses(size)} text-blue-400 transform group-hover:scale-110 transition duration-500`} />
+      <Boxes
+        className={`relative ${getSizeClasses(size)} text-blue-400 transform group-hover:scale-110 transition duration-500`}
+      />
     </>
   );
 
   if (linkEnabled) {
     return (
-      <a 
+      <a
         href={LANDING_PAGE_URL}
         target="_blank"
         rel="noopener noreferrer"
@@ -46,9 +44,5 @@ export const Logo: React.FC<LogoProps> = ({
     );
   }
 
-  return (
-    <div className={`relative group ${className}`}>
-      {logoContent}
-    </div>
-  );
+  return <div className={`relative group ${className}`}>{logoContent}</div>;
 };

@@ -15,38 +15,43 @@ interface GuidanceStepProps {
 const guidanceSteps: GuidanceStepProps[] = [
   {
     title: 'Welcome to Poly Micro Manager!',
-    description: 'This quick tour will help you understand how to use the application effectively. You can replay this guide anytime from your user menu.',
+    description:
+      'This quick tour will help you understand how to use the application effectively. You can replay this guide anytime from your user menu.',
     position: 'center',
     targetSelector: 'body',
-    elementId: 'welcome'
+    elementId: 'welcome',
   },
   {
     title: 'Navigation Sidebar',
-    description: 'Use the sidebar to navigate between different sections of the application: Dashboard, Microservices, CI/CD Pipeline, and Automated Testing.',
+    description:
+      'Use the sidebar to navigate between different sections of the application: Dashboard, Microservices, CI/CD Pipeline, and Automated Testing.',
     position: 'right',
     targetSelector: '.sidebar-tabs',
-    elementId: 'sidebar-navigation'
+    elementId: 'sidebar-navigation',
   },
   {
     title: 'Project Selection',
-    description: 'Select your project from the dropdown in the top bar to view and manage its microservices.',
+    description:
+      'Select your project from the dropdown in the top bar to view and manage its microservices.',
     position: 'bottom',
     targetSelector: '.project-selector',
-    elementId: 'project-selector'
+    elementId: 'project-selector',
   },
   {
     title: 'Microservices Management',
-    description: 'Monitor and manage your microservices from this panel. You can see their status, health, and performance metrics.',
+    description:
+      'Monitor and manage your microservices from this panel. You can see their status, health, and performance metrics.',
     position: 'left',
     targetSelector: '.services-panel',
-    elementId: 'services-panel'
+    elementId: 'services-panel',
   },
   {
-    title: 'You\'re all set!',
-    description: 'You\'re now ready to use Poly Micro Manager. If you need to see this guide again, click on your profile at the bottom of the sidebar and select "Show Guide".',
+    title: "You're all set!",
+    description:
+      'You\'re now ready to use Poly Micro Manager. If you need to see this guide again, click on your profile at the bottom of the sidebar and select "Show Guide".',
     position: 'center',
     targetSelector: 'body',
-    elementId: 'completion'
+    elementId: 'completion',
   },
 ];
 
@@ -54,45 +59,46 @@ const guidanceSteps: GuidanceStepProps[] = [
 export const GuidanceTrigger: React.FC = () => {
   const { showGuidance } = useGuidance();
   const [isFirstTimeUser, setIsFirstTimeUser] = useState<boolean>(false);
-  
+
   useEffect(() => {
     // Check if this is a first-time user
     const firstTimeUserValue = localStorage.getItem('isFirstTimeUser');
     if (firstTimeUserValue) {
       setIsFirstTimeUser(JSON.parse(firstTimeUserValue));
     }
-    
+
     // Add data attributes to elements that need tooltips
-    guidanceSteps.forEach(step => {
+    guidanceSteps.forEach((step) => {
       if (step.targetSelector !== 'body') {
         const elements = document.querySelectorAll(step.targetSelector);
-        elements.forEach(element => {
+        elements.forEach((element) => {
           element.setAttribute('data-guidance-id', step.elementId);
-          
+
           // For first-time users, we'll add a small indicator
           if (isFirstTimeUser) {
             const indicator = document.createElement('div');
             indicator.className = 'guidance-indicator';
             indicator.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
-            indicator.style.cssText = 'position: absolute; top: -5px; right: -5px; background: #6366f1; color: white; border-radius: 50%; padding: 2px; cursor: pointer; z-index: 50;';
-            
+            indicator.style.cssText =
+              'position: absolute; top: -5px; right: -5px; background: #6366f1; color: white; border-radius: 50%; padding: 2px; cursor: pointer; z-index: 50;';
+
             // Position the indicator relative to the element
             const elementPosition = window.getComputedStyle(element).position;
             if (elementPosition === 'static') {
               (element as HTMLElement).style.position = 'relative';
             }
-            
+
             indicator.addEventListener('click', (e) => {
               e.stopPropagation();
               showGuidance();
             });
-            
+
             element.appendChild(indicator);
           }
         });
       }
     });
-    
+
     // Add CSS for highlighted elements and tooltips with dark mode support
     const style = document.createElement('style');
     style.innerHTML = `
@@ -157,48 +163,49 @@ export const GuidanceTrigger: React.FC = () => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
   }, [showGuidance, isFirstTimeUser]);
-  
+
   return null;
 };
 
 export const GuidanceOverlay: React.FC = () => {
-  const { 
-    isGuidanceVisible, 
-    hideGuidance, 
-    currentStep, 
+  const {
+    isGuidanceVisible,
+    hideGuidance,
+    currentStep,
     totalSteps,
     nextStep,
     prevStep,
-    completeGuidance
+    completeGuidance,
   } = useGuidance();
-  
+
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const [isDarkMode, setIsDarkMode] = useState(false);
-  
+
   // Detect dark mode
   useEffect(() => {
     const detectTheme = () => {
       // Check for dark mode in HTML element or via media query
-      const isDark = document.documentElement.classList.contains('dark') || 
-                    window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark =
+        document.documentElement.classList.contains('dark') ||
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
       setIsDarkMode(isDark);
     };
-    
+
     detectTheme();
-    
+
     // Set up an observer to detect theme changes
     const observer = new MutationObserver(detectTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
+
     // Also listen for system preference changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', detectTheme);
-    
+
     return () => {
       observer.disconnect();
       mediaQuery.removeEventListener('change', detectTheme);
@@ -229,67 +236,73 @@ export const GuidanceOverlay: React.FC = () => {
       const targetElement = document.querySelector(currentGuidance.targetSelector);
       if (targetElement) {
         targetElement.classList.add('guidance-highlight');
-        
+
         // Calculate position for the tooltip
         const rect = targetElement.getBoundingClientRect();
         const tooltipWidth = 320; // Width of our tooltip
         const tooltipHeight = 180; // Approximate height of tooltip
         const padding = 15; // Padding between element and tooltip
         const position = { top: 0, left: 0 };
-        
+
         // Position based on the specified position
         switch (currentGuidance.position) {
           case 'left':
-            position.top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+            position.top = rect.top + rect.height / 2 - tooltipHeight / 2;
             position.left = Math.max(padding, rect.left - tooltipWidth - padding);
-            
+
             // If would go off screen left, flip to right
             if (position.left < padding) {
               position.left = rect.right + padding;
             }
             break;
-            
+
           case 'right':
-            position.top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+            position.top = rect.top + rect.height / 2 - tooltipHeight / 2;
             position.left = rect.right + padding;
-            
+
             // If would go off screen right, flip to left
             if (position.left + tooltipWidth > window.innerWidth - padding) {
               position.left = Math.max(padding, rect.left - tooltipWidth - padding);
             }
             break;
-            
+
           case 'top':
             position.top = Math.max(padding, rect.top - tooltipHeight - padding);
-            position.left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-            
+            position.left = rect.left + rect.width / 2 - tooltipWidth / 2;
+
             // If would go off screen top, flip to bottom
             if (position.top < padding) {
               position.top = rect.bottom + padding;
             }
             break;
-            
+
           case 'bottom':
             position.top = rect.bottom + padding;
-            position.left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-            
+            position.left = rect.left + rect.width / 2 - tooltipWidth / 2;
+
             // If would go off screen bottom, flip to top
             if (position.top + tooltipHeight > window.innerHeight - padding) {
               position.top = Math.max(padding, rect.top - tooltipHeight - padding);
             }
             break;
-            
+
           case 'center':
           default:
-            position.top = (window.innerHeight / 2) - (tooltipHeight / 2);
-            position.left = (window.innerWidth / 2) - (tooltipWidth / 2);
+            position.top = window.innerHeight / 2 - tooltipHeight / 2;
+            position.left = window.innerWidth / 2 - tooltipWidth / 2;
             break;
         }
-        
+
         // Ensure tooltip stays within viewport bounds
-        position.left = Math.max(padding, Math.min(window.innerWidth - tooltipWidth - padding, position.left));
-        position.top = Math.max(padding, Math.min(window.innerHeight - tooltipHeight - padding, position.top));
-        
+        position.left = Math.max(
+          padding,
+          Math.min(window.innerWidth - tooltipWidth - padding, position.left),
+        );
+        position.top = Math.max(
+          padding,
+          Math.min(window.innerHeight - tooltipHeight - padding, position.top),
+        );
+
         setTooltipPosition(position);
       }
 
@@ -299,7 +312,7 @@ export const GuidanceOverlay: React.FC = () => {
         }
       };
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, currentGuidance.targetSelector, isGuidanceVisible]);
 
   if (!isGuidanceVisible) {
@@ -310,38 +323,32 @@ export const GuidanceOverlay: React.FC = () => {
     completeGuidance();
   };
 
-
-
   // Use createPortal to render the tooltip at the document level
   return createPortal(
-    <div 
+    <div
       className={`guidance-tooltip ${isDarkMode ? 'dark' : ''}`}
       style={{
         top: `${tooltipPosition.top}px`,
-        left: `${tooltipPosition.left}px`
+        left: `${tooltipPosition.left}px`,
       }}
     >
-      <button 
-        onClick={hideGuidance} 
+      <button
+        onClick={hideGuidance}
         className={`absolute top-2 right-2 ${isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'}`}
       >
         <X size={16} />
       </button>
 
       <div className="mb-4">
-        <h2 className="text-lg font-bold mb-2">
-          {currentGuidance.title}
-        </h2>
-        <p className="text-sm">
-          {currentGuidance.description}
-        </p>
+        <h2 className="text-lg font-bold mb-2">{currentGuidance.title}</h2>
+        <p className="text-sm">{currentGuidance.description}</p>
       </div>
 
       {currentGuidance.image && (
         <div className="mb-4">
-          <img 
-            src={currentGuidance.image} 
-            alt={currentGuidance.title} 
+          <img
+            src={currentGuidance.image}
+            alt={currentGuidance.title}
             className="w-full rounded-lg"
           />
         </div>
@@ -350,11 +357,11 @@ export const GuidanceOverlay: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex space-x-1">
           {Array.from({ length: totalSteps }).map((_, index) => (
-            <div 
+            <div
               key={index}
               className={`h-1.5 w-1.5 rounded-full ${
-                index === currentStep 
-                  ? 'bg-indigo-600 dark:bg-indigo-400' 
+                index === currentStep
+                  ? 'bg-indigo-600 dark:bg-indigo-400'
                   : 'bg-gray-300 dark:bg-gray-600'
               }`}
             />
@@ -392,7 +399,7 @@ export const GuidanceOverlay: React.FC = () => {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 
@@ -400,31 +407,32 @@ export const GuidanceOverlay: React.FC = () => {
 export const HelpButton: React.FC = () => {
   const { showGuidance } = useGuidance();
   const [isDarkMode, setIsDarkMode] = useState(false);
-  
+
   // Detect dark mode
   useEffect(() => {
     const detectTheme = () => {
-      const isDark = document.documentElement.classList.contains('dark') || 
-                    window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark =
+        document.documentElement.classList.contains('dark') ||
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
       setIsDarkMode(isDark);
     };
-    
+
     detectTheme();
-    
+
     const observer = new MutationObserver(detectTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', detectTheme);
-    
+
     return () => {
       observer.disconnect();
       mediaQuery.removeEventListener('change', detectTheme);
     };
   }, []);
-  
+
   return (
-    <button 
+    <button
       onClick={showGuidance}
       className={`flex items-center justify-center p-2 text-white rounded-full shadow-lg transition-colors ${isDarkMode ? 'bg-indigo-700 hover:bg-indigo-800' : 'bg-indigo-600 hover:bg-indigo-700'}`}
       aria-label="Show guidance"

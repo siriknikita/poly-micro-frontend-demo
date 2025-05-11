@@ -2,7 +2,10 @@
 
 ## Overview
 
-The Monitoring feature provides real-time observability and performance tracking for microservices. It allows users to monitor service health, view logs, track resource usage, and receive alerts for potential issues. The feature has been refactored to follow SOLID principles with a modular architecture that emphasizes separation of concerns and reusability.
+The Monitoring feature provides real-time observability and performance tracking for microservices.
+It allows users to monitor service health, view logs, track resource usage, and receive alerts for
+potential issues. The feature has been refactored to follow SOLID principles with a modular
+architecture that emphasizes separation of concerns and reusability.
 
 ## Components Structure
 
@@ -38,6 +41,7 @@ src/components/monitoring/
 Displays CPU usage metrics for microservices over time using Recharts library.
 
 **Key Features:**
+
 - Real-time CPU usage visualization
 - Customizable metrics display (CPU load, memory usage, active threads)
 - Service selection via ServiceSelector component
@@ -45,11 +49,13 @@ Displays CPU usage metrics for microservices over time using Recharts library.
 - Responsive chart design
 
 **Component Dependencies:**
+
 - `ServiceSelector`: For selecting which microservice to monitor
 - `MetricsSelector`: For selecting which metrics to display on the chart
 - `useMetricsSelection`: Hook for managing metrics selection state
 
 **Usage Example:**
+
 ```jsx
 <CPUChart
   data={cpuData}
@@ -67,6 +73,7 @@ Displays CPU usage metrics for microservices over time using Recharts library.
 A dropdown component for selecting microservices to monitor.
 
 **Key Features:**
+
 - Displays list of available services with status indicators
 - Handles service selection events
 - Supports disabled state for unavailable services
@@ -76,6 +83,7 @@ A dropdown component for selecting microservices to monitor.
 A comprehensive component for selecting which metrics to display on charts.
 
 **Key Features:**
+
 - Dropdown interface for metric selection
 - Search functionality for filtering metrics
 - Toggle functionality for enabling/disabling metrics
@@ -83,12 +91,14 @@ A comprehensive component for selecting which metrics to display on charts.
 - Persistence of user preferences
 
 **Component Dependencies:**
+
 - `MetricsToggleButton`: Button to open/close the dropdown
 - `MetricsSearch`: Search input for filtering metrics
 - `MetricsList`: List of metrics with toggle functionality
 - `useMetricsDropdown`: Hook for managing dropdown state and behavior
 
 **Usage Example:**
+
 ```jsx
 <MetricsSelector
   metrics={availableMetrics}
@@ -104,12 +114,14 @@ A comprehensive component for selecting which metrics to display on charts.
 Manages the state of selected metrics and persists user preferences to localStorage.
 
 **Key Features:**
+
 - Loads and saves user preferences per project and service
 - Manages the state of available metrics and their selection status
 - Handles project and service changes
 - Provides error handling for localStorage operations
 
 **Usage Example:**
+
 ```jsx
 const { metrics, selectedMetricIds, updateMetricSelection } = useMetricsSelection({
   projectId: 'project1',
@@ -117,16 +129,18 @@ const { metrics, selectedMetricIds, updateMetricSelection } = useMetricsSelectio
   defaultMetrics: [
     { id: 'load', name: 'CPU Load %', dataKey: 'load', color: '#4f46e5', selected: true },
     { id: 'memory', name: 'Memory Usage %', dataKey: 'memory', color: '#059669', selected: true },
-    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true }
-  ]
+    { id: 'threads', name: 'Active Threads', dataKey: 'threads', color: '#db2777', selected: true },
+  ],
 });
 ```
 
 ### useMetricsDropdown
 
-Manages the dropdown UI state, search functionality, and keyboard navigation for the MetricsSelector component.
+Manages the dropdown UI state, search functionality, and keyboard navigation for the MetricsSelector
+component.
 
 **Key Features:**
+
 - Dropdown open/close functionality
 - Search filtering of metrics based on user input
 - Keyboard navigation support for accessibility
@@ -135,6 +149,7 @@ Manages the dropdown UI state, search functionality, and keyboard navigation for
 - Focus management for improved user experience
 
 **Usage Example:**
+
 ```jsx
 const {
   isOpen,
@@ -146,10 +161,10 @@ const {
   toggleDropdown,
   toggleMetric,
   handleSearchChange,
-  handleKeyDown
+  handleKeyDown,
 } = useMetricsDropdown({
   metrics: availableMetrics,
-  onMetricsChange: handleMetricsChange
+  onMetricsChange: handleMetricsChange,
 });
 ```
 
@@ -161,8 +176,8 @@ The monitoring feature uses the following key type definitions (from `src/types/
 
 ```typescript
 export interface CPUData {
-  time: string;  // Timestamp for the data point
-  load: number;  // CPU load percentage
+  time: string; // Timestamp for the data point
+  load: number; // CPU load percentage
   memory: number; // Memory usage percentage
   threads: number; // Number of active threads
 }
@@ -188,10 +203,10 @@ export interface Service {
 
 ```typescript
 export interface Metric {
-  id: string;     // Unique identifier for the metric
-  name: string;   // Display name for the metric
+  id: string; // Unique identifier for the metric
+  name: string; // Display name for the metric
   dataKey: string; // Key to access the data in the CPUData object
-  color: string;  // Color for the metric line in charts
+  color: string; // Color for the metric line in charts
   selected: boolean; // Whether the metric is selected for display
 }
 ```
@@ -211,7 +226,8 @@ export interface Metric {
 1. Navigate to the Monitoring section from the sidebar
 2. Select a microservice from the ServiceSelector dropdown
 3. View the CPU metrics on the CPUChart component
-4. Use the MetricsSelector to customize which metrics are displayed (CPU load, memory usage, threads)
+4. Use the MetricsSelector to customize which metrics are displayed (CPU load, memory usage,
+   threads)
 5. Your metric preferences will be remembered for each service
 
 ### Customizing Metrics Display

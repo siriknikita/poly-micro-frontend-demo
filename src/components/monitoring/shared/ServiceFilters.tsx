@@ -19,7 +19,7 @@ export const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   onAddFilterGroup,
   onUpdateFilterGroup,
   onRemoveFilterGroup,
-  onClearFilters
+  onClearFilters,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingFilterIndex, setEditingFilterIndex] = useState<number | null>(null);
@@ -67,7 +67,7 @@ export const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           <FilterIcon className="h-4 w-4 mr-1" />
           <span>Add Filter</span>
         </button>
-        
+
         {filterGroups.length > 0 && (
           <button
             onClick={onClearFilters}
@@ -82,7 +82,7 @@ export const ServiceFilters: React.FC<ServiceFiltersProps> = ({
       {filterGroups.length > 0 && (
         <div className="flex flex-wrap gap-2" data-testid="active-filters">
           {filterGroups.map((group, groupIndex) => (
-            <div 
+            <div
               key={groupIndex}
               className="flex items-center bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-md px-2 py-1 text-sm"
             >
@@ -121,7 +121,9 @@ export const ServiceFilters: React.FC<ServiceFiltersProps> = ({
         onClose={handleDialogClose}
         onApplyFilter={handleApplyFilter}
         services={services}
-        initialFilterGroup={editingFilterIndex !== null ? filterGroups[editingFilterIndex] : undefined}
+        initialFilterGroup={
+          editingFilterIndex !== null ? filterGroups[editingFilterIndex] : undefined
+        }
       />
     </div>
   );
