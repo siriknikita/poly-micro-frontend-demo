@@ -10,7 +10,7 @@ vi.mock('@/context/useToast', () => ({
 
 // Mock setTimeout to make tests faster and more predictable
 const originalSetTimeout = global.setTimeout;
-vi.stubGlobal('setTimeout', (fn: Function) => {
+vi.stubGlobal('setTimeout', (fn: (...args: unknown[]) => void) => {
   return originalSetTimeout(fn, 0) as unknown as number;
 });
 

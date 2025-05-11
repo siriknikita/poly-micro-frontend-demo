@@ -199,11 +199,12 @@ export const GuidanceTooltip: React.FC<GuidanceTooltipProps> = ({
   // Highlight the target element when the tooltip is shown
   useEffect(() => {
     if (shouldShowTooltipForStep(step) && targetRef.current) {
-      targetRef.current.classList.add('guidance-highlight');
+      const element = targetRef.current;
+      element.classList.add('guidance-highlight');
       
       return () => {
-        if (targetRef.current) {
-          targetRef.current.classList.remove('guidance-highlight');
+        if (element) {
+          element.classList.remove('guidance-highlight');
         }
       };
     }

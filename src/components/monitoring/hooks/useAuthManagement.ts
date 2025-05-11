@@ -1,3 +1,6 @@
+/**
+ * eslint-disable react-refresh/only-export-components
+ */
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/components/auth/hooks/useAuth';
@@ -14,7 +17,7 @@ export function useAuthManagement() {
   useEffect(() => {
     // This ensures we always have the latest auth state
     refreshAuthState();
-  }, [refreshAuthState, window.location.pathname]);
+  }, [refreshAuthState]);
   
   // Handle logout
   const handleLogout = useCallback(() => {
