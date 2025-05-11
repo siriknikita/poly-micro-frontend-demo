@@ -17,25 +17,19 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   onSelectProject,
 }) => {
   // Convert projects to dropdown options format
-  const projectOptions = [
-    { id: '', label: 'Select a project', disabled: false }
-  ].concat(
-    projects.map((project) => ({
-      id: project.id,
-      label: project.name,
-      disabled: false
-    }))
-  );
+  const projectOptions = projects.map((project) => ({
+    id: project.id,
+    label: project.name,
+    disabled: false
+  }));
 
   // Create dropdown sections
   const sections: DropdownSectionProps[] = [
     {
       options: projectOptions,
       onSelect: (id: string) => {
-        if (id) {
-          const project = projects.find((p) => p.id === id);
-          if (project) onSelectProject(project);
-        }
+        const project = projects.find((p) => p.id === id);
+        if (project) onSelectProject(project);
       }
     }
   ];
@@ -51,7 +45,7 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
       <div className="relative">
         <FolderOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
         <Dropdown
-          buttonLabel="Select a project"
+          buttonLabel={selectedProject?.name || "Select a project"}
           selectedOption={selectedProject?.id}
           sections={sections}
           className="w-full"
