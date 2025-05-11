@@ -78,7 +78,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
+    <div className="h-screen bg-gray-100 dark:bg-gray-900 flex">
       <Sidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -98,8 +98,12 @@ export function Dashboard() {
           onLogout={handleLogout}
         />
 
-        <main className="flex-1 overflow-y-auto">
-          <div className={mainPageRenderClassName}>
+        <main
+          className={`flex-1 ${activeTab === 'dashboard' || activeTab === 'monitoring' || activeTab === 'help' ? 'overflow-auto' : 'overflow-hidden'}`}
+        >
+          <div
+            className={`${mainPageRenderClassName} ${activeTab === 'dashboard' || activeTab === 'monitoring' || activeTab === 'help' ? 'pb-8' : ''}`}
+          >
             {activeTab === 'help' ? (
               <HelpPage />
             ) : selectedProject ? (

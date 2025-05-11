@@ -9,3 +9,11 @@
   -moz-user-select: none !important;
   -ms-user-select: none !important;
 }
+
+/* Fix for double scrolling issue */
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}

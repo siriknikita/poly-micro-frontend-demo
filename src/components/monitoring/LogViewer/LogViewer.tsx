@@ -4,7 +4,6 @@ import { BoxedWrapper, SectionHeader } from '@shared/index';
 import { usePagination } from '@hooks/index';
 import { Log, Service } from '@/types';
 import { DEFAULT_ITEMS_PER_PAGE, LOGS_TABLE_HEADERS } from '@constants';
-import { getStatusVariant } from '../shared/statusUtils';
 import { TablePagination } from './TablePagination';
 import { ServiceSelector, SeveritySelector, RowsPerPageSelector } from '../shared';
 import StatusBadge from '../shared/StatusBadge';
@@ -85,7 +84,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(
           </div>
 
           {/* Logs Table */}
-          <div className="overflow-x-auto">
+          <div className="w-full">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
@@ -112,7 +111,7 @@ export const LogViewer: React.FC<LogViewerProps> = memo(
                       {log.service}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <StatusBadge status={log.severity} variant={getStatusVariant(log.severity)} />
+                      <StatusBadge status={log.severity} />
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                       {log.message}
