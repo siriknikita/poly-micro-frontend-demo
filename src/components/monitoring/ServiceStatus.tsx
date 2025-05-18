@@ -50,7 +50,7 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {filteredServices.length > 0 ? (
+          {filteredServices && filteredServices.length > 0 ? (
             filteredServices.map((service, index) => (
               <div
                 key={index}
@@ -59,24 +59,18 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100">{service.name}</h4>
                 <div className="space-y-2 mt-2">
                   <p className="text-sm text-gray-600 dark:text-gray-400">Port: {service.port}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Version: {service.version}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Uptime: {service.uptime}
-                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Version: {service.version}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Uptime: {service.uptime}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Status:{' '}
                     <StatusBadge
                       status={service.status || ''}
-                      variant={getStatusVariant(service.status || '')}
                     />
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Health:{' '}
                     <StatusBadge
                       status={service.health || ''}
-                      variant={getStatusVariant(service.health || '')}
                     />
                   </p>
                 </div>

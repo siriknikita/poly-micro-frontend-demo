@@ -68,18 +68,22 @@ export const ServiceFilterDialog: React.FC<ServiceFilterDialogProps> = ({
   // Get unique status values from services
   const statusOptions = React.useMemo(() => {
     const statuses = new Set<string>();
-    services.forEach((service) => {
-      if (service.status) statuses.add(service.status);
-    });
+    if (services) {
+      services.forEach((service) => {
+        if (service.status) statuses.add(service.status);
+      });
+    }
     return Array.from(statuses);
   }, [services]);
 
   // Get unique health values from services
   const healthOptions = React.useMemo(() => {
     const healths = new Set<string>();
-    services.forEach((service) => {
-      if (service.health) healths.add(service.health);
-    });
+    if (services) {
+      services.forEach((service) => {
+        if (service.health) healths.add(service.health);
+      });
+    }
     return Array.from(healths);
   }, [services]);
 

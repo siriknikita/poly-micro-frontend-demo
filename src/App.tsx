@@ -12,6 +12,9 @@ import { useEffect } from 'react';
 import autoSyncReleases from './utils/releaseSync';
 import { useAuth } from './components/auth/hooks/useAuth';
 import { AppLayout } from './components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
   // Auto-sync releases when the app starts
@@ -20,9 +23,11 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <AppContent />
+      </Router>
+    </QueryClientProvider>
   );
 }
 

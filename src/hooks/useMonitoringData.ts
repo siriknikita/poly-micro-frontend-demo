@@ -1,28 +1,59 @@
-import { useState, useMemo } from 'react';
-import { Log, MockedCPUData, MockedServices } from '@/types';
-import { mockCpuData, mockServices, mockLogs } from '@data/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Log } from '@/types';
 
-export default function useMonitoringData() {
-  const [cpuData] = useState<MockedCPUData>(mockCpuData);
-  const [services] = useState<MockedServices>(mockServices);
-  const [logs] = useState<Log[]>(mockLogs);
+const API_BASE_URL = 'http://localhost:8000';
+
+export default function useMonitoringData(selectedProjectId: string) {
+  const { data: cpuData, isLoading: cpuLoading, error: cpuError } = useQuery({
+    queryKey: ['cpuData', selectedProjectId],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/cpu/${selectedProjectId}`);
+      if (!response.ok) throw new Error('Failed to fetch CPU data');
+      return response.json();
+    },
+    enabled: !!selectedProjectId,
+  });
+  console.log('cpuData', cpuData);
+
+  const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useQuery({
+    queryKey: ['services', selectedProjectId],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/services/${selectedProjectId}`);
+      if (!response.ok) throw new Error('Failed to fetch services');
+      return response.json();
+    },
+    enabled: !!selectedProjectId,
+  });
+  console.log('servicesData', servicesData);
+  
+
+  const { data: logsData, isLoading: logsLoading, error: logsError } = useQuery({
+    queryKey: ['logs'],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/logs`);
+      if (!response.ok) throw new Error('Failed to fetch logs');
+      return response.json();
+    },
+  });
+
+  const loading = cpuLoading || servicesLoading || logsLoading;
+  const error = cpuError || servicesError || logsError ? (cpuError?.message || servicesError?.message || logsError?.message) : null;
+
   const [selectedLogService, setSelectedLogService] = useState<string>('All');
   const [selectedMetricService, setSelectedMetricService] = useState<string>('');
   const [selectedSeverity, setSelectedSeverity] = useState<string>('All');
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('1');
 
-  const filteredLogs = useMemo(() => {
-    return logs.filter(
-      (log) =>
-        (selectedLogService === 'All' || log.service === selectedLogService) &&
-        (selectedSeverity === 'All' || log.severity === selectedSeverity),
-    );
-  }, [logs, selectedLogService, selectedSeverity]);
+  const filteredLogs = logsData?.filter(
+    (log: Log) =>
+      (selectedLogService === 'All' || log.service === selectedLogService) &&
+      (selectedSeverity === 'All' || log.severity === selectedSeverity),
+  );
 
   return {
-    cpuData,
-    services,
-    logs: filteredLogs, // Return the memoized filtered logs
+    cpuData: cpuData || [],
+    services: servicesData || [],
+    logs: filteredLogs || [],
     selectedLogService,
     setSelectedLogService,
     selectedMetricService,
@@ -30,6 +61,7 @@ export default function useMonitoringData() {
     selectedSeverity,
     setSelectedSeverity,
     selectedProjectId,
-    setSelectedProjectId,
+    loading,
+    error,
   };
-}
+};

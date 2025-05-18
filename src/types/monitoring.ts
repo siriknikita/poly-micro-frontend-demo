@@ -1,8 +1,11 @@
 export interface CPUData {
-  time: string;
-  load: number;
-  memory: number;
-  threads: number;
+  data: {
+    time: string;
+    load: number;
+    memory: number;
+    threads: number;
+  }[];
+  service_name: string;
 }
 
 export type MockedCPUData = Record<string, Record<string, CPUData[]>>;
