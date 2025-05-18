@@ -35,7 +35,8 @@ export const MonitoringDashboard: React.FC<MonitoringDashboardProps> = memo(
       });
 
     // Find the CPU data by service_name
-    const cpuDataByService = cpuData.find((data: CPUData) => data.service_name === selectedMetricService)?.data || [];
+    const cpuDataByService =
+      cpuData.find((data: CPUData) => data.service_name === selectedMetricService)?.data || [];
 
     return (
       <div className="space-y-6 overflow-visible">

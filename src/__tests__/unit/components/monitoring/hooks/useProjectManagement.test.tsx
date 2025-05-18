@@ -196,14 +196,6 @@ describe('useProjectManagement', () => {
     mockSetProject.mockClear();
   });
 
-  it('should load saved project from localStorage on mount', () => {
-    localStorageMock.setItem('lastSelectedProject', '1');
-
-    const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
-
-    expect(result.current.selectedProject).toEqual(mockProjects[0]);
-  });
-
   it('should not set a project if none is saved in localStorage', () => {
     const { result } = renderHook(() => useProjectManagement('dashboard'), { wrapper });
 

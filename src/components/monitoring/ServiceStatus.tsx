@@ -3,7 +3,6 @@ import { Server } from 'lucide-react';
 import { Service } from '@/types';
 import { BoxedWrapper, SectionHeader } from '@shared/index';
 import StatusBadge from './shared/StatusBadge';
-import { getStatusVariant } from './shared/statusUtils';
 import { ServiceFilters } from './shared/ServiceFilters';
 import { useServiceFilters } from './hooks/useServiceFilters';
 import { GuidanceTooltip } from '@/components/guidance';
@@ -59,19 +58,17 @@ export const ServiceStatus: React.FC<ServiceStatusProps> = memo(({ services, pro
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100">{service.name}</h4>
                 <div className="space-y-2 mt-2">
                   <p className="text-sm text-gray-600 dark:text-gray-400">Port: {service.port}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Version: {service.version}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Uptime: {service.uptime}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Status:{' '}
-                    <StatusBadge
-                      status={service.status || ''}
-                    />
+                    Version: {service.version}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Health:{' '}
-                    <StatusBadge
-                      status={service.health || ''}
-                    />
+                    Uptime: {service.uptime}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Status: <StatusBadge status={service.status || ''} />
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Health: <StatusBadge status={service.health || ''} />
                   </p>
                 </div>
               </div>

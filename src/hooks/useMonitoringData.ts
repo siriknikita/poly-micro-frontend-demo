@@ -5,7 +5,11 @@ import { Log } from '@/types';
 const API_BASE_URL = 'http://localhost:8000';
 
 export default function useMonitoringData(selectedProjectId: string) {
-  const { data: cpuData, isLoading: cpuLoading, error: cpuError } = useQuery({
+  const {
+    data: cpuData,
+    isLoading: cpuLoading,
+    error: cpuError,
+  } = useQuery({
     queryKey: ['cpuData', selectedProjectId],
     queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/cpu/${selectedProjectId}`);
@@ -16,7 +20,11 @@ export default function useMonitoringData(selectedProjectId: string) {
   });
   console.log('cpuData', cpuData);
 
-  const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useQuery({
+  const {
+    data: servicesData,
+    isLoading: servicesLoading,
+    error: servicesError,
+  } = useQuery({
     queryKey: ['services', selectedProjectId],
     queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/services/${selectedProjectId}`);
@@ -26,9 +34,12 @@ export default function useMonitoringData(selectedProjectId: string) {
     enabled: !!selectedProjectId,
   });
   console.log('servicesData', servicesData);
-  
 
-  const { data: logsData, isLoading: logsLoading, error: logsError } = useQuery({
+  const {
+    data: logsData,
+    isLoading: logsLoading,
+    error: logsError,
+  } = useQuery({
     queryKey: ['logs'],
     queryFn: async () => {
       const response = await fetch(`${API_BASE_URL}/logs`);
@@ -38,7 +49,10 @@ export default function useMonitoringData(selectedProjectId: string) {
   });
 
   const loading = cpuLoading || servicesLoading || logsLoading;
-  const error = cpuError || servicesError || logsError ? (cpuError?.message || servicesError?.message || logsError?.message) : null;
+  const error =
+    cpuError || servicesError || logsError
+      ? cpuError?.message || servicesError?.message || logsError?.message
+      : null;
 
   const [selectedLogService, setSelectedLogService] = useState<string>('All');
   const [selectedMetricService, setSelectedMetricService] = useState<string>('');
@@ -64,4 +78,4 @@ export default function useMonitoringData(selectedProjectId: string) {
     loading,
     error,
   };
-};
+}
