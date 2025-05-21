@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Log } from '@/types';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 export default function useMonitoringData(selectedProjectId: string) {
   const {
@@ -12,7 +12,7 @@ export default function useMonitoringData(selectedProjectId: string) {
   } = useQuery({
     queryKey: ['cpuData', selectedProjectId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/cpu/${selectedProjectId}`);
+      const response = await fetch(`${API_BASE_URL}/metrics/cpu/project/${selectedProjectId}`);
       if (!response.ok) throw new Error('Failed to fetch CPU data');
       return response.json();
     },
@@ -27,7 +27,7 @@ export default function useMonitoringData(selectedProjectId: string) {
   } = useQuery({
     queryKey: ['services', selectedProjectId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/services/${selectedProjectId}`);
+      const response = await fetch(`${API_BASE_URL}/services/project/${selectedProjectId}`);
       if (!response.ok) throw new Error('Failed to fetch services');
       return response.json();
     },
