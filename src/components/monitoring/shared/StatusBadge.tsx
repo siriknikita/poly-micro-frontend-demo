@@ -8,18 +8,21 @@ interface StatusBadgeProps {
 function StatusBadge({ status, className = '' }: StatusBadgeProps): JSX.Element {
   const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
 
-  // Check if the status is a severity level (uppercase) or a service status
+  // Check if the status is a severity level or a service status
   let styleClass = '';
+  // For display purposes, potentially convert to uppercase
+  let displayStatus = status;
 
-  // First try to match with severity levels (ERROR, WARN, etc.)
-  if (
-    status.toUpperCase() === status &&
-    CLASSES_BY_SEVERITY[status as keyof typeof CLASSES_BY_SEVERITY]
-  ) {
-    styleClass = CLASSES_BY_SEVERITY[status as keyof typeof CLASSES_BY_SEVERITY];
+  // First try to match with severity levels (lowercase)
+  if (CLASSES_BY_SEVERITY[status.toLowerCase() as keyof typeof CLASSES_BY_SEVERITY]) {
+    console.log('Severity match:', status);
+    styleClass = CLASSES_BY_SEVERITY[status.toLowerCase() as keyof typeof CLASSES_BY_SEVERITY];
+    // For severity values, display in uppercase
+    displayStatus = status.toUpperCase();
   }
   // Then try to match with service statuses (Running, Healthy, etc.)
   else if (SERVICE_STATUS_CLASSES[status as keyof typeof SERVICE_STATUS_CLASSES]) {
+    console.log('Service status match:', status);
     styleClass = SERVICE_STATUS_CLASSES[status as keyof typeof SERVICE_STATUS_CLASSES];
   }
   // For case-insensitive matching with service statuses
@@ -39,10 +42,10 @@ function StatusBadge({ status, className = '' }: StatusBadgeProps): JSX.Element 
 
   return (
     <span
+      data-testid={`status-badge-${status.toLowerCase()}`}
       className={`${baseClasses} ${styleClass} ${className}`}
-      data-testid={`status-badge-${status}`}
     >
-      {status}
+      {displayStatus}
     </span>
   );
 }

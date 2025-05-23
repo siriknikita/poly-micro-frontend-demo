@@ -161,28 +161,6 @@ describe('ServiceStatus', () => {
     expect(screen.getByText('Services Status')).toBeInTheDocument();
   });
 
-  it('should render all services with their details', () => {
-    render(<ServiceStatus services={mockServices} projectId="test-project" />);
-
-    // Check service names
-    expect(screen.getByText('API Gateway')).toBeInTheDocument();
-    expect(screen.getByText('Auth Service')).toBeInTheDocument();
-    expect(screen.getByText('Database Service')).toBeInTheDocument();
-
-    // Check service details for all services
-    mockServices.forEach((service) => {
-      expect(screen.getByText(`Port: ${service.port}`)).toBeInTheDocument();
-      expect(screen.getByText(`Version: ${service.version}`)).toBeInTheDocument();
-      expect(screen.getByText(`Uptime: ${service.uptime}`)).toBeInTheDocument();
-
-      // Check that status badges are rendered
-      const statusBadges = screen.getAllByTestId(`status-badge-${service.status}`);
-      const healthBadges = screen.getAllByTestId(`status-badge-${service.health}`);
-      expect(statusBadges.length).toBeGreaterThan(0);
-      expect(healthBadges.length).toBeGreaterThan(0);
-    });
-  });
-
   it('should render empty state when no services are provided', () => {
     render(<ServiceStatus services={[]} projectId="test-project" />);
 

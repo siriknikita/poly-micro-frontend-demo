@@ -24,15 +24,18 @@ export interface Service {
 
 export type MockedServices = Record<string, Service[]>;
 
-export type Severity = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
+export type Severity = 'debug' | 'info' | 'warn' | 'error';
 
 export interface Log {
   id: string;
-  service: string;
-  severity: Severity;
+  project_id: string;
+  service_id: string;
+  test_id?: string;
+  func_id?: string;
   message: string;
+  severity: Severity;
   timestamp: string;
-  details?: Record<string, unknown>;
+  source?: string;
 }
 
 export interface Project {

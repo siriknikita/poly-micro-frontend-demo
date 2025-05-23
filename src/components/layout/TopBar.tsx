@@ -4,7 +4,7 @@ import { ProjectSelector } from '../shared/selectors/ProjectSelector';
 import { ThemeToggle } from './ThemeToggle';
 import { Logo } from '../shared/Logo';
 import { Project } from '@/types';
-import { mockProjects } from '@/data/mockData';
+import { useProjectManagement } from '../monitoring/hooks/useProjectManagement';
 
 interface TopBarProps {
   darkMode: boolean;
@@ -12,6 +12,7 @@ interface TopBarProps {
   selectedProject: Project | null;
   onSelectProject: (project: Project) => void;
   onLogout: () => void;
+  activeTab?: string;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -20,7 +21,10 @@ export const TopBar: React.FC<TopBarProps> = ({
   selectedProject,
   onSelectProject,
   onLogout,
+  activeTab = '',
 }) => {
+  // Use the hook to get projects data from the API
+  const { projects, loading } = useProjectManagement(activeTab);
   return (
     <nav className="w-full h-16 bg-white dark:bg-gray-800 border-b border-white dark:border-gray-700">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,9 +33,10 @@ export const TopBar: React.FC<TopBarProps> = ({
             <Logo />
             <div className="w-64">
               <ProjectSelector
-                projects={mockProjects}
+                projects={projects}
                 selectedProject={selectedProject}
                 onSelectProject={onSelectProject}
+                loading={loading}
               />
             </div>
           </div>

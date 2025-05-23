@@ -29,6 +29,7 @@ export interface DropdownProps {
   placement?: 'left' | 'right';
   testId?: string;
   colorMap?: Record<string, string>;
+  disabled?: boolean;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -42,6 +43,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   placement = 'right',
   testId = 'dropdown',
   colorMap,
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -84,10 +86,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
     >
       <button
         type="button"
-        className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${buttonClassName}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md ${!disabled ? 'hover:bg-gray-50 dark:hover:bg-gray-700' : 'opacity-70 cursor-not-allowed'} focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 ${buttonClassName}`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
         aria-haspopup="true"
         aria-expanded={isOpen}
+        disabled={disabled}
       >
         <span className={selectedOptionData.colorClass}>{selectedOptionData.label}</span>
         <ChevronDown className="w-4 h-4 ml-2" />

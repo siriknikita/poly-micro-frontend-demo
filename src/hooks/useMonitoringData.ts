@@ -40,12 +40,18 @@ export default function useMonitoringData(selectedProjectId: string) {
     isLoading: logsLoading,
     error: logsError,
   } = useQuery({
-    queryKey: ['logs'],
+    queryKey: ['logs', selectedProjectId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/logs`);
+      // If we have a selected project, fetch logs for that project specifically
+      const url = selectedProjectId
+        ? `${API_BASE_URL}/logs/project/${selectedProjectId}`
+        : `${API_BASE_URL}/logs`;
+      console.log('url', url);
+      const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch logs');
       return response.json();
     },
+    enabled: !!selectedProjectId,
   });
 
   const loading = cpuLoading || servicesLoading || logsLoading;
@@ -60,9 +66,11 @@ export default function useMonitoringData(selectedProjectId: string) {
 
   const filteredLogs = logsData?.filter(
     (log: Log) =>
-      (selectedLogService === 'All' || log.service === selectedLogService) &&
+      (selectedLogService === 'All' || log.service_id === selectedLogService) &&
       (selectedSeverity === 'All' || log.severity === selectedSeverity),
   );
+  console.log('logsData', logsData);
+  console.log('filteredLogs', filteredLogs);
 
   return {
     cpuData: cpuData || [],

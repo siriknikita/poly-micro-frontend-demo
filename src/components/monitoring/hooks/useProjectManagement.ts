@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Project } from '@/types';
 import { mockTestDataByProject } from '@data/mockTestData';
 import { useProject } from '@/context/useProject';
+import { useQuery } from '@tanstack/react-query';
 
 const API_BASE_URL = 'http://localhost:8000'; // Configure this to match your FastAPI server URL
 
@@ -12,26 +13,21 @@ const API_BASE_URL = 'http://localhost:8000'; // Configure this to match your Fa
 export function useProjectManagement(activeTab: string) {
   const { setProject } = useProject();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  // Fetch projects from API on mount
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/projects`);
-        if (!response.ok) throw new Error('Failed to fetch projects');
-        const data = await response.json();
-        setProjects(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProjects();
-  }, []);
+  // Fetch projects with React Query
+  const { 
+    data: projects = [], 
+    isLoading: loading,
+    error
+  } = useQuery<Project[]>({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const response = await fetch(`${API_BASE_URL}/api/projects`);
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
 
   // Load saved project using fetched projects
   useEffect(() => {
@@ -81,6 +77,6 @@ export function useProjectManagement(activeTab: string) {
     handleSelectProject,
     projects,
     loading,
-    error,
+    error: error ? (error as Error).message : null,
   };
 }

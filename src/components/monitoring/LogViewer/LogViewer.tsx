@@ -21,10 +21,41 @@ interface LogViewerProps {
 
 export const LogViewer: React.FC<LogViewerProps> = memo(
   ({ logs, selectedService, selectedSeverity, onServiceChange, onSeverityChange, services }) => {
+    // Debug log information
+    console.log('LogViewer - logs:', logs);
+    console.log('LogViewer - services:', services);
+    console.log('LogViewer - selectedService:', selectedService);
+    
+    // Create a mapping of service IDs to names for display purposes
+    const serviceIdToNameMap = useMemo(() => {
+      const map: Record<string, string> = {};
+      services.forEach(service => {
+        if (service.id) {
+          map[service.id] = service.name;
+          console.log(`Mapping service ${service.id} to ${service.name}`);
+        }
+      });
+      return map;
+    }, [services]);
+    
+    // Function to get service name from ID
+    const getServiceName = (serviceId: string | undefined): string => {
+      if (!serviceId) return 'Unknown Service';
+      const name = serviceIdToNameMap[serviceId] || serviceId;
+      return name;
+    };
+    
     // Filter logs based on selected service and severity
     const filteredLogs = useMemo(() => {
+      if (!logs || !Array.isArray(logs)) {
+        console.error('Logs is not an array:', logs);
+        return [];
+      }
+      
       return logs.filter((log) => {
-        const serviceMatch = selectedService === 'All' || log.service === selectedService;
+        if (!log) return false;
+        
+        const serviceMatch = selectedService === 'All' || log.service_id === selectedService;
         const severityMatch = selectedSeverity === 'All' || log.severity === selectedSeverity;
         return serviceMatch && severityMatch;
       });
@@ -99,25 +130,36 @@ export const LogViewer: React.FC<LogViewerProps> = memo(
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {paginatedLogs.map((log, index) => (
-                  <tr
-                    key={log.id}
-                    ref={index === paginatedLogs.length - 1 ? setLastLogRowRef : null}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {log.timestamp}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                      {log.service}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <StatusBadge status={log.severity} />
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                      {log.message}
+                {paginatedLogs && paginatedLogs.length > 0 ? (
+                  paginatedLogs.map((log, index) => (
+                    <tr
+                      key={log.id || index}
+                      ref={index === paginatedLogs.length - 1 ? setLastLogRowRef : null}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {log.timestamp || 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                        {getServiceName(log.service_id)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <StatusBadge status={log.severity || 'info'} />
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                        {log.message || 'No message'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                        {log.source || '-'}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                      No logs available
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

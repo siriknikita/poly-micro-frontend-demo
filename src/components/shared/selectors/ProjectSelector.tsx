@@ -9,12 +9,14 @@ interface ProjectSelectorProps {
   projects: Project[];
   selectedProject: Project | null;
   onSelectProject: (project: Project) => void;
+  loading?: boolean;
 }
 
 export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
   projects,
   selectedProject,
   onSelectProject,
+  loading = false,
 }) => {
   // Convert projects to dropdown options format
   const projectOptions = projects.map((project) => ({
@@ -45,12 +47,13 @@ export const ProjectSelector: React.FC<ProjectSelectorProps> = ({
       <div className="relative">
         <FolderOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
         <Dropdown
-          buttonLabel={selectedProject?.name || 'Select a project'}
+          buttonLabel={loading ? 'Loading projects...' : (selectedProject?.name || 'Select a project')}
           selectedOption={selectedProject?.id}
           sections={sections}
           className="w-full"
           buttonClassName="pl-10 pr-4 py-2"
           testId="selected-project"
+          disabled={loading}
         />
       </div>
     </GuidanceTooltip>

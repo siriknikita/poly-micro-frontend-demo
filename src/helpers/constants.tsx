@@ -13,28 +13,29 @@ export const AVAILABLE_BLOCKS_MAP = {
 
 export const LOGS_TABLE_HEADERS = [
   { key: 'timestamp', label: 'Timestamp' },
-  { key: 'service', label: 'Service' },
+  { key: 'service_id', label: 'Service' },
   { key: 'severity', label: 'Severity' },
   { key: 'message', label: 'Message' },
+  { key: 'source', label: 'Source' },
 ];
 
 export const CLASSES_BY_SEVERITY = {
-  ERROR: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-  WARN: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-  DEBUG: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
-  INFO: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+  error: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  warn: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  debug: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
+  info: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
 };
 
 // Text-only color classes for severity levels - used in dropdown
 export const TEXT_COLORS_BY_SEVERITY = {
-  ERROR: 'text-red-800 dark:text-red-300',
-  WARN: 'text-yellow-800 dark:text-yellow-300',
-  DEBUG: 'text-gray-800 dark:text-gray-300',
-  INFO: 'text-green-800 dark:text-green-300',
+  error: 'text-red-800 dark:text-red-300',
+  warn: 'text-yellow-800 dark:text-yellow-300',
+  debug: 'text-gray-800 dark:text-gray-300',
+  info: 'text-green-800 dark:text-green-300',
   All: 'text-gray-700 dark:text-gray-200',
 };
 
-export const SEVERITY_LEVELS = ['DEBUG', 'INFO', 'WARN', 'ERROR'];
+export const SEVERITY_LEVELS = ['debug', 'info', 'warn', 'error'];
 
 export const ROWS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 

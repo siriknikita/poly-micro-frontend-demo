@@ -9,38 +9,38 @@ describe('StatusBadge', () => {
   });
 
   it('should use correct styling for known severity levels', () => {
-    render(<StatusBadge status="INFO" />);
+    render(<StatusBadge status="info" />);
     const badge = screen.getByText('INFO');
 
-    // Check that the INFO severity classes are applied
-    const infoClasses = CLASSES_BY_SEVERITY.INFO.split(' ');
-    infoClasses.forEach((className) => {
+    // Check that the info severity classes are applied
+    const infoClasses = CLASSES_BY_SEVERITY.info.split(' ');
+    infoClasses.forEach((className: string) => {
       expect(badge).toHaveClass(className);
     });
   });
 
   it('should apply the correct severity classes', () => {
-    render(<StatusBadge status="ERROR" />);
+    render(<StatusBadge status="error" />);
     const badge = screen.getByText('ERROR');
 
-    // Check that the ERROR severity classes are applied
-    const errorClasses = CLASSES_BY_SEVERITY.ERROR.split(' ');
-    errorClasses.forEach((className) => {
+    // Check that the error severity classes are applied
+    const errorClasses = CLASSES_BY_SEVERITY.error.split(' ');
+    errorClasses.forEach((className: string) => {
       expect(badge).toHaveClass(className);
     });
   });
 
   it('should apply additional className if provided', () => {
     const customClass = 'custom-test-class';
-    render(<StatusBadge status="Warning" className={customClass} />);
-    const badge = screen.getByText('Warning');
+    render(<StatusBadge status="warn" className={customClass} />);
+    const badge = screen.getByText('WARN');
 
     expect(badge).toHaveClass(customClass);
   });
 
   it('should apply base classes to all badges', () => {
-    render(<StatusBadge status="Success" />);
-    const badge = screen.getByText('Success');
+    render(<StatusBadge status="success" />);
+    const badge = screen.getByText('success');
 
     const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
     const baseClassList = baseClasses.split(' ');
@@ -51,20 +51,20 @@ describe('StatusBadge', () => {
   });
 
   it('should apply all severity types correctly', () => {
-    const { rerender } = render(<StatusBadge status="DEBUG" />);
+    const { rerender } = render(<StatusBadge status="debug" />);
     let badge = screen.getByText('DEBUG');
-    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.DEBUG.split(' '));
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.debug.split(' '));
 
-    rerender(<StatusBadge status="WARN" />);
+    rerender(<StatusBadge status="warn" />);
     badge = screen.getByText('WARN');
-    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.WARN.split(' '));
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.warn.split(' '));
 
-    rerender(<StatusBadge status="ERROR" />);
+    rerender(<StatusBadge status="error" />);
     badge = screen.getByText('ERROR');
-    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.ERROR.split(' '));
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.error.split(' '));
 
-    rerender(<StatusBadge status="INFO" />);
+    rerender(<StatusBadge status="info" />);
     badge = screen.getByText('INFO');
-    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.INFO.split(' '));
+    expect(badge).toHaveClass(...CLASSES_BY_SEVERITY.info.split(' '));
   });
 });
